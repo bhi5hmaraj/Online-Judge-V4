@@ -69,7 +69,6 @@ public class BattleforSilver
 			}
 			
 			System.out.println(max);
-			
 		}
 		
 	}

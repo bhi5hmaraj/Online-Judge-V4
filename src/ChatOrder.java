@@ -1,43 +1,31 @@
 import java.util.*;
 import java.io.*;
-public class poj_1007 {
+public class ChatOrder {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static int countInversions(String str) {
-        int cnt = 0;
-        int len = str.length();
-        for(int i=0;i<len;i++)
-            for(int j=i+1;j<len;j++)
-                cnt += str.charAt(j) < str.charAt(i) ? 1 : 0;
-        
-        return cnt;
-    }
     
     private static void solve() {
-        int N = nextInt();
-        int M = nextInt();
-        String arr[] = new String[M];
-        for(int i=0;i<M;i++)
-            arr[i] = nextLine();
         
-        int inversionsArr[][] = new int[M][2];
-        for(int i=0;i<M;i++) {
-            inversionsArr[i][0] = countInversions(arr[i]);
-            inversionsArr[i][1] = i;
+        
+        int N = nextInt();
+        HashMap<String , Integer> map = new HashMap<>();
+        TreeMap<Integer , String> Hit = new TreeMap<>();
+        while(N-->0) {
+            String in = nextLine();
+            if(map.containsKey(in)) 
+                Hit.remove(map.get(in));
+            Hit.put(N , in);
+            map.put(in, N);
         }
         
-        Arrays.sort(inversionsArr, new Comparator<int[]>() {
-            public int compare(int[] o1, int[] o2) {
-                return o1[0] != o2[0] ? o1[0] - o2[0] : o1[1] - o2[1];
-            }
-        });
+        Hit.forEach((k , v) -> println(v));
         
-        for(int pair[] : inversionsArr)
-            println(arr[pair[1]]);
+        
     }
+    
     
     
     /************************ SOLUTION ENDS HERE ************************/
