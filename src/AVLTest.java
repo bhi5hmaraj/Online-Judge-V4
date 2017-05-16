@@ -1,0 +1,265 @@
+import java.util.*;
+import java.io.*;
+public class AVLTest
+{
+
+
+	/************************ SOLUTION STARTS HERE ***********************/
+
+	static class AVLTree {
+		static class Node {
+			int key;
+			int size;
+			int height;
+			int cnt;
+			Node left, right, parent;
+
+			Node(int key) {
+				this.key = key;
+				height = 1;
+				size = 1;
+				cnt = 1;
+				left = right = parent = null;
+			}
+
+			@Override
+			public String toString() {
+				return "[key = " + key + " h = " + height + "]" + " P = " + (parent != null ? parent.key : "null")
+						+ " L = " + (left != null ? left.key : "null") + " R = " + (right != null ? right.key : "null");
+			}
+		}
+
+		private Node root;
+
+		public AVLTree() {
+			root = null;
+		}
+
+		private int height(Node n) {
+			return n == null ? 0 : n.height;
+		}
+
+		public void add(int key) {
+
+			root = add(key, root, null);
+			Node N = search(root, key);
+			root = rebalance(N);
+
+		}
+
+		public boolean find(long key) {
+			return search(root, key) != null;
+		}
+
+		private int size(Node n) {
+			return n == null ? 0 : n.size;
+		}
+
+		private void adjustHeight(Node N) {
+			N.height = 1 + Math.max(height(N.left), height(N.right));
+			if (N.left != null)
+				N.left.parent = N;
+			if (N.right != null)
+				N.right.parent = N;
+			adjustSize(N); // Small hack , so that I need not call it explicitly!!
+		}
+
+		private void adjustSize(Node N) {
+			if(N != null)
+				N.size = N.cnt + size(N.left) + size(N.right);
+		}
+
+		private Node rotateRight(Node N) {
+			Node oldPar = N.parent;
+			Node newN = N.left;
+			N.left = newN.right;
+			if (newN != null && newN.right != null && newN.right.parent != null)
+				newN.right.parent = N;
+			adjustHeight(N);
+			newN.parent = oldPar;
+			newN.right = N;
+			adjustHeight(newN);
+			N.parent = newN;
+			if (oldPar != null) {
+				if (oldPar.left == N)
+					oldPar.left = newN;
+				else
+					oldPar.right = newN;
+
+				adjustHeight(oldPar);
+			}
+			return newN;
+		}
+
+		private Node rotateLeft(Node N) {
+			Node oldPar = N.parent;
+			Node newN = N.right;
+			N.right = newN.left;
+			if (newN != null && newN.left != null && newN.left.parent != null)
+				newN.left.parent = N;
+			adjustHeight(N);
+			newN.parent = oldPar;
+			newN.left = N;
+			N.parent = newN;
+			adjustHeight(newN);
+			if (oldPar != null) {
+				if (oldPar.left == N)
+					oldPar.left = newN;
+				else
+					oldPar.right = newN;
+
+				adjustHeight(oldPar);
+			}
+			return newN;
+		}
+
+		private Node search(Node root, long key) {
+			if (root != null)
+				return ((root.key == key) ? root : (key < root.key ? search(root.left, key) : search(root.right, key)));
+			else
+				return null;
+		}
+
+
+		public int countLess(int n) {
+			return countLess(root, n);
+		}
+
+		private int countLess(Node root, int key) {
+			if (root != null) {
+				if (root.key == key)
+					return root.cnt + size(root.left);
+				else if (key < root.key)
+					return countLess(root.left, key);
+				else
+					return root.cnt + size(root.left) + countLess(root.right, key);
+			} else
+				return 0;
+		}
+
+
+
+		private Node rebalance(Node N) {
+			Node par = N.parent;
+			if (height(N.left) - height(N.right) >= 2) {
+				Node M = N.left;
+				if (height(M.right) > height(M.left))
+					M = rotateLeft(M);
+				N = rotateRight(N);
+			}
+			if (height(N.right) - height(N.left) >= 2) {
+				Node M = N.right;
+				if (height(M.left) > height(M.right))
+					M = rotateRight(M);
+
+				N = rotateLeft(N);
+			}
+
+			if (par != null)
+				return rebalance(par);
+			else
+				return N;
+
+		}
+
+		private Node add(int key, Node root, Node parent) {
+			if (root == null) {
+				Node newNode = new Node(key);
+				newNode.parent = parent;
+				return newNode;
+			} else {
+				if (key < root.key)
+					root.left = add(key, root.left, root);
+				else if(key > root.key)
+					root.right = add(key, root.right, root);
+				else
+					root.cnt++;
+				adjustHeight(root);
+				return root;
+			}
+		}
+
+		public void print(Node root) {
+			if (root != null) {
+				print(root.left);
+				System.out.println(root);
+				print(root.right);
+			}
+		}
+
+		private StringBuilder toString(StringBuilder prefix, boolean isTail, StringBuilder sb, Node root) {
+
+			if (root == null) {
+				sb.append("Tree Empty\n");
+				return sb;
+			}
+			if (root.right != null) {
+				toString(new StringBuilder().append(prefix).append(isTail ? "│   " : "    "), false, sb, root.right);
+			}
+			sb.append(prefix).append(isTail ? "└── " : "┌── ").append(root.key).append("\n");
+			if (root.left != null) {
+				toString(new StringBuilder().append(prefix).append(isTail ? "    " : "│   "), true, sb, root.left);
+			}
+			return sb;
+		}
+
+		@Override
+		public String toString() {
+			return this.toString(new StringBuilder(), true, new StringBuilder(), root).toString();
+		}
+	}
+
+
+	private static void solve(FastScanner s1, PrintWriter out){
+
+		int n = s1.nextInt();
+		int m = s1.nextInt();
+		AVLTree tree = new AVLTree();
+		while (n-- > 0){
+			tree.add(s1.nextInt());
+			System.out.println(tree);
+		}
+		while (m-- > 0)
+			out.print(tree.countLess(s1.nextInt()) + " ");
+	}
+
+
+
+	/************************ SOLUTION ENDS HERE ************************/
+
+
+
+
+
+	/************************ TEMPLATE STARTS HERE *********************/
+
+	public static void main(String []args) throws IOException {
+		FastScanner in  = new FastScanner(System.in);
+		PrintWriter out = 
+				new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false); 
+		solve(in, out);
+		in.close();
+		out.close();
+	}    
+
+	static class FastScanner{
+		BufferedReader reader;
+		StringTokenizer st;
+		FastScanner(InputStream stream){reader=new BufferedReader(new InputStreamReader(stream));st=null;}	
+		String next()
+		{while(st == null || !st.hasMoreTokens()){try{String line = reader.readLine();if(line == null){return null;}		    
+		st = new StringTokenizer(line);}catch (Exception e){throw new RuntimeException();}}return st.nextToken();}
+		String nextLine()  {String s=null;try{s=reader.readLine();}catch(IOException e){e.printStackTrace();}return s;}	    	  	
+		int    nextInt()   {return Integer.parseInt(next());}
+		long   nextLong()  {return Long.parseLong(next());}		
+		double nextDouble(){return Double.parseDouble(next());}
+		char   nextChar()  {return next().charAt(0);}
+		int[]  nextIntArray(int n)         {int[] arr= new int[n];   int i=0;while(i<n){arr[i++]=nextInt();}  return arr;}
+		long[] nextLongArray(int n)        {long[]arr= new long[n];  int i=0;while(i<n){arr[i++]=nextLong();} return arr;}	
+		int[]  nextIntArrayOneBased(int n) {int[] arr= new int[n+1]; int i=1;while(i<=n){arr[i++]=nextInt();} return arr;}	    	
+		long[] nextLongArrayOneBased(int n){long[]arr= new long[n+1];int i=1;while(i<=n){arr[i++]=nextLong();}return arr;}	    	
+		void   close(){try{reader.close();}catch(IOException e){e.printStackTrace();}}				
+	}
+
+	/************************ TEMPLATE ENDS HERE ************************/
+}

@@ -1,0 +1,109 @@
+import java.util.*;
+import java.io.*;
+public class Vladikandcards
+{
+	
+	
+	/************************ SOLUTION STARTS HERE ***********************/
+	
+	static int N , arr[];
+	static int all;
+	static void rec(int idx , int maxLen , int currLen, int card , int mask , String curr) {
+		if(currLen > maxLen)
+			return;
+		if((mask & (1 << card)) != 0)
+			return;
+		if(idx == N) {
+			if(mask == all || maxLen == 0)
+				System.out.println("correct " + curr);
+	
+			System.out.println("debug " + curr);
+		}
+		else {
+			if(arr[idx] == card) {
+				if(currLen < maxLen) {
+					rec(idx + 1, maxLen, currLen + 1, card, mask, curr + card);
+					rec(idx + 1, maxLen, currLen, card, mask, curr);
+				}
+				else if(currLen == maxLen) {
+					rec(idx + 1, maxLen, currLen + 1, card, mask, curr + card);
+					rec(idx + 1, maxLen, 0, -1, mask | (1 << card), curr);
+					rec(idx + 1, maxLen, currLen, card, mask, curr);
+				}
+				else {
+					rec(idx + 1, maxLen, 0, -1, mask | (1 << card), curr);
+				}
+			}
+			else {
+				if(currLen == 0) {
+					rec(idx + 1, maxLen, 1, arr[idx], mask, curr + arr[idx]);
+					rec(idx + 1, maxLen, currLen, card, mask, curr);
+				}
+				else if(currLen > 0 && currLen < maxLen) {
+					rec(idx + 1, maxLen, currLen, card, mask, curr);
+				}
+				else {
+					rec(idx + 1, maxLen, 1, arr[idx], mask | (1 << card), curr + arr[idx]);
+					rec(idx + 1, maxLen, currLen, card, mask, curr);
+				}
+			}
+		}
+	}
+	
+	private static void solve(FastScanner s1, PrintWriter out){
+		
+		N = s1.nextInt();
+		arr = s1.nextIntArray(N);
+		all = ((1 << 8) - 1) << 1;
+		out.println("all " + Integer.toBinaryString(all));
+		int freq[] = new int[9];
+		for(int a : arr)
+			freq[a]++;
+		int min = N + 1;
+		for(int i=1;i<=8;i++)
+			min = Math.min(min,freq[i]);
+		
+		for(int i=0;i<=min;i++)
+			rec(0, i, 0, -1, 0, "");
+	}
+	
+	
+	
+	/************************ SOLUTION ENDS HERE ************************/
+	
+	
+	
+	
+	
+	/************************ TEMPLATE STARTS HERE *********************/
+	
+	public static void main(String []args) throws IOException {
+		FastScanner in  = new FastScanner(System.in);
+		PrintWriter out = 
+				new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false); 
+		solve(in, out);
+		in.close();
+		out.close();
+	}    
+	
+	static class FastScanner{
+		BufferedReader reader;
+		StringTokenizer st;
+		FastScanner(InputStream stream){reader=new BufferedReader(new InputStreamReader(stream));st=null;}	
+		String next()
+		{while(st == null || !st.hasMoreTokens()){try{String line = reader.readLine();if(line == null){return null;}		    
+		st = new StringTokenizer(line);}catch (Exception e){throw new RuntimeException();}}return st.nextToken();}
+		String nextLine()  {String s=null;try{s=reader.readLine();}catch(IOException e){e.printStackTrace();}return s;}	    	  	
+		int    nextInt()   {return Integer.parseInt(next());}
+		long   nextLong()  {return Long.parseLong(next());}		
+		double nextDouble(){return Double.parseDouble(next());}
+		char   nextChar()  {return next().charAt(0);}
+		int[]  nextIntArray(int n)         {int[] a= new int[n];   int i=0;while(i<n){a[i++]=nextInt();}  return a;}
+		long[] nextLongArray(int n)        {long[]a= new long[n];  int i=0;while(i<n){a[i++]=nextLong();} return a;}	
+		int[]  nextIntArrayOneBased(int n) {int[] a= new int[n+1]; int i=1;while(i<=n){a[i++]=nextInt();} return a;}	    	
+		long[] nextLongArrayOneBased(int n){long[]a= new long[n+1];int i=1;while(i<=n){a[i++]=nextLong();}return a;}	    	
+		void   close(){try{reader.close();}catch(IOException e){e.printStackTrace();}}				
+	}
+	
+	/************************ TEMPLATE ENDS HERE ************************/
+}
