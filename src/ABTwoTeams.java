@@ -11,14 +11,12 @@ public class ABTwoTeams
 		int len = s1.nextInt();
 		long strength[] = s1.nextLongArray(len);
 		char arr[] = s1.nextLine().toCharArray();  //String is slower than char array !!
-
-		
 		long base = 0;
 		for(int i=0;i<len;i++)
 			if(arr[i] == 'B')
 				base += strength[i];
 		
-		//Calculate prefix max
+		//Calculate prefix max sorry
 		
 		long prefixMax = base;
 		long prefix = base;
