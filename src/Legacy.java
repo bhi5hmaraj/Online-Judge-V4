@@ -15,8 +15,11 @@ public class Legacy {
         }
     }
     
-    static ArrayList<ArrayList<Integer>> adj;
+    static ArrayList<ArrayList<Edge>> adj;
     static int map[];
+    static HashMap<Integer, Integer> other;
+    
+    
     
     private static void solve() {
         
