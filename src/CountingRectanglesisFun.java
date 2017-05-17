@@ -70,6 +70,8 @@ public class CountingRectanglesisFun {
         for(int i = 0; i < N; i++) {
             for(int j = 0; j < M; j++) {
                 prefix[i][j] = new int[i + 1][j + 1];
+                if(arr[i][j] == '0')
+                    prefix[]
             }
         }
         
