@@ -16,10 +16,40 @@ public class Legacy {
     }
     
     static ArrayList<ArrayList<Edge>> adj;
+    static ArrayList<int[]> child;
     static int map[];
-    static HashMap<Integer, Integer> other;
     
+    static int initGraph(int l , int r) {
+        if(l == r) {
+            int node = adj.size();
+            adj.add(new ArrayList<>());
+            map[l] = node;
+            return node;
+        } else {
+            int m = (l + r) / 2;
+            int left = initGraph(l, m);
+            int right = initGraph(m + 1, r);
+            int top = adj.size();
+            adj.add(new ArrayList<>(Arrays.asList(new Edge(left, 0) , new Edge(right, 0))));
+            int bottom = adj.size();
+            adj.add(new ArrayList<>());
+            adj.get(left + 1).add(new Edge(bottom, 0));
+            adj.get(right + 1).add(new Edge(bottom, 0));
+            child.add(new int[]{left , right});
+            return top;
+        }
+    }
     
+    static void modifyGraph(int node , int nl , int nr , int l , int r , int planet , long cost , boolean top) {
+        if(nl == l && nr == r) {
+            if(top) 
+                adj.get(map[planet]).add(new Edge(node, cost));
+            else
+                adj.get(node + 1).add(new Edge(map[planet], cost));
+        } else {
+            
+        }
+    }
     
     private static void solve() {
         
