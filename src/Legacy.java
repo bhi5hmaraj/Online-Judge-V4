@@ -6,6 +6,17 @@ public class Legacy {
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    static class Edge {
+        int to;
+        long cost;
+        Edge(int v , long c) {
+            to = v;
+            cost = c;
+        }
+    }
+    
+    static ArrayList<ArrayList<Integer>> adj;
+    static int map[];
     
     private static void solve() {
         
