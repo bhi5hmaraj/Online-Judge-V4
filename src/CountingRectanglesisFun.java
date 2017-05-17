@@ -6,7 +6,7 @@ public class CountingRectanglesisFun {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    
+
     private static void solve() {
         
         
@@ -19,26 +19,57 @@ public class CountingRectanglesisFun {
             arr[i] = nextLine().toCharArray();
         
         int DP[][][][] = new int[N][M][N][M];
+        boolean conn[][][][] = new boolean[N][M][N][M];
         for(int i = 0; i < N; i++) {
             for(int j = 0; j < M; j++) {
+                if(arr[i][j] == '0') {
+                    conn[i][j][i][j] = true;
                 
-                if(arr[i][j] == '0')
-                    DP[i][j][i][j] = 1;
-                
-                // Base case 
-                for(int ii = i + 1; ii < N; ii++) 
-                    if(arr[ii][j] == '0' && DP[i][j][ii - 1][j] > 0)
-                        DP[i][j][ii][j] = DP[i][j][ii - 1][j] + 1;
-                    
-                for(int jj = j + 1; jj < M; jj++)
-                    if(arr[i][jj] == '0' && DP[i][j][i][jj - 1] > 0)
-                        DP[i][j][i][jj] = DP[i][j][i][jj - 1] + 1;
-                
-                for(int ii = i + 1; ii < N; ii++)
+                    // Base case 
+                    for(int ii = i + 1; ii < N; ii++) 
+                        conn[i][j][ii][j] = (arr[ii][j] == '0' && conn[i][j][ii - 1][j]);
+                        
                     for(int jj = j + 1; jj < M; jj++)
-                        if(DP[i][j][ii][jj - 1] > 0 && DP[i][j][ii - 1][j] > 0)
-                            DP[i][j][ii][jj] = DP[i][j][ii][jj - 1] + DP[i][j][ii - 1][jj] 
-                                               - DP[i][j][ii - 1][jj - 1] + 1;
+                        conn[i][j][i][jj] = (arr[i][jj] == '0' && conn[i][j][i][jj - 1]);
+                    
+                    for(int ii = i + 1; ii < N; ii++)
+                        for(int jj = j + 1; jj < M; jj++)
+                            conn[i][j][ii][jj] = (arr[ii][jj] == '0' && conn[i][j][ii][jj - 1]  && conn[i][j][ii - 1][jj]);
+                    
+                }
+            }
+        }
+        for(int i = 0; i < N; i++) {
+            for(int j = 0; j < M; j++) {
+                if(arr[i][j] == '0') {
+                    DP[i][j][i][j] = 1;
+                    for(int ii = i + 1; ii < N; ii++)
+                        DP[i][j][ii][j] = DP[i][j][ii - 1][j] + (conn[i][j][ii][j] ? 1 : 0);
+                    for(int jj = j + 1; jj < M; jj++)
+                        DP[i][j][i][jj] = DP[i][j][i][jj - 1] + (conn[i][j][i][jj] ? 1 : 0);
+                    
+                    for(int ii = i + 1; ii < N; ii++)
+                        for(int jj = j + 1; jj < M; jj++) {
+                            if(conn[i][j][ii][jj])
+                                DP[i][j][ii][jj] = (ii - i + 1) * (jj - j + 1);
+                            else
+                                DP[i][j][ii][jj] = DP[i][j][ii][jj - 1] + DP[i][j][ii - 1][jj] - DP[i][j][ii - 1][jj - 1];
+                        }
+                }
+            }
+        }
+        /*
+        System.out.println();
+        for(boolean a[] : conn[0][1])
+            System.out.println(Arrays.toString(a));
+        for(int a[] : DP[0][1])
+            System.out.println(Arrays.toString(a));
+        */
+        
+        int prefix[][][][] = new int[N][M][][];
+        for(int i = 0; i < N; i++) {
+            for(int j = 0; j < M; j++) {
+                prefix[i][j] = new int[i + 1][j + 1];
             }
         }
         
@@ -50,7 +81,11 @@ public class CountingRectanglesisFun {
             int cnt = 0;
             for(int i = a; i <= c; i++)
                 for(int j = b; j <= d; j++)
-                    cnt += DP[i][j][c][d];
+                    if(arr[i][j] == '0') {
+//                        System.out.printf("\nDP[%d][%d][%d][%d] = %d" , i , j , c , d , DP[i][j][c][d]);
+                        cnt += DP[i][j][c][d];
+                    }
+//            System.out.println();
             println(cnt);
         }
     }
