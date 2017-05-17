@@ -58,37 +58,40 @@ public class CountingRectanglesisFun {
                 }
             }
         }
-        /*
-        System.out.println();
-        for(boolean a[] : conn[0][1])
-            System.out.println(Arrays.toString(a));
-        for(int a[] : DP[0][1])
-            System.out.println(Arrays.toString(a));
-        */
-        
         int prefix[][][][] = new int[N][M][][];
         for(int i = 0; i < N; i++) {
             for(int j = 0; j < M; j++) {
                 prefix[i][j] = new int[i + 1][j + 1];
                 if(arr[i][j] == '0')
-                    prefix[]
+                    prefix[i][j][i][j] = DP[i][j][i][j];
+                for(int jj = j - 1; jj >= 0; jj--)
+                    prefix[i][j][i][jj] = (arr[i][jj] == '0' ? DP[i][jj][i][j] : 0) + prefix[i][j][i][jj + 1];
+                for(int ii = i - 1; ii >= 0; ii--)
+                    prefix[i][j][ii][j] = (arr[ii][j] == '0' ? DP[ii][j][i][j] : 0) + prefix[i][j][ii + 1][j];
+                
+                for(int ii = i - 1; ii >= 0; ii--)
+                    for(int jj = j - 1; jj >= 0; jj--)
+                        prefix[i][j][ii][jj] = (arr[ii][jj] == '0' ? DP[ii][jj][i][j] : 0) +
+                                               prefix[i][j][ii + 1][jj] + prefix[i][j][ii][jj + 1]
+                                               - prefix[i][j][ii + 1][jj + 1];
             }
         }
         
+    /*    
+        System.out.println();
+        for(boolean a[] : conn[0][1])
+            System.out.println(Arrays.toString(a));
+        for(int a[] : DP[0][1])
+            System.out.println(Arrays.toString(a));
+        for(int a[] : prefix[1][3])
+            System.out.println(Arrays.toString(a));
+        */
         while(Q-->0) {
             int a = nextInt() - 1;
             int b = nextInt() - 1;
             int c = nextInt() - 1;
             int d = nextInt() - 1;
-            int cnt = 0;
-            for(int i = a; i <= c; i++)
-                for(int j = b; j <= d; j++)
-                    if(arr[i][j] == '0') {
-//                        System.out.printf("\nDP[%d][%d][%d][%d] = %d" , i , j , c , d , DP[i][j][c][d]);
-                        cnt += DP[i][j][c][d];
-                    }
-//            System.out.println();
-            println(cnt);
+            println(prefix[c][d][a][b]);
         }
     }
     
