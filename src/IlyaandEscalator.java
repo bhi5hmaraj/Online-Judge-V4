@@ -1,21 +1,24 @@
 import java.util.*;
 import java.io.*;
-public class testing {
+public class IlyaandEscalator {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    
+    static double probOfFail[];
+    static double DPProb[][];
+    static double DPExpect[][];
+    static boolean marked[][];
     private static void solve() {
         
-        int a = nextInt();
-        int b = nextInt();
-        int c[] = new int[a];
-        for (int i = 0; i < c.length; i++) {
-            int temp = c[i];
-            c[i] += temp >> 2 + b * a;
-        }
+        int N = nextInt();
+        double p = nextDouble();
+        int T = nextInt();
+        probOfFail = new double[T];
+        probOfFail[0] = p;
+        for(int i = 1; i < T; i++)
+            probOfFail[i] = (1 - p) * probOfFail[i - 1];
         
     }
     
