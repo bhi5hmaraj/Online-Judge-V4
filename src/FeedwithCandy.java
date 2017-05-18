@@ -23,18 +23,22 @@ public class FeedwithCandy {
         int probe[] = new int[]{Integer.MAX_VALUE , x , -1};
         int cnt = 0;
         while(set[pos].floor(probe) != null) {
-            println("turn " + pos);
+            // println("turn " + pos + " curr " + curr);
             int max[] = set[pos].first();
             for(int entry[] : set[pos].subSet(set[pos].first(), probe))
                 max = entry[2] > max[2] ? entry : max;
             curr += max[2];
+            /*
             println("candy before");
             set[pos].stream().forEach(a -> print(Arrays.toString(a) + " "));
+            */
             set[pos].remove(max);
+            /*
             println("\ncandy taken");
             println(Arrays.toString(max));
             set[pos].stream().forEach(a -> print(Arrays.toString(a) + " "));
             print('\n');
+            */
             pos ^= 1;
             probe[1] = curr;
             cnt++;
