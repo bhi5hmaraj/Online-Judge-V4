@@ -21,7 +21,7 @@ public class IlyaandEscalator {
         for(int i = 1; i < T; i++)
             probOfFail[i] = (1 - p) * probOfFail[i - 1];
         
-        // before commit
+        
         
     }
     
