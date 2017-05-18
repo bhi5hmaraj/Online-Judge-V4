@@ -10,6 +10,7 @@ public class IlyaandEscalator {
     static double DPProb[][];
     static double DPExpect[][];
     static boolean marked[][];
+    
     private static void solve() {
         
         int N = nextInt();
@@ -19,6 +20,8 @@ public class IlyaandEscalator {
         probOfFail[0] = p;
         for(int i = 1; i < T; i++)
             probOfFail[i] = (1 - p) * probOfFail[i - 1];
+        
+        // before commit
         
     }
     
