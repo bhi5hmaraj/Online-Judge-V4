@@ -26,23 +26,23 @@ public class Legacy {
     }
 
     
-    static ArrayList<ArrayList<Edge>> adj;
-    static ArrayList<int[]> child;
+    static ArrayList<Edge> adj[];
+    static int sz = 0;
+    static int[][] child;
     static int map[];
     static final int[] EMPTY = {-1 , -1};
     static boolean marked[];
     static long distTo[];
     static int countE() {
-        return adj.stream().mapToInt(arl -> arl.size()).sum();
+        return Arrays.stream(adj).mapToInt(arl -> arl.size()).sum();
     }
     static int initGraph(int l , int r) {
         if(l == r) {
-            int node = adj.size();
-            adj.add(new ArrayList<>());
+            int node = sz;
+            adj[sz++] = (new ArrayList<>());
 //            adj.get(node).add(new Edge(adj.size(), 0));
 //            adj.add(new ArrayList<>());
 //            child.add(EMPTY);
-            child.add(EMPTY);
             map[l] = node;
 //             System.out.printf("L = %d R = %d node = %d\n", l , r , node);
             return node;
@@ -50,23 +50,22 @@ public class Legacy {
             int m = (l + r) / 2;
             int left = initGraph(l, m);
             int right = initGraph(m + 1, r);
-            int top = adj.size();
+            int top = sz;
 //             System.out.printf("L = %d R = %d node = %d\n", l , r , top);
-            adj.add(new ArrayList<>(Arrays.asList(new Edge(left, 0) , new Edge(right, 0))));
-            int bottom = adj.size();
-            adj.add(new ArrayList<>());
+            adj[sz] = (new ArrayList<>(Arrays.asList(new Edge(left, 0) , new Edge(right, 0))));
+            child[sz++] = (new int[]{left , right});
+            int bottom = sz;
+            adj[sz++] = (new ArrayList<>());
             if(l != m)
-                adj.get(left + 1).add(new Edge(bottom, 0));
+                adj[(left + 1)].add(new Edge(bottom, 0));
             else
-                adj.get(left).add(new Edge(bottom, 0));
+                adj[(left)].add(new Edge(bottom, 0));
             
             if(m + 1 != r)
-                adj.get(right + 1).add(new Edge(bottom, 0));
+                adj[(right + 1)].add(new Edge(bottom, 0));
             else
-                adj.get(right).add(new Edge(bottom, 0));
+                adj[(right)].add(new Edge(bottom, 0));
             
-            child.add(new int[]{left , right});
-            child.add(EMPTY);
             return top;
         }
     }
@@ -74,17 +73,17 @@ public class Legacy {
     static void modifyGraph(int node , int nl , int nr , int planet ,int l , int r  , long cost , boolean top) {
         if(nl == l && nr == r) {
             if(top) 
-                adj.get(map[planet]).add(new Edge(node, cost));
+                adj[(map[planet])].add(new Edge(node, cost));
             else
-                adj.get(node + (l == r ? 0 : 1)).add(new Edge(map[planet], cost));
+                adj[(node + (l == r ? 0 : 1))].add(new Edge(map[planet], cost));
         } else {
             int m = (nl + nr) / 2;
             if(r <= m)
-                modifyGraph(child.get(node)[0], nl, m , planet , l, r, cost, top);
+                modifyGraph(child[(node)][0], nl, m , planet , l, r, cost, top);
             else if(l > m)
-                modifyGraph(child.get(node)[1], m + 1, nr, planet,  l, r, cost, top);
+                modifyGraph(child[(node)][1], m + 1, nr, planet,  l, r, cost, top);
             else {
-                int c[] = child.get(node);
+                int c[] = child[(node)];
                 modifyGraph(c[0], nl, m, planet, l, m,cost, top);
                 modifyGraph(c[1], m + 1, nr, planet, m + 1, r, cost, top);
             }
@@ -92,6 +91,9 @@ public class Legacy {
     }
     
     private static void dijkstra(int start) {
+        if(start == 49273) 
+          System.out.println("V = " + sz + " E = " + countE());
+          
         PriorityQueue<Edge> pq = new PriorityQueue<>();
         pq.add(new Edge(start, 0));
         while (!pq.isEmpty()) {
@@ -100,53 +102,38 @@ public class Legacy {
             if(!marked[u]){
                 marked[u] = true;
                 distTo[u] = min.cost;
-                for (Edge e : adj.get(u))
+                for (Edge e : adj[u])
                     if (!marked[e.v])
                         pq.add(new Edge(e.v, e.cost + distTo[u]));
             }
         }
     }
 
-    static void trim(int node) {
-        ArrayList<Edge> arl = new ArrayList<>();
-        HashMap<Integer , Long> edges = new HashMap<>();
-        for(Edge ee : adj.get(node)) {
-            Long already = edges.get(ee.v);
-            if(already == null || ee.cost < already) {
-                arl.add(ee);
-                edges.put(ee.v, ee.cost);
-            }
-        }
-        adj.set(node, arl);
-    }
-    
-    static int bfs(int start) {
-        ArrayDeque<Integer> queue = new ArrayDeque<>();
-        boolean marked[] = new boolean[adj.size()];
-        int cnt = 1;
-        queue.add(start);
-        marked[start] = true;
-        trim(start);
-        while(!queue.isEmpty()) {
-            int curr = queue.remove();
-            for(Edge e : adj.get(curr))
-                if(!marked[e.v]) {
-                    marked[e.v] = true;
-                    cnt++;
-                    trim(e.v);
-                    queue.add(e.v);
+    static void trim() {
+        for (int node = 0; node < sz; node++) {
+            ArrayList<Edge> arl = new ArrayList<>();
+            HashMap<Integer, Edge> edges = new HashMap<>();
+            for (Edge ee : adj[(node)]) {
+                if (ee.v != node) {
+                    Edge already = edges.get(ee.v);
+                    if (already == null || ee.cost < already.cost) 
+                        edges.put(ee.v, ee);
                 }
+            }
+            for(Map.Entry<Integer, Edge> entry : edges.entrySet())
+                arl.add(entry.getValue());
+            adj[node] = arl;
         }
-        return cnt;
     }
+
     
     private static void solve() {
         
         int N = nextInt();
         int Q = nextInt();
         int start = nextInt();
-        adj = new ArrayList<>();
-        child = new ArrayList<>();
+        adj = new ArrayList[8 * N];
+        child = new int[8 * N][];
         map = new int[N + 1];
         int root = initGraph(1, N);
         /*
@@ -159,26 +146,24 @@ public class Legacy {
          System.out.println("map");
          Arrays.stream(map, 1, N + 1).forEach(System.out::println);
         */ 
-        marked = new boolean[adj.size()];
-        distTo = new long[adj.size()];
-        
+        marked = new boolean[sz];
+        distTo = new long[sz];
         
         Arrays.fill(distTo, -1);
         while(Q-->0) {
             int type = nextInt();
             if(1 == type)
-                adj.get(map[nextInt()]).add(new Edge(map[nextInt()], nextLong()));
+                adj[(map[nextInt()])].add(new Edge(map[nextInt()], nextLong()));
             else
                 modifyGraph(root, 1, N, nextInt(), nextInt(), nextInt(), nextLong(), type == 2);
         }
         
 //        if(start == 49273) 
-//        bfs(start);
-            System.out.println("V = " + adj.size() + " E = " + countE());
+//        System.out.println("V = " + adj.size() + " E = " + countE());
         
-         System.out.println("After edit");
-         adj.stream().forEach(System.out::println);
-        
+//         System.out.println("After edit");
+        trim();
+//        adj.stream().forEach(System.out::println);
         dijkstra(map[start]);
         
 //        Arrays.stream(map, 1, N + 1).forEach(i -> print(distTo[i] + " "));
