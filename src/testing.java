@@ -9,8 +9,8 @@ public class testing {
     
     private static void solve() {
         
-        
-        
+        double d = 1e-323 * 1e-3;
+        System.out.println(d);
         
         
         
