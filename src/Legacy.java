@@ -33,9 +33,7 @@ public class Legacy {
     static final int[] EMPTY = {-1 , -1};
     static boolean marked[];
     static long distTo[];
-    static int countE() {
-        return Arrays.stream(adj).mapToInt(arl -> arl.size()).sum();
-    }
+    
     static int initGraph(int l , int r) {
         if(l == r) {
             int node = sz;
@@ -52,7 +50,9 @@ public class Legacy {
             int right = initGraph(m + 1, r);
             int top = sz;
 //             System.out.printf("L = %d R = %d node = %d\n", l , r , top);
-            adj[sz] = (new ArrayList<>(Arrays.asList(new Edge(left, 0) , new Edge(right, 0))));
+            adj[sz] = (new ArrayList<>());
+            adj[sz].add(new Edge(left, 0));
+            adj[sz].add(new Edge(right, 0));
             child[sz++] = (new int[]{left , right});
             int bottom = sz;
             adj[sz++] = (new ArrayList<>());
@@ -91,9 +91,6 @@ public class Legacy {
     }
     
     private static void dijkstra(int start) {
-        if(start == 49273) 
-          System.out.println("V = " + sz + " E = " + countE());
-          
         PriorityQueue<Edge> pq = new PriorityQueue<>();
         pq.add(new Edge(start, 0));
         while (!pq.isEmpty()) {
@@ -157,12 +154,12 @@ public class Legacy {
             else
                 modifyGraph(root, 1, N, nextInt(), nextInt(), nextInt(), nextLong(), type == 2);
         }
-        
-//        if(start == 49273) 
+        if(start == 49273) 
+            System.out.println("here");
 //        System.out.println("V = " + adj.size() + " E = " + countE());
         
 //         System.out.println("After edit");
-        trim();
+//        trim();
 //        adj.stream().forEach(System.out::println);
         dijkstra(map[start]);
         
