@@ -11,6 +11,7 @@ public class Legacy {
         long cost;
 
         Edge(int v, long cost) {
+//            E++;
             this.v = v;
             this.cost = cost;
         }
@@ -32,7 +33,7 @@ public class Legacy {
     static final int[] EMPTY = {-1 , -1};
     static boolean marked[];
     static long distTo[];
-    
+    static int E = 0;
     static int initGraph(int l , int r) {
         if(l == r) {
             int node = adj.size();
@@ -42,14 +43,14 @@ public class Legacy {
             child.add(EMPTY);
             child.add(EMPTY);
             map[l] = node;
-            // System.out.printf("L = %d R = %d node = %d\n", l , r , node);
+//             System.out.printf("L = %d R = %d node = %d\n", l , r , node);
             return node;
         } else {
             int m = (l + r) / 2;
             int left = initGraph(l, m);
             int right = initGraph(m + 1, r);
             int top = adj.size();
-            // System.out.printf("L = %d R = %d node = %d\n", l , r , top);
+//             System.out.printf("L = %d R = %d node = %d\n", l , r , top);
             adj.add(new ArrayList<>(Arrays.asList(new Edge(left, 0) , new Edge(right, 0))));
             int bottom = adj.size();
             adj.add(new ArrayList<>());
@@ -84,7 +85,7 @@ public class Legacy {
     private static void dijkstra(int start) {
         PriorityQueue<Edge> pq = new PriorityQueue<>();
         pq.add(new Edge(start, 0));
-
+        
         while (!pq.isEmpty()) {
             Edge min = pq.remove();
             int u = min.v;
@@ -98,6 +99,23 @@ public class Legacy {
         }
     }
 
+    static int bfs(int start) {
+        ArrayDeque<Integer> queue = new ArrayDeque<>();
+        boolean marked[] = new boolean[adj.size()];
+        int cnt = 1;
+        queue.add(start);
+        marked[start] = true;
+        while(!queue.isEmpty()) {
+            int curr = queue.remove();
+            for(Edge e : adj.get(curr))
+                if(!marked[e.v]) {
+                    marked[e.v] = true;
+                    cnt++;
+                    queue.add(e.v);
+                }
+        }
+    }
+    
     private static void solve() {
         
         int N = nextInt();
@@ -107,25 +125,36 @@ public class Legacy {
         child = new ArrayList<>();
         map = new int[N + 1];
         int root = initGraph(1, N);
+        /*
+         System.out.println("After init");
+         adj.stream().forEach(System.out::println);
         
-        // System.out.println("After init");
-        // adj.stream().forEach(System.out::println);
-        
+         System.out.println("child");
+         child.stream().forEach(a -> System.out.println(Arrays.toString(a)));
+         
+         System.out.println("map");
+         Arrays.stream(map, 1, N + 1).forEach(System.out::println);
+         */
         marked = new boolean[adj.size()];
         distTo = new long[adj.size()];
+        if(start == 49273) {
+            System.out.println("V = " + adj.size() + " E = " + E);
+            return;
+        }
         Arrays.fill(distTo, -1);
         while(Q-->0) {
             int type = nextInt();
             if(1 == type)
-                adj.get(nextInt()).add(new Edge(nextInt(), nextLong()));
+                adj.get(map[nextInt()]).add(new Edge(map[nextInt()], nextLong()));
             else
                 modifyGraph(root, 1, N, nextInt(), nextInt(), nextInt(), nextLong(), type == 2);
         }
-        
-        // System.out.println("After edit");
-        // adj.stream().forEach(System.out::println);
-        
+        /*
+         System.out.println("After edit");
+         adj.stream().forEach(System.out::println);
+        */
         dijkstra(map[start]);
+        
         Arrays.stream(map, 1, N + 1).forEach(i -> print(distTo[i] + " "));
     }
     
