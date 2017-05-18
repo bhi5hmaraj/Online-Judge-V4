@@ -49,6 +49,7 @@ public class FriendsorNot  {
                 }
             });
         });
+
         println(ans.size());
         ans.stream().forEach(s -> println(s));
     }
