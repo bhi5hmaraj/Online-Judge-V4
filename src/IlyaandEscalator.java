@@ -9,7 +9,6 @@ public class IlyaandEscalator {
     static double probOfFail[];
     static double DPProb[][];
     static double DPExpect[][];
-    static boolean marked[][];
     
     private static void solve() {
         
@@ -21,7 +20,12 @@ public class IlyaandEscalator {
         for(int i = 1; i < T; i++)
             probOfFail[i] = (1 - p) * probOfFail[i - 1];
         
+        DPProb = new double[Math.min(N , T)][T];
+        DPExpect = new double[Math.min(N , T)][T];
         
+        for(int people = DPProb.length - 1; people >= 0; people--) {
+            
+        }
         
     }
     
