@@ -6,6 +6,16 @@ public class Legacy {
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    /*
+     * Severe flaw in my old implementation of dijkstra's 
+     * From the current vertex I was adding all the unvisited vertex to the priority queue 
+     * instead of only the ones which needs to be relaxed hence my priority queue was holding 
+     * a lot of unnecessary edges which should not have been there . 
+     * 
+     * Till now I was using this implementation for most of the problems and it was running fine . This shows how 
+     * weak their test cases were . I would like to thank the problem author for making me realize my mistake.
+     */
+    
     static class Edge implements Comparable<Edge> {
         int v;
         long cost;
@@ -32,14 +42,11 @@ public class Legacy {
     static final int[] EMPTY = {-1 , -1};
     static boolean marked[];
     static long distTo[];
-    
+    static int E = 0;
     static int initGraph(int l , int r) {
         if(l == r) {
             int node = adj.size();
             adj.add(new ArrayList<>());
-            adj.get(node).add(new Edge(adj.size(), 0));
-            adj.add(new ArrayList<>());
-            child.add(EMPTY);
             child.add(EMPTY);
             map[l] = node;
             return node;
@@ -51,8 +58,16 @@ public class Legacy {
             adj.add(new ArrayList<>(Arrays.asList(new Edge(left, 0) , new Edge(right, 0))));
             int bottom = adj.size();
             adj.add(new ArrayList<>());
-            adj.get(left + 1).add(new Edge(bottom, 0));
-            adj.get(right + 1).add(new Edge(bottom, 0));
+            if(l != m)
+                adj.get(left + 1).add(new Edge(bottom, 0));
+            else
+                adj.get(left).add(new Edge(bottom, 0));
+            
+            if(m + 1 != r)
+                adj.get(right + 1).add(new Edge(bottom, 0));
+            else
+                adj.get(right).add(new Edge(bottom, 0));
+            
             child.add(new int[]{left , right});
             child.add(EMPTY);
             return top;
@@ -64,7 +79,7 @@ public class Legacy {
             if(top) 
                 adj.get(map[planet]).add(new Edge(node, cost));
             else
-                adj.get(node + 1).add(new Edge(map[planet], cost));
+                adj.get(node + (l == r ? 0 : 1)).add(new Edge(map[planet], cost));
         } else {
             int m = (nl + nr) / 2;
             if(r <= m)
@@ -96,7 +111,7 @@ public class Legacy {
                 }
         }
     }
-
+    
     private static void solve() {
         
         int N = nextInt();
@@ -106,7 +121,6 @@ public class Legacy {
         child = new ArrayList<>();
         map = new int[N + 1];
         int root = initGraph(1, N);
-        marked = new boolean[adj.size()];
         distTo = new long[adj.size()];
         Arrays.fill(distTo, Long.MAX_VALUE);
         while(Q-->0) {
@@ -116,7 +130,9 @@ public class Legacy {
             else
                 modifyGraph(root, 1, N, nextInt(), nextInt(), nextInt(), nextLong(), type == 2);
         }
+        
         dijkstra(map[start]);
+        
         for(int i = 1; i <= N; i++)
             print((distTo[map[i]] == Long.MAX_VALUE ? -1 : distTo[map[i]]) + " ");
     }

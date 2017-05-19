@@ -1323,8 +1323,7 @@ class helper {
 		}
 	}
 
-	private static boolean marked[]; // Part of dijkstra
-	private static long distTo[];
+	private static long distTo[];  // Should be filled with infinity
 	private static ArrayList<Edge>[] adj;
 
 	static class Edge implements Comparable<Edge> {
@@ -1342,22 +1341,24 @@ class helper {
 		}
 	}
 
-	private static void dijkstra(int start) {
-		PriorityQueue<Edge> pq = new PriorityQueue<>();
-		pq.add(new Edge(start, 0));
+	   
+    private static void dijkstra(int start) {
+        PriorityQueue<Edge> pq = new PriorityQueue<>();
+        pq.add(new Edge(start, 0));
+        distTo[start] = 0;
+        while (!pq.isEmpty()) {
+            Edge min = pq.remove();
+            int u = min.v;
+            if (distTo[u] < min.cost)
+                continue;
 
-		while (!pq.isEmpty()) {
-			Edge min = pq.remove();
-			int u = min.v;
-			if(!marked[u]){
-				marked[u] = true;
-				distTo[u] = min.cost;
-				for (Edge e : adj[u])
-					if (!marked[e.v])
-						pq.add(new Edge(e.v, e.cost + distTo[u]));
-			}
-		}
-	}
+            for (Edge e : adj[u])
+                if (distTo[e.v] > distTo[u] + e.cost) {
+                    distTo[e.v] = distTo[u] + e.cost;
+                    pq.add(new Edge(e.v, distTo[e.v]));
+                }
+        }
+    }
 
 	static class Edge_MST implements Comparable<Edge_MST> // For kruskal MST
 	{
