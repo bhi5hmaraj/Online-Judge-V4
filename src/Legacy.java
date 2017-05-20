@@ -1,4 +1,6 @@
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.io.*;
 public class Legacy {
     
@@ -27,7 +29,7 @@ public class Legacy {
 
         @Override
         public int compareTo(Edge o) {
-            return Long.compare(this.cost, o.cost);
+            return cost != o.cost ? Long.compare(cost, o.cost) : v - o.v;
         }
         @Override
         public String toString() {
@@ -41,8 +43,6 @@ public class Legacy {
     static int map[];
     static final int[] EMPTY = {-1 , -1};
     static boolean marked[];
-    static long distTo[];
-    static int E = 0;
     static int initGraph(int l , int r) {
         if(l == r) {
             int node = adj.size();
@@ -93,23 +93,37 @@ public class Legacy {
             }
         }
     }
-    
-    private static void dijkstra(int start) {
-        PriorityQueue<Edge> pq = new PriorityQueue<>();
-        pq.add(new Edge(start, 0));
+   
+    static long[] dijkstraVertex(int start , int V) {
+        long distTo[] = new long[V];
+        Arrays.fill(distTo, Long.MAX_VALUE);
+        TreeSet<Integer> set = new TreeSet<>(new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                if(distTo[o1] != distTo[o2])
+                    return Long.compare(distTo[o1], distTo[o2]);
+                else
+                    return o1 - o2;
+            }
+        });
         distTo[start] = 0;
-        while (!pq.isEmpty()) {
-            Edge min = pq.remove();
-            int u = min.v;
-            if(distTo[u] < min.cost)
-                continue;
-            
-            for(Edge e : adj.get(u))
-                if(distTo[e.v] > distTo[u] + e.cost) {
-                    distTo[e.v] = distTo[u] + e.cost;
-                    pq.add(new Edge(e.v, distTo[e.v]));
+        for(int i = 0; i < V; i++) set.add(i);
+        while(!set.isEmpty()) {
+            int u = set.pollFirst();
+            if(distTo[u] != Long.MAX_VALUE) {
+                for(Edge to : adj.get(u)) {
+                    if(distTo[to.v] > distTo[u] + to.cost) {
+                        set.remove(to.v);
+                        distTo[to.v] = distTo[u] + to.cost;
+                        set.add(to.v);
+                    }
                 }
+            }
+            else 
+                break;
         }
+        
+        return distTo;
     }
     
     private static void solve() {
@@ -121,8 +135,6 @@ public class Legacy {
         child = new ArrayList<>();
         map = new int[N + 1];
         int root = initGraph(1, N);
-        distTo = new long[adj.size()];
-        Arrays.fill(distTo, Long.MAX_VALUE);
         while(Q-->0) {
             int type = nextInt();
             if(1 == type)
@@ -131,7 +143,7 @@ public class Legacy {
                 modifyGraph(root, 1, N, nextInt(), nextInt(), nextInt(), nextLong(), type == 2);
         }
         
-        dijkstra(map[start]);
+        long distTo[] = dijkstraVertex(map[start] , adj.size());
         
         for(int i = 1; i <= N; i++)
             print((distTo[map[i]] == Long.MAX_VALUE ? -1 : distTo[map[i]]) + " ");
