@@ -6,6 +6,21 @@ class SNAKEEAT {
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    static int lowerBound(long arr[] , long key) {
+        int lo = 0 , hi = arr.length - 1;
+        int lb = -1;
+        while(lo <= hi) {
+            int mid = (lo + hi) >> 1;
+            if(arr[mid] < key) {
+                lb = mid;
+                lo = mid + 1;
+            }
+            else
+                hi = mid - 1;
+        }
+        
+        return lb;
+    }
     
     private static void solve() {
         
@@ -16,22 +31,32 @@ class SNAKEEAT {
             int Q = nextInt();
             long L[] = nextLongArray(N);
             Arrays.sort(L);
-            
-            TreeMap<Long , Integer> map = new TreeMap<>();
-            for(int i = 0; i < N; i++)
-                map.put(L[i], i);
-            
+
             long prefixSum[] = new long[N + 1];
             for(int i = 1; i <= N; i++)
                 prefixSum[i] = prefixSum[i - 1] + L[i - 1];
             
             while(Q-->0) {
                 long K = nextLong();
-                Map.Entry<Long, Integer> lower = map.lowerEntry(K);
-                if(lower == null)
+                int lb = lowerBound(L, K);
+                if(lb < 0)
                     println(N);
                 else {
-                    int lb = lower.getValue();
+                    int last = lb + 1;
+                    int lo = 0 , hi = lb;
+                    while(lo <= hi) {
+                        int mid = (lo + hi) >> 1;
+                        long need = K - L[mid];
+                        long canTake = mid - ((K * (lb - mid)) - (prefixSum[lb] - prefixSum[mid]));
+                        if(canTake >= need) {
+                            last = mid;
+                            hi = mid - 1;
+                        }
+                        else 
+                            lo = mid + 1;
+                    }
+                    
+                    println(lb - last + 1);
                 }
             }
         }
