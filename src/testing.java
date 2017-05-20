@@ -8,13 +8,13 @@ public class testing {
     
     
     private static void solve() {
-        
-        int a = nextInt();
-        int b = nextInt();
-        int c[] = new int[a];
-        for (int i = 0; i < c.length; i++) {
-            int temp = c[i];
-            c[i] += temp >> 2 + b * a;
+
+        try {
+            OutputStream stream = new FileOutputStream("test.txt");
+            stream.write("Hello , World !!\n".getBytes());
+            stream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         
     }

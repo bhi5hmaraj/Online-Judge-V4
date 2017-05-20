@@ -22,6 +22,8 @@ class SNAKEEAT {
         return lb;
     }
     
+    static boolean DEBUG = false;
+    
     private static void solve() {
         
         int T = nextInt();
@@ -39,7 +41,7 @@ class SNAKEEAT {
             while(Q-->0) {
                 long K = nextLong();
                 int lb = lowerBound(L, K);
-                System.out.println("lb = " + lb);
+                if(DEBUG) System.out.println("lb = " + lb);
                 if(lb < 0)
                     println(N);
                 else {
@@ -48,7 +50,8 @@ class SNAKEEAT {
                     while(lo <= hi) {
                         int mid = (lo + hi) >> 1;
                         long need = K - L[mid];
-                        long canTake = mid - ((K * (lb - mid)) - (prefixSum[lb] - prefixSum[mid]));
+                        long canTake = mid - ((K * (lb - mid)) - (prefixSum[lb + 1] - prefixSum[mid + 1]));
+                        if(DEBUG) System.out.printf("i = %d need[i] = %d canTake[i] = %d\n", mid , need , canTake);
                         if(canTake >= need) {
                             last = mid;
                             hi = mid - 1;
@@ -56,7 +59,7 @@ class SNAKEEAT {
                         else 
                             lo = mid + 1;
                     }
-                    
+                    if(DEBUG) System.out.println("last = " + last);
                     println((lb - last + 1) + N - 1 - lb);  // Can also take elements after lb
                 }
             }
