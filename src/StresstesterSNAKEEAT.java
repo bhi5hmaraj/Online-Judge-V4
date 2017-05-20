@@ -16,8 +16,8 @@ public class StresstesterSNAKEEAT
          */
         Random rand = new Random();
         StringBuilder dump = new StringBuilder();
-        dump.append(1);
-        dump.append(N + " " + Q);
+        dump.append(1 + "\n");
+        dump.append(N + " " + Q + "\n");
         for(int i = 1; i <= N; i++)
             dump.append((1 + rand.nextInt(L_MAX)) + " ");
         dump.append("\n");
@@ -57,23 +57,34 @@ public class StresstesterSNAKEEAT
 
 
     static int runs = 5;   //Number of times to run the stresstest bed
-    static int N = 5;
-    static int Q = 100;
-    static int L_MAX = 100;
-    static int K_MAX = 100;
+    static int N = 50_000;
+    static int Q = 10_000;
+    static int L_MAX = 1000 * 1000 * 1000;
+    static int K_MAX = 1000 ;
 
     /************************ TEMPLATE STARTS HERE *********************/
 
     public static void main(String []args) throws IOException {
-
-
-        String inputFile = "input.txt";
-
         while(runs-->0) {      
-            
-            
-            
+            Process judgeProcess = Runtime.getRuntime().exec("/home/bhishmaraj/Documents/CODE/Snackdown2017/Qualifier/a.out");
+            Process candProcess  = Runtime.getRuntime().exec("java -cp /home/bhishmaraj/workspace/Online_Judge_V4/bin SNAKEEAT");
+            generator(new FileOutputStream("input.txt"), judgeProcess.getOutputStream(), candProcess.getOutputStream());
+            try {
+                judgeProcess.waitFor();
+                candProcess.waitFor();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            int ret = JUDGE(judgeProcess.getInputStream(), candProcess.getInputStream());
+            if(ret > 0) {
+                System.err.println("WA at line " + ret);
+                System.exit(1);
+            }
+            else
+                System.out.println("PASS");
         }
+        
+        System.out.println("ALL TESTS PASSED !!");
     }    
 
 
