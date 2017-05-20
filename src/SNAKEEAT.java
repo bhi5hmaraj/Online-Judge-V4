@@ -39,6 +39,7 @@ class SNAKEEAT {
             while(Q-->0) {
                 long K = nextLong();
                 int lb = lowerBound(L, K);
+                System.out.println("lb = " + lb);
                 if(lb < 0)
                     println(N);
                 else {
@@ -56,7 +57,7 @@ class SNAKEEAT {
                             lo = mid + 1;
                     }
                     
-                    println(lb - last + 1);
+                    println((lb - last + 1) + N - 1 - lb);  // Can also take elements after lb
                 }
             }
         }
