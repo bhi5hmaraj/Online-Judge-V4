@@ -1,4 +1,5 @@
 import java.util.*;
+import static  java.lang.Math.*;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.io.*;
@@ -36,6 +37,10 @@ class SAMESNAK {
         
     }
     
+    static boolean samePoint(int p1[] , int p2[]) {
+        return p1[0] == p2[0] && p1[1] == p2[1];
+    }
+    
     private static void solve2() {
         int T = nextInt();
         while(T-->0) {
@@ -43,6 +48,14 @@ class SAMESNAK {
             int pt12[] = nextIntArray(2);
             int pt21[] = nextIntArray(2);
             int pt22[] = nextIntArray(2);
+            if(pt11[0] == pt12[0] && pt21[0] == pt22[0] && pt11[0] == pt21[0])
+                println((max(pt21[1] , pt22[1]) < min(pt11[1] , pt12[1]) || min(pt21[1] , pt22[1]) > max(pt11[1] , pt12[1]) ? "no" : "yes"));
+            else if(pt11[1] == pt12[1] && pt21[1] == pt22[1] && pt11[1] == pt21[1])
+                println((max(pt21[0] , pt22[0]) < min(pt11[0] , pt12[0]) || min(pt21[0] , pt22[0]) > max(pt11[0] , pt12[0]) ? "no" : "yes"));
+            else if(samePoint(pt11, pt21) || samePoint(pt11, pt22) || samePoint(pt12, pt21) || samePoint(pt12, pt22))
+                println("yes");
+            else
+                println("no");
         }
     }
     
@@ -58,7 +71,7 @@ class SAMESNAK {
         reader = new BufferedReader(new InputStreamReader(System.in));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
-        solve();
+        solve2();
         reader.close();
         writer.close();
     }
