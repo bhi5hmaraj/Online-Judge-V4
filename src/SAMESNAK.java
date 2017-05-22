@@ -36,6 +36,15 @@ class SAMESNAK {
         
     }
     
+    private static void solve2() {
+        int T = nextInt();
+        while(T-->0) {
+            int pt11[] = nextIntArray(2);
+            int pt12[] = nextIntArray(2);
+            int pt21[] = nextIntArray(2);
+            int pt22[] = nextIntArray(2);
+        }
+    }
     
     /************************ SOLUTION ENDS HERE ************************/
     
