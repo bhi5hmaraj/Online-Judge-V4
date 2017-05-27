@@ -1291,9 +1291,10 @@ class helper {
 				parent[i] = i;
 		}
 
-		int root(int p) {
-			return (parent[p] == p) ? p : (parent[p] = root(parent[p]));
-		}
+        int root(int p) {
+            while(p != parent[p]) p = parent[p];
+            return p;
+        }
 
 		int sizeOf(int p) {
 			return size[root(p)];

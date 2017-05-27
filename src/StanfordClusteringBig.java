@@ -22,7 +22,8 @@ public class StanfordClusteringBig {
         }
 
         int root(int p) {
-            return (parent[p] == p) ? p : (parent[p] = root(parent[p]));
+            while(p != parent[p]) p = parent[p];
+            return p;
         }
 
         int sizeOf(int p) {
