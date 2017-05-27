@@ -71,9 +71,26 @@ public class StanfordClustering1 {
         int V = nextInt();
         int K = 4;
         int wt[][] = new int[V + 1][V + 1];
+        int E = (V * (V - 1)) / 2;
+        Edge arr[] = new Edge[E];
+        for(int i = 0; i < E; i++) {
+            arr[i] = new Edge(nextInt(), nextInt(), nextInt());
+            wt[arr[i].u][arr[i].v] = arr[i].cost;
+            wt[arr[i].v][arr[i].u] = arr[i].cost;
+        }
         
+        DSU unionFind = new DSU(V);
+        Arrays.sort(arr);
+        for(int i = 0; i < E && unionFind.components() > K; i++) 
+            unionFind.union(arr[i].u, arr[i].v);
         
+        int spacing = Integer.MAX_VALUE;
+        for(int i = 1; i <= V; i++)
+            for(int j = i + 1; j <= V; j++)
+                if(!unionFind.connected(i, j) && wt[i][j] < spacing)
+                    spacing = wt[i][j];
         
+        println(spacing);
     }
     
     
@@ -87,7 +104,8 @@ public class StanfordClustering1 {
     /************************ TEMPLATE STARTS HERE **********************/
     
     public static void main(String[] args) throws IOException {
-        reader = new BufferedReader(new InputStreamReader(System.in));
+//        reader = new BufferedReader(new InputStreamReader(System.in));
+        reader = new BufferedReader(new FileReader("Stanford_C3_W2_clustering1.txt"));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
         solve();
