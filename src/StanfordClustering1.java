@@ -1,50 +1,79 @@
 import java.util.*;
 import java.io.*;
-public class StanfordJobScheduling {
+public class StanfordClustering1 {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static long arr[][];
-    
-    static class DifferenceComparator implements Comparator<long[]> {
-        @Override
-        public int compare(long[] o1, long[] o2) {
-            long d1 = o1[0] - o1[1];
-            long d2 = o2[0] - o2[1];
-            if(d1 != d2)
-                return Long.compare(d2, d1);
-            else
-                return Long.compare(o2[0], o1[0]);
+
+    static class DSU {
+        private int parent[];
+        private int size[];
+        private int cnt;
+
+        DSU(int length) {
+            this.cnt = length;
+            parent = new int[length + 10];
+            size = new int[length + 10];
+            Arrays.fill(size, 1);
+            for (int i = 0; i < parent.length; i++)
+                parent[i] = i;
+        }
+
+        int root(int p) {
+            return (parent[p] == p) ? p : (parent[p] = root(parent[p]));
+        }
+
+        int sizeOf(int p) {
+            return size[root(p)];
+        }
+
+        boolean connected(int u, int v) {
+            return root(u) == root(v);
+        }
+
+        int components() {
+            return cnt;
+        }
+
+        void union(int u, int v) {
+            if (!connected(u, v)) {
+                cnt--;
+                int rootU = root(u);
+                int rootV = root(v);
+                if (size[rootU] < size[rootV]) {
+                    parent[rootU] = rootV;
+                    size[rootV] += size[rootU];
+                } else {
+                    parent[rootV] = rootU;
+                    size[rootU] += size[rootV];
+                }
+            }
         }
     }
-    
-    static class RatioComparator implements Comparator<long[]> {
+
+    static class Edge implements Comparable<Edge> {
+        int u , v , cost;
+        Edge(int uu, int vv , int cc) {
+            u = uu;
+            v = vv;
+            cost = cc;
+        }
         @Override
-        public int compare(long[] o1, long[] o2) {
-            return o2[0] * o1[1] > o2[1] * o1[0] ? 1 : -1;
+        public int compareTo(Edge o) {
+            return cost - o.cost;
         }
     }
     
     private static void solve() {
         
+        int V = nextInt();
+        int K = 4;
+        int wt[][] = new int[V + 1][V + 1];
         
-        int N = nextInt();
-        arr = new long[N][];
-        for(int i = 0; i < N; i++)
-            arr[i] = nextLongArray(2);
-
-//        Arrays.sort(arr , new DifferenceComparator());
-        Arrays.sort(arr, new RatioComparator());
-        long weightedSum = 0;
-        long completionTime = 0;
-        for(long pair[] : arr) {
-            completionTime += pair[1];
-            weightedSum += pair[0] * completionTime;
-        }
         
-        println(weightedSum);
+        
     }
     
     
@@ -58,8 +87,7 @@ public class StanfordJobScheduling {
     /************************ TEMPLATE STARTS HERE **********************/
     
     public static void main(String[] args) throws IOException {
-//        reader = new BufferedReader(new InputStreamReader(System.in));
-        reader = new BufferedReader(new FileReader("Stanford_C3_W1_jobs.txt"));
+        reader = new BufferedReader(new InputStreamReader(System.in));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
         solve();

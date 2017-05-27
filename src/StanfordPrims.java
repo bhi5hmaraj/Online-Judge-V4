@@ -1,50 +1,65 @@
 import java.util.*;
 import java.io.*;
-public class StanfordJobScheduling {
+public class StanfordPrims {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static long arr[][];
     
-    static class DifferenceComparator implements Comparator<long[]> {
+    static class Edge implements Comparable<Edge> {
+        int v , cost;
+        Edge(int vv , int cc) {
+            v = vv;
+            cost = cc;
+        }
         @Override
-        public int compare(long[] o1, long[] o2) {
-            long d1 = o1[0] - o1[1];
-            long d2 = o2[0] - o2[1];
-            if(d1 != d2)
-                return Long.compare(d2, d1);
-            else
-                return Long.compare(o2[0], o1[0]);
+        public int compareTo(Edge o) {
+            return cost - o.cost;
         }
     }
     
-    static class RatioComparator implements Comparator<long[]> {
-        @Override
-        public int compare(long[] o1, long[] o2) {
-            return o2[0] * o1[1] > o2[1] * o1[0] ? 1 : -1;
+    static ArrayList<Edge>[] adj;
+    
+    static int primsMST(int V) {
+        boolean marked[] = new boolean[V + 1];
+        PriorityQueue<Edge> pq = new PriorityQueue<>();
+        pq.add(new Edge(1, 0));
+        int sum = 0;
+        while(!pq.isEmpty()) {
+            Edge cutEdge = pq.remove();
+            if(!marked[cutEdge.v]) {
+                marked[cutEdge.v] = true;
+                sum += cutEdge.cost;
+                for(Edge e : adj[cutEdge.v])
+                    if(!marked[e.v])
+                        pq.add(e);
+            }
         }
+        
+        return sum;
     }
     
     private static void solve() {
         
         
-        int N = nextInt();
-        arr = new long[N][];
-        for(int i = 0; i < N; i++)
-            arr[i] = nextLongArray(2);
-
-//        Arrays.sort(arr , new DifferenceComparator());
-        Arrays.sort(arr, new RatioComparator());
-        long weightedSum = 0;
-        long completionTime = 0;
-        for(long pair[] : arr) {
-            completionTime += pair[1];
-            weightedSum += pair[0] * completionTime;
+        int V = nextInt();
+        int E = nextInt();
+        
+        adj = new ArrayList[V + 1];
+        for(int i = 1; i <= V; i++)
+            adj[i] = new ArrayList<>();
+        
+        while(E-->0) {
+            int u = nextInt();
+            int v = nextInt();
+            int cost = nextInt();
+            adj[u].add(new Edge(v, cost));
+            adj[v].add(new Edge(u, cost));
         }
         
-        println(weightedSum);
+        println(primsMST(V));
+        
     }
     
     
@@ -59,7 +74,7 @@ public class StanfordJobScheduling {
     
     public static void main(String[] args) throws IOException {
 //        reader = new BufferedReader(new InputStreamReader(System.in));
-        reader = new BufferedReader(new FileReader("Stanford_C3_W1_jobs.txt"));
+        reader = new BufferedReader(new FileReader("Stanford_C3_W1_edges.txt"));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
         solve();
