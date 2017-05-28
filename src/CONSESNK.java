@@ -20,17 +20,18 @@ class CONSESNK {
             long arr[] = nextLongArray(N);
             Arrays.sort(arr);
             long optX;
-            long maxX = B - (L * N);
+            long maxX = B - (L * N) + 1;
             if(arr[0] < A)
                 optX = A;
-            else if(arr[1] > maxX)
+            else if(arr[0] > maxX)
                 optX = maxX;
             else
                 optX = arr[0];
             
+            System.out.println("optX = " + optX);
             long cost = 0;
             for(int i = 0; i < N; i++)
-                cost += Math.abs(arr[i] - (optX + (L * i)));
+                cost += Math.abs(arr[i] - (optX + (L * i)) );
             
             println(cost);
         }
