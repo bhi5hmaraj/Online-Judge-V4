@@ -18,17 +18,20 @@ class CONSESNK_SLOW {
         return cost;
     }
     static int order[];
+    static boolean used[];
     static void findOpt(int idx) {
         if(idx == N) {
             for(long X = A; X <= maxX; X++)
                 minCost = Math.min(minCost , f(X));
         }
         else {
-            for(int i = idx; i < N; i++) {
-                int temp = order[i];
-                order[i] = order[idx];
-                order[idx] = temp;
-                findOpt(idx + 1);
+            for(int i = 0; i < N; i++) {
+                if(!used[i]) {
+                    used[i] = true;
+                    order[idx] = i;
+                    findOpt(idx + 1);
+                    used[i] = false;
+                }
             }
         }
     }
@@ -46,6 +49,7 @@ class CONSESNK_SLOW {
             Arrays.sort(arr);
             maxX = B - (L * N) + 1;
             order = new int[N];
+            used = new boolean[N];
             for(int i = 0; i < N; i++)
                 order[i] = i;
             minCost = Long.MAX_VALUE;

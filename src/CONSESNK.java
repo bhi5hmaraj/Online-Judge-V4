@@ -12,7 +12,7 @@ class CONSESNK {
     static long f(long X) {
         long cost = 0;
         for(int i = 0; i < N; i++)
-            cost += Math.abs(arr[i] - (X + (L * i)) );
+            cost += Math.abs(arr[i] - (X + (1L * L * i)) );
         return cost;
     }
     private static void solve() {
@@ -27,7 +27,7 @@ class CONSESNK {
             
             arr = nextLongArray(N);
             Arrays.sort(arr);
-            long maxX = B - (L * N) + 1;
+            long maxX = B - (L * N) + N;
             
             long lo = A , hi = maxX - 1;
             long opt = A;

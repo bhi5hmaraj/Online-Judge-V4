@@ -24,9 +24,18 @@ public class Stresstester_CONSENK
         int A = 1 + rand.nextInt(B_MAX - (N * L) - 1);
         int B = A + (N * L) + rand.nextInt(B_MAX - (A + (N * L)));
         dump.append(N + " " + L + " " + A + " " + B + "\n");
+        /*
+        for(int j = 1; j <= 3; j++)
+            dump.append((A + rand.nextInt(B - A + 1)) + " ");
+        for(int j = 1; j <= 3; j++)
+            dump.append((1 + rand.nextInt(A)) + " ");
+        for(int j = 1; j <= 3; j++)
+            dump.append((1 + B + rand.nextInt(B)) + " ");
+        */
         while(N-->0)
             dump.append((1 + rand.nextInt(S_MAX)) + " ");
         
+        dump.append("\n");
         if(A > B || N * L > B - A)
             throw new RuntimeException("wrong input " + dump);
         }
@@ -73,12 +82,12 @@ public class Stresstester_CONSENK
         return sb.toString();
     }
 
-    static int runs = 50;   //Number of times to run the stresstest bed
+    static int runs = 5;   //Number of times to run the stresstest bed
     static int T = 10;
-    static int N_MAX = 7;
-    static int L_MAX = 1;
-    static int S_MAX = 30;
-    static int B_MAX = 40;
+    static int N_MAX = 1;
+    static int L_MAX = 10;
+    static int S_MAX = 100;
+    static int B_MAX = 200;
     
     /************************ TEMPLATE STARTS HERE *********************/
 
@@ -99,7 +108,7 @@ public class Stresstester_CONSENK
                 System.exit(1);
             }
             else {
-                System.out.println("PASS");
+                System.out.println("PASS " + runs);
             }
         }
         
