@@ -1,6 +1,6 @@
 import java.util.*;
 import java.io.*;
-class CONSESNK {
+class CONSESNK_SLOW {
     
     
     
@@ -9,11 +9,28 @@ class CONSESNK {
     static int N; 
     static long L;
     static long arr[];
+    static long A , maxX , minCost;
+    
     static long f(long X) {
         long cost = 0;
         for(int i = 0; i < N; i++)
-            cost += Math.abs(arr[i] - (X + (L * i)) );
+            cost += Math.abs(arr[order[i]] - (X + (L * i)) );
         return cost;
+    }
+    static int order[];
+    static void findOpt(int idx) {
+        if(idx == N) {
+            for(long X = A; X <= maxX; X++)
+                minCost = Math.min(minCost , f(X));
+        }
+        else {
+            for(int i = idx; i < N; i++) {
+                int temp = order[i];
+                order[i] = order[idx];
+                order[idx] = temp;
+                findOpt(idx + 1);
+            }
+        }
     }
     private static void solve() {
         
@@ -22,42 +39,19 @@ class CONSESNK {
             
             N = nextInt();
             L = nextLong();
-            long A = nextLong();
+            A = nextLong();
             long B = nextLong();
             
             arr = nextLongArray(N);
             Arrays.sort(arr);
-            long maxX = B - (L * N) + 1;
-            
-            long lo = A , hi = maxX - 1;
-            long opt = A;
-            while(lo <= hi) {
-                long mid = (lo + hi) / 2L;
-                long c = f(mid);
-                long cc = f(mid + 1);
-                if(c >= cc) {
-                    opt = mid + 1;
-                    lo = mid + 1;
-                } else 
-                    hi = mid - 1;
-            }
-            
-            /*
-            for(long X = A; X <= maxX; X++)
-                System.out.print(f(X) + " ");
-            
-            System.out.println("optX " + opt);
-            */
-            
-            println(f(opt));
-            
-            /*
-            long minCost = Long.MAX_VALUE;
-            for(long X = A; X <= maxX; X++)
-                minCost = Math.min(minCost , f(X));
-            
+            maxX = B - (L * N) + 1;
+            order = new int[N];
+            for(int i = 0; i < N; i++)
+                order[i] = i;
+            minCost = Long.MAX_VALUE;
+            findOpt(0);
             println(minCost);
-            */
+            
         }
         
     }
