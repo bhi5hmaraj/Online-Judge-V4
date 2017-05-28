@@ -6,34 +6,56 @@ class CONSESNK {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    
+    static int N; 
+    static long L;
+    static long arr[];
+    static long f(long X) {
+        long cost = 0;
+        for(int i = 0; i < N; i++)
+            cost += Math.abs(arr[i] - (X + (L * i)) );
+        return cost;
+    }
     private static void solve() {
         
         int T = nextInt();
         while(T-->0) {
             
-            int N = nextInt();
-            long L = nextLong();
+            N = nextInt();
+            L = nextLong();
             long A = nextLong();
             long B = nextLong();
             
-            long arr[] = nextLongArray(N);
+            arr = nextLongArray(N);
             Arrays.sort(arr);
-            long optX;
             long maxX = B - (L * N) + 1;
-            if(arr[0] < A)
-                optX = A;
-            else if(arr[0] > maxX)
-                optX = maxX;
-            else
-                optX = arr[0];
             
-            System.out.println("optX = " + optX);
-            long cost = 0;
-            for(int i = 0; i < N; i++)
-                cost += Math.abs(arr[i] - (optX + (L * i)) );
+            long lo = A , hi = maxX - 1;
+            long opt = A;
+            while(lo <= hi) {
+                long mid = (lo + hi) / 2L;
+                long c = f(mid);
+                long cc = f(mid + 1);
+                if(c >= cc) {
+                    opt = mid + 1;
+                    lo = mid + 1;
+                } else 
+                    hi = mid - 1;
+            }
             
-            println(cost);
+            
+            for(long X = A; X <= maxX; X++)
+                System.out.print(f(X) + " ");
+            
+            System.out.println("optX " + opt);
+            
+            println(f(opt));
+            
+            /*
+            long minCost = Long.MAX_VALUE;
+            for(long X = A; X <= maxX; X++)
+                minCost = Math.min(minCost , f(X));
+            
+            println(minCost);*/
         }
         
     }
