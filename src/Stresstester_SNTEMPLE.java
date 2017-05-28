@@ -51,11 +51,23 @@ public class Stresstester_SNTEMPLE
         return -1;
     }
 
-
+    private static String getString(InputStream stream) {
+        BufferedReader br = new BufferedReader(new InputStreamReader(stream));
+        StringBuilder sb = new StringBuilder();
+        String read = null;
+        try {
+            while((read = br.readLine()) != null)
+                sb.append(read);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return sb.toString();
+    }
 
     static int runs = 3;   //Number of times to run the stresstest bed
-    static int N = 10000;
-    static int H_MAX = 1000 * 1000 * 1000;
+    static int N = 20000;
+    static int H_MAX = 1000 * 1000;
+    
     /************************ TEMPLATE STARTS HERE *********************/
 
     public static void main(String []args) throws IOException {
@@ -74,8 +86,11 @@ public class Stresstester_SNTEMPLE
                 System.err.println("WA at line " + ret);
                 System.exit(1);
             }
-            else
-                System.out.println("PASS");
+            else {
+                System.out.print("PASS");
+                System.out.print(" Judge " + getString(judgeProcess.getErrorStream()));
+                System.out.println(" Candidate " + getString(candProcess.getErrorStream()));
+            }
         }
         
         System.out.println("ALL TESTS PASSED !!");

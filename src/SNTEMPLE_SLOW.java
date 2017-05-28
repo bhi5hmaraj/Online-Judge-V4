@@ -10,6 +10,7 @@ class SNTEMPLE_SLOW {
     private static void solve() {
         
         int T = nextInt();
+        long start = System.nanoTime();
         while(T-->0) {
             
             int N = nextInt();
@@ -38,7 +39,7 @@ class SNTEMPLE_SLOW {
             
             println(minSteps);
         }
-        
+        System.err.println("Time : " + ((System.nanoTime() - start) / 1e9));
     }
     
     

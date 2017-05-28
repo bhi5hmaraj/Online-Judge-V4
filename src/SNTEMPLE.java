@@ -10,8 +10,8 @@ class SNTEMPLE {
     private static void solve() {
         
         int T = nextInt();
+        long start = System.nanoTime();
         while(T-->0) {
-            
             int N = nextInt();
             int arr[] = nextIntArray(N);
             int left[] = new int[N];
@@ -82,7 +82,7 @@ class SNTEMPLE {
             println(total - 1L * maxTop * maxTop);
             
         }
-        
+        System.err.println("Time : " + ((System.nanoTime() - start) / 1e9));
     }
     
     
