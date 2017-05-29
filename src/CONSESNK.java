@@ -12,7 +12,7 @@ class CONSESNK {
     static long f(long X) {
         long cost = 0;
         for(int i = 0; i < N; i++)
-            cost += Math.abs(arr[i] - (X + (1L * L * i)) );
+            cost += Math.abs(arr[i] - (X + (1L * L * i)));
         return cost;
     }
     private static void solve() {
@@ -27,8 +27,7 @@ class CONSESNK {
             
             arr = nextLongArray(N);
             Arrays.sort(arr);
-            long maxX = B - (L * N) + N;
-            
+            long maxX = B - (L * N);
             long lo = A , hi = maxX - 1;
             long opt = A;
             while(lo <= hi) {
@@ -42,22 +41,7 @@ class CONSESNK {
                     hi = mid - 1;
             }
             
-            /*
-            for(long X = A; X <= maxX; X++)
-                System.out.print(f(X) + " ");
-            
-            System.out.println("optX " + opt);
-            */
-            
             println(f(opt));
-            
-            /*
-            long minCost = Long.MAX_VALUE;
-            for(long X = A; X <= maxX; X++)
-                minCost = Math.min(minCost , f(X));
-            
-            println(minCost);
-            */
         }
         
     }
