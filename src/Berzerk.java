@@ -60,7 +60,14 @@ public class Berzerk {
         }
         
     }
-    
+    static int DP[][];
+    static void solve2() {
+        N = nextInt();
+        options = new int[2][];
+        options[0] = nextIntArray(nextInt());
+        options[1] = nextIntArray(nextInt());
+        
+    }
     
     /************************ SOLUTION ENDS HERE ************************/
     
