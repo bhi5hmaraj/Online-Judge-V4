@@ -17,21 +17,13 @@ public class Stresstester_CONSENK
         Random rand = new Random();
         StringBuilder dump = new StringBuilder();
         dump.append(T + "\n");
-//        int N = 1 + rand.nextInt(N_MAX);
         for(int i = 1; i <= T; i++) {
         int N = N_MAX;
         int L = 1 + rand.nextInt(L_MAX);
         int A = 1 + rand.nextInt(B_MAX - (N * L) - 1);
         int B = A + (N * L) + rand.nextInt(B_MAX - (A + (N * L)));
         dump.append(N + " " + L + " " + A + " " + B + "\n");
-        /*
-        for(int j = 1; j <= 3; j++)
-            dump.append((A + rand.nextInt(B - A + 1)) + " ");
-        for(int j = 1; j <= 3; j++)
-            dump.append((1 + rand.nextInt(A)) + " ");
-        for(int j = 1; j <= 3; j++)
-            dump.append((1 + B + rand.nextInt(B)) + " ");
-        */
+
         while(N-->0)
             dump.append((1 + rand.nextInt(S_MAX)) + " ");
         
@@ -56,12 +48,16 @@ public class Stresstester_CONSENK
         BufferedReader correct = new BufferedReader(new InputStreamReader(judge));
         BufferedReader unchecked = new BufferedReader(new InputStreamReader(cand));
         String read = null;
+        String A = "";
+        String B = "";
         int line = 0;
         try {
             while ((read = correct.readLine()) != null) {
                 line++;
-                if (!read.equals(unchecked.readLine()))
+                String read2 = unchecked.readLine();
+                if (!read.equals(read2)) {
                     return line;
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -84,17 +80,21 @@ public class Stresstester_CONSENK
 
     static int runs = 5;   //Number of times to run the stresstest bed
     static int T = 10;
-    static int N_MAX = 1;
+    static int N_MAX = 5;
     static int L_MAX = 10;
     static int S_MAX = 100;
     static int B_MAX = 200;
     
     /************************ TEMPLATE STARTS HERE *********************/
-
+    
+    static final String directory = "/home/bhishmaraj/workspace/Online_Judge_V4/bin";
+    static final String judgeClass = "CONSESNK_SLOW";
+    static final String candClass = "CONSESNK";
     public static void main(String []args) throws IOException {
         while(runs-->0) {      
-            Process judgeProcess = Runtime.getRuntime().exec("java -cp /home/bhishmaraj/workspace/Online_Judge_V4/bin CONSESNK_SLOW");
-            Process candProcess  = Runtime.getRuntime().exec("java -cp /home/bhishmaraj/workspace/Online_Judge_V4/bin CONSESNK");
+            Process judgeProcess = Runtime.getRuntime().exec("java -cp " + directory + " " + judgeClass);
+            Process candProcess  = Runtime.getRuntime().exec("java -cp " + directory + " " + candClass);
+            
             generator(new FileOutputStream("input.txt"), judgeProcess.getOutputStream(), candProcess.getOutputStream());
             try {
                 judgeProcess.waitFor();
@@ -116,5 +116,4 @@ public class Stresstester_CONSENK
     }    
 
 
-    /************************ TEMPLATE ENDS HERE ************************/
 }

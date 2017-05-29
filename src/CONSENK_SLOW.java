@@ -47,7 +47,7 @@ class CONSESNK_SLOW {
             
             arr = nextLongArray(N);
             Arrays.sort(arr);
-            maxX = B - (L * N) + 1;
+            maxX = B - (L * N);
             order = new int[N];
             used = new boolean[N];
             for(int i = 0; i < N; i++)
