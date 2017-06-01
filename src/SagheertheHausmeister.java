@@ -30,21 +30,21 @@ public class SagheertheHausmeister {
                     fromRight[i] = ptr;
             }
         }
-        /*
-        System.out.println("left " + Arrays.toString(fromLeft));
-        System.out.println("right " + Arrays.toString(fromRight));
-        
-        */
+
         // false , 0 = left
         
         int minTime = Integer.MAX_VALUE;
         
-        for(int mask = 0; mask < (1 << (N - 1)); mask++) {
+        int last = 0;
+        for(;last < N && fromLeft[last] == 0;last++)
+            ;
+        
+        for(int mask = 0; mask < (1 << (N - last - 1)); mask++) {
             boolean currDir = false;
             int time = 0;
             
-            for(int floor = N - 2; floor >= 0; floor--) {
-                boolean nextDir = (mask & (1 << floor)) != 0;   // true - right
+            for(int floor = N - 2; floor >= last; floor--) {
+                boolean nextDir = (mask & (1 << (floor - last))) != 0;   // true - right
                 if(currDir == nextDir)
                     time += (2 * (currDir ? fromRight[floor + 1] : fromLeft[floor + 1])) + 1;
                 else
@@ -53,11 +53,11 @@ public class SagheertheHausmeister {
                 currDir = nextDir;
             }
             
-            time += (currDir ? fromRight[0] : fromLeft[0]); 
+            time += (currDir ? fromRight[last] : fromLeft[last]); 
             minTime = Math.min(minTime , time);
         }
         
-        println(minTime);
+        println(minTime == Integer.MAX_VALUE ? 0 : minTime);
     }
     
     
