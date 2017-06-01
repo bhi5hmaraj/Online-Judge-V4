@@ -1,47 +1,77 @@
 import java.util.*;
 import java.io.*;
-public class SagheerandCrossroads {
+public class SagheerNubianMarket {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
     
+
+    static void shuffleArray(long[] array) {
+        Random random = new Random();
+        for (int i = array.length - 1; i > 0; i--) {
+            int index = random.nextInt(i + 1);
+            long temp = array[index];
+            array[index] = array[i];
+            array[i] = temp;
+        }
+    }
+
+    static class Pair implements Comparable<Pair> {
+        int idx;
+        long cost;
+        Pair(int id , long c) {
+            idx = id;
+            cost = c;
+        }
+        @Override
+        public int compareTo(Pair o) {
+            return cost != o.cost ? Long.compare(cost, o.cost) : idx - o.idx;
+        }
+    }
     
     private static void solve() {
         
         
-        int arr[][] = new int[4][];
-        for(int i = 0; i < 4; i++)
-            arr[i] = nextIntArray(4);
+        int N = nextInt();
+        long S = nextLong();
         
-        int trf[] = new int[4];
-        for(int i = 0; i < 4; i++)
-            for(int j = 0; j < 3; j++)
-                trf[i] |= arr[i][j];
-        
-        trf[3] |= arr[0][0];
-        trf[2] |= arr[0][1];
-        trf[1] |= arr[0][2];
-        
-        trf[0] |= arr[1][0];
-        trf[3] |= arr[1][1];
-        trf[2] |= arr[1][2];
-        
-        trf[1] |= arr[2][0];
-        trf[0] |= arr[2][1];
-        trf[3] |= arr[2][2];
-        
-        trf[2] |= arr[3][0];
-        trf[1] |= arr[3][1];
-        trf[0] |= arr[3][2];
-        
-        boolean acci = false;
-        for(int i = 0; i < 4; i++)
-            acci |= (trf[i] & arr[i][3]) == 1;
-        
-        println(acci ? "YES" : "NO");
+        Pair arr[] = new Pair[N];
+        for(int i = 0; i < N; i++)
+            arr[i] = new Pair(i, nextLong());
         
         
+        int lo = 0 , hi = N - 1;
+        int opt = 0;
+        long cost = 0;
+        
+        while(lo <= hi) {
+            int mid = (lo + hi) / 2;
+            long sum = 0;
+            
+            Arrays.sort(arr, new Comparator<Pair>() {
+                @Override
+                public int compare(Pair o1, Pair o2) {
+                    long left = o1.cost - o2.cost;
+                    long right = ((long)(mid + 1)) * ((long)(o2.idx - o1.idx));
+                    return Long.compare(left, right);
+                }
+            });
+            
+            
+            for(int i = 0; i <= mid; i++)
+                sum += (arr[i].cost + (1L * (arr[i].idx + 1) * (mid + 1)));
+            
+            if(sum <= S) {
+                opt = mid + 1;
+                cost = sum;
+                lo = mid + 1;
+            }
+            else
+                hi = mid - 1;
+        }
+        
+        println(opt + " " + cost);
     }
     
     
