@@ -53,7 +53,7 @@ public class SagheerNubianMarket {
                 @Override
                 public int compare(Pair o1, Pair o2) {
                     long left = o1.cost - o2.cost;
-                    long right = ((long)(mid + 1)) * ((long)(o2.idx - o1.idx));
+                    long right = 1L * (mid + 1) * (o2.idx - o1.idx);
                     return Long.compare(left, right);
                 }
             });
