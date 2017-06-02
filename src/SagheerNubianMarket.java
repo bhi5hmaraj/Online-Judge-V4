@@ -7,26 +7,12 @@ public class SagheerNubianMarket {
     /************************ SOLUTION STARTS HERE ************************/
     
 
-    static void shuffleArray(long[] array) {
-        Random random = new Random();
-        for (int i = array.length - 1; i > 0; i--) {
-            int index = random.nextInt(i + 1);
-            long temp = array[index];
-            array[index] = array[i];
-            array[i] = temp;
-        }
-    }
-
-    static class Pair implements Comparable<Pair> {
+    static class Pair  {
         int idx;
         long cost;
         Pair(int id , long c) {
             idx = id;
             cost = c;
-        }
-        @Override
-        public int compareTo(Pair o) {
-            return cost != o.cost ? Long.compare(cost, o.cost) : idx - o.idx;
         }
     }
     
