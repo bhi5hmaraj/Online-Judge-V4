@@ -6,66 +6,67 @@ public class Berzerk {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static int N;
-    static int options[][];
-    static int memo[][][];
-    static boolean marked[][][];
-    static String debug[][][];
-    static final int WIN = 3 , LOOSE = 1 , LOOP = 2 , BLACK_HOLE = 0;
-    static int rec(int idx , int player , int winner , int dep) {
-        //debug[idx][player][winner] = String.format("%d idx = %d player = %d winner = %d",dep, idx , player , winner);
-        int ans;
-        if(idx == BLACK_HOLE)
-            ans = player != winner ? WIN : LOOSE;
-        else if(memo[idx][player][winner] != -1)
-            ans = memo[idx][player][winner];
-        else if(marked[idx][player][winner])
-            ans = -1;
-        else {
-            marked[idx][player][winner] = true;
-            int min = 4;
-            int max = 0;
-            boolean isLoop = true;
-            for(int opt : options[player]) {
-                int ret = rec((idx + opt) % N, 1 - player , winner , dep + 1);
-                isLoop &= ret < 0;
-                if(ret > 0) {
-                    min = Math.min(min, ret);
-                    max = Math.max(max, ret);
+    static enum State{
+        Win , Lose , Loop
+    }
+    
+    static int sub(int a , int b , int mod) {
+        return (a - b + mod) % mod;
+    }
+    
+    private static void solve() {
+
+        int N = nextInt();
+        int option[][] = new int[2][];
+        int K1 = nextInt();
+        option[0] = nextIntArray(K1);
+        int K2 = nextInt();
+        option[1] = nextIntArray(K2);
+        
+        State ans[][] = new State[2][N];
+        Arrays.fill(ans[0], State.Loop);
+        Arrays.fill(ans[1], State.Loop);
+        
+        int outDegree[][] = new int[2][N];
+        Arrays.fill(outDegree[0], K1);
+        Arrays.fill(outDegree[1], K2);
+        
+        
+        ArrayDeque<Integer> queue = new ArrayDeque<>();
+        queue.add(0);
+        queue.add(N);
+        ans[0][0] = ans[1][0] = State.Lose;
+        
+        while(!queue.isEmpty()) {
+            int front = queue.remove();
+            int r = front / N;
+            int c = front % N;
+            if(ans[r][c] == State.Lose) {
+                for(int opt : option[1 - r]) {
+                    int from = sub(c, opt, N);
+                    if(ans[1 - r][from] == State.Loop) {
+                        ans[1 - r][from] = State.Win;
+                        queue.add(((1 - r) * N) + from);
+                    }
+                }
+            } else {
+                for(int opt : option[1 - r]) {
+                    int from = sub(c, opt, N);
+                    if(ans[1 - r][from] == State.Loop)
+                        outDegree[1 - r][from]--;
+                    if(outDegree[1 - r][from] == 0) {
+                        ans[1 - r][from] = State.Lose;
+                        queue.add(((1 - r) * N) + from);
+                    }
                 }
             }
-            ans = memo[idx][player][winner] = isLoop ? LOOP : player == winner ? max: min;
         }
-//        debug[idx][player][winner] += " ret = " + ans;
-//        println(debug[idx][player][winner]);
-        return ans;
-    }
-    private static void solve() {
         
-        N = nextInt();
-        options = new int[2][];
-        options[0] = nextIntArray(nextInt());
-        options[1] = nextIntArray(nextInt());
-        memo = new int[N][2][2];
-        marked = new boolean[N][2][2];
-        debug = new String[N][2][2];
-        for(int a[][] : memo)
-            for(int b[] : a)
-                Arrays.fill(b, -1);
-        
-        for(int i=0;i<2;i++) {
-            for(int j=1;j<N;j++)
-                print(rec(j, i, i , 0) + " ");
+        for(int i = 0; i < 2; i++) {
+            for(int j = 1; j < N; j++)
+                print(ans[i][j] + " ");
             print('\n');
         }
-        
-    }
-    static int DP[][];
-    static void solve2() {
-        N = nextInt();
-        options = new int[2][];
-        options[0] = nextIntArray(nextInt());
-        options[1] = nextIntArray(nextInt());
         
     }
     
