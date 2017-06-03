@@ -1,10 +1,66 @@
 import java.util.*;
 import java.io.*;
-class PLUSMUL {
+class MEXDIV {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
+    
+    /*
+     * Range Mex : https://stackoverflow.com/a/41635805
+     */
+    
+    static class CustomSegmentTree { 
+        int tree[];
+        int len;
+        int size;
+        CustomSegmentTree(int len) { // arr should be a 1 based array
+            this.len = len + 1;
+            size = 1 << (32 - Integer.numberOfLeadingZeros(this.len - 1) + 1);  // ceil(log(len)) + 1
+            tree = new int[size];
+            Arrays.fill(tree, -1);
+        }
+        void update(int node,int idx,int val,int nl,int nr) {
+            if(nl == nr && nl == idx)
+                tree[node] = val;
+            else {
+                int mid = (nl + nr) / 2;
+                if(idx <= mid)
+                    update(2*node, idx , val ,nl , mid);
+                else
+                    update((2*node) + 1, idx ,val , mid + 1, nr);
+
+                tree[node] = Math.min(tree[2*node],tree[(2 * node) + 1]);
+            }
+        }
+        void update(int idx , int val){
+            update(1, idx, val, 0, len);
+        }
+        int query(int value){
+            return query(1, value, 0, len);
+        }
+        int query(int node , int value, int nl, int nr) {
+            int mid = (nl + nr) / 2;
+            if(nl == nr)
+                return nl;
+            else if(tree[2 * node] < value)
+                return query(2 * node, value, nl, mid);
+            else    
+                return query((2*node)+1, value, mid + 1 , nr);
+        }
+        void build(int arr[],int node,int L,int R) {
+            if(L == R)
+                tree[node] = arr[L];
+            else
+            {
+                int mid = L + ((R-L)/2);
+                build(arr, 2 * node, L, mid);
+                build(arr, (2 * node) + 1, mid + 1, R);
+                tree[node] = Math.min(tree[2*node] , tree[(2 * node) + 1]);
+            }
+        }
+    }
+    
     
     static class MM {       // MM (Modular Math) class 
         static final long mod = (long) (1e9) + 7; // Default
@@ -27,43 +83,38 @@ class PLUSMUL {
     }
 
     
-    
     private static void solve() {
         
-        int T = nextInt();
-        while(T-->0) {
-            
-            int N = nextInt();
-            long arr[] = nextLongArray(N);
-            
-            long F[] = new long[N];
-            long M[] = new long[N];
-            long A[] = new long[N];
-            long suffixConv[] = new long[N];
-            long prefixF[] = new long[N];
-            A[0] = prefixF[0] = F[0] = suffixConv[0] =  arr[0];
-            if(N > 1) {
-                A[1] = MM.add(arr[0], arr[1]);
-                M[1] = MM.mul(arr[0], arr[1]);
-                F[1] = MM.add(A[1], M[1]);
-                prefixF[1] = F[1] + prefixF[0];
-                suffixConv[1] = MM.mul(arr[0], arr[1]);
-            }
-            long pow2 = 2;
-            long pow22 = 1;
-            for(int i = 2; i < N; i++) {
-                A[i] = MM.add(F[i - 1], MM.mul(pow2, arr[i]));
-                suffixConv[i] = MM.add(MM.mul(pow22, MM.mul(arr[i], arr[i - 1])), MM.mul(arr[i], suffixConv[i - 1]));
-                M[i] = MM.add(prefixF[i - 2], suffixConv[i]);
-                F[i] = MM.add(A[i], M[i]);
-                prefixF[i] = MM.add(F[i], prefixF[i - 1]);
-                pow2 = MM.mul(pow2, 2); // last
-                pow22 = MM.mul(pow22, 2);
-            }
-            
-            println(F[N - 1]);
-        }
+        int N = nextInt();
+        int K = nextInt();
         
+        int arr[] = nextIntArray(N);
+        for(int i = 0; i < N; i++)
+            arr[i] = Math.min(arr[i] , N);
+        
+        CustomSegmentTree tree = new CustomSegmentTree(N);
+        //r+1 - l
+        long DP[] = new long[N];
+        long prefixDP[] = new long[N + 1];
+        prefixDP[1] = DP[0] = arr[0] == 0 && K == 0 ? 0 : 1;
+        tree.update(arr[0], 0);
+        
+        for(int i = 1; i < N; i++) {
+            tree.update(arr[i], i);
+            int lo = 0 , hi = i - 1;
+            int last = -1;
+            while(lo <= hi) {
+                int mid = (lo + hi) / 2;
+                int mex = tree.query(mid);
+                if(mex <= K) {
+                    hi = mid - 1;
+                    last = mid;
+                } else
+                    lo = mid + 1;
+            }
+            
+            
+        }
     }
     
     
