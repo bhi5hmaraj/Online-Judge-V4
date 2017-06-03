@@ -34,21 +34,33 @@ class PLUSMUL {
             
             int N = nextInt();
             long arr[] = nextLongArray(N);
+            
             long F[] = new long[N];
             long M[] = new long[N];
             long A[] = new long[N];
             long suffixConv[] = new long[N];
             long prefixF[] = new long[N];
-            F[0] = arr[0];
-            long pow2 = 1;
-            for(int i = 1; i < N; i++) {
-                
+            A[0] = prefixF[0] = F[0] = suffixConv[0] =  arr[0];
+            if(N > 1) {
+                A[1] = MM.add(arr[0], arr[1]);
+                M[1] = MM.mul(arr[0], arr[1]);
+                F[1] = MM.add(A[1], M[1]);
+                prefixF[1] = F[1] + prefixF[0];
+                suffixConv[1] = MM.mul(arr[0], arr[1]);
+            }
+            long pow2 = 2;
+            long pow22 = 1;
+            for(int i = 2; i < N; i++) {
                 A[i] = MM.add(F[i - 1], MM.mul(pow2, arr[i]));
-                
-                
+                suffixConv[i] = MM.add(MM.mul(pow22, MM.mul(arr[i], arr[i - 1])), MM.mul(arr[i], suffixConv[i - 1]));
+                M[i] = MM.add(prefixF[i - 2], suffixConv[i]);
+                F[i] = MM.add(A[i], M[i]);
+                prefixF[i] = MM.add(F[i], prefixF[i - 1]);
                 pow2 = MM.mul(pow2, 2); // last
+                pow22 = MM.mul(pow22, 2);
             }
             
+            println(F[N - 1]);
         }
         
     }
