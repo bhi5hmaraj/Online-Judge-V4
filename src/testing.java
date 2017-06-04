@@ -12,7 +12,7 @@ public class testing {
         long all = 0xFFFFFFFFFFFFFFFFL;
         int sz = 63;
         System.out.println(Long.toBinaryString(all));
-        all <<= 64 - sz;
+        all >>>= (64 - sz);
         System.out.println(Long.toBinaryString(all));
         
     }

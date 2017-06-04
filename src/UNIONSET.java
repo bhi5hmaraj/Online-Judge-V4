@@ -9,14 +9,17 @@ class UNIONSET {
     static class MyBitSet {
         long bits[];
         int cardinality;
+        int size;
+        final long ALL = 0xFFFFFFFFFFFFFFFFL;
         MyBitSet(int MAX) {
-            bits = new long[(MAX / 64) + 1];
+            size = MAX;
+            bits = new long[((MAX - 1) / 64) + 1];
             cardinality = 0;
         }
 
         void set(int n, boolean f) {
             int index = n / 64;
-            if (f == true) {
+            if (f) {
                 if((bits[index] & (1L << (n % 64))) == 0)
                     cardinality++;
                 bits[index] |= (1L << (n % 64));
@@ -33,10 +36,23 @@ class UNIONSET {
             return cardinality;
         }
         
-        
+        boolean unionAll(MyBitSet other) {  // Returns true if union of this and other is universe
+            for(int i = 0; i < bits.length - 1; i++)
+                if((bits[i] | other.bits[i]) != ALL)
+                    return false;
+            
+            int left = size % 64;
+            return (bits[bits.length - 1] | other.bits[bits.length - 1]) == (ALL >>> (64 - left));
+        }
         
         boolean get(int n) {
             return ((bits[n / 64]) & (1L << (n % 64))) != 0;
+        }
+        
+        void print() {
+            System.out.println("bitset card " + cardinality + " size " + size);
+            for(long l : bits)
+                System.out.println(Long.toBinaryString(l));
         }
     }
 
@@ -48,27 +64,18 @@ class UNIONSET {
             
             int N = nextInt();
             int K = nextInt();
-            BitSet set[] = new BitSet[N];
+            MyBitSet set[] = new MyBitSet[N];
             for(int i = 0; i < N; i++) {
-                set[i] = new BitSet(K);
+                set[i] = new MyBitSet(K);
                 int len = nextInt();
                 while(len-->0)
                     set[i].set(nextInt() - 1);
             }
-            
-            Arrays.sort(set, (b1 , b2) -> b2.cardinality() - b1.cardinality());
-            
-            int cache[] = new int[N];
-            for(int i = 0; i < N; i++)
-                cache[i] = set[i].cardinality();
-            
+
             int cnt = 0;
-            for(int i = 0; i < N && cache[i] >= (K + 1) / 2; i++)
-                for(int j = i + 1; j < N && cache[i] + cache[j] >= K; j++) {
-                    BitSet temp = (BitSet) set[i].clone();
-                    temp.or(set[j]);
-                    cnt += temp.cardinality() == K ? 1 : 0;
-                }
+            for(int i = 0; i < N; i++)
+                for(int j = i + 1; j < N; j++) 
+                    cnt += set[i].unionAll(set[j]) ? 1 : 0;
             
             println(cnt);
         }
@@ -112,13 +119,13 @@ class UNIONSET {
     /************************ TEMPLATE STARTS HERE **********************/
     
     public static void main(String[] args) throws IOException {
-//        reader = new BufferedReader(new InputStreamReader(System.in));
-        reader = new BufferedReader(new InputStreamReader(new FileInputStream("UNIONSET_IN.txt")));
+        reader = new BufferedReader(new InputStreamReader(System.in));
+//        reader = new BufferedReader(new InputStreamReader(new FileInputStream("UNIONSET_IN.txt")));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
-        long start = System.nanoTime();
-        solve2();
-        System.out.println("Time " + ((System.nanoTime() - start) / 1e9));
+//        long start = System.nanoTime();
+        solve();
+//        System.out.println("Time " + ((System.nanoTime() - start) / 1e9));
         reader.close();
         writer.close();
     }
