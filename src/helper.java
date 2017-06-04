@@ -1763,12 +1763,6 @@ class helper {
 
 			return sum;
 		}
-		void update(int L , int R , int val) {
-			if(L <= R && L > 0) {
-				update(L, val);
-				update(R + 1, -val);
-			}
-		}
 	}
 
 	

@@ -1,6 +1,6 @@
 import java.util.*;
 import java.io.*;
-class NEO01 {
+class UNIONSET {
     
     
     
@@ -13,37 +13,24 @@ class NEO01 {
         while(T-->0) {
             
             int N = nextInt();
-            long arr[] = nextLongArray(N);
-            Arrays.sort(arr);
-            
-            long sumNeg = 0;
-            long sumPos = 0;
-            long cntNonNeg = 0;
-            int zeroPos = -1;
+            int K = nextInt();
+            BitSet set[] = new BitSet[N];
             for(int i = 0; i < N; i++) {
-                long num = arr[i];
-                
-                if(num < 0) {
-                    sumNeg += num;
-                    zeroPos = i;
-                }
-                else {
-                    sumPos += num;
-                    cntNonNeg++;
-                }
+                set[i] = new BitSet(K);
+                int len = nextInt();
+                while(len-->0)
+                    set[i].set(nextInt() - 1);
             }
             
-            long greedyAns = sumNeg + (cntNonNeg * sumPos);
+            int cnt = 0;
+            for(int i = 0; i < N; i++)
+                for(int j = i + 1; j < N; j++) {
+                    BitSet temp = (BitSet) set[i].clone();
+                    temp.or(set[j]);
+                    cnt += temp.cardinality() == K ? 1 : 0;
+                }
             
-            for(int i = zeroPos; i >= 0; i--) {
-                sumNeg -= arr[i];
-                sumPos += arr[i];
-                cntNonNeg++;
-                greedyAns = Math.max(greedyAns , sumNeg + (cntNonNeg * sumPos));
-            }
-            
-            println(greedyAns);
-            
+            println(cnt);
         }
         
     }

@@ -1,51 +1,89 @@
 import java.util.*;
 import java.io.*;
-class NEO01 {
+class PRMQ {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    static final int MAX = (int) 1e6;
+
+    private static int[] preCalBigPrimeSieve()  {
+        int bigPrime[] = new int[MAX + 1];
+        bigPrime[1] = 1;
+        for (int i = 2; i <= MAX; i++) {
+            if (bigPrime[i] == 0) {
+                bigPrime[i] = i;
+                for (int j = 2 * i; j <= MAX; j += i)
+                    bigPrime[j] = i;
+            }
+        }
+        
+        return bigPrime;
+    }
+
+    static class FenwickTree { 
+        /**************** DONT USE BIT IF YOUR INDEX STARTS FROM ZERO (causes infinite loop) ******************/
+        int tree[];
+        int len;
+        FenwickTree(int len) {
+            this.len = len;
+            tree = new int[len + 10];
+        }
+        void update(int idx , int val) {
+            if(idx == 0) throw new IndexOutOfBoundsException("BIT IS NOT ZERO INDEXED");
+            for(;idx <= len;idx += (idx & -idx))
+                tree[idx] += val;
+        }
+        int query(int idx) {
+            int sum = 0;
+            for(;idx > 0;idx -= (idx & -idx))
+                sum += tree[idx];
+
+            return sum;
+        }
+        int query(int L , int R) {
+            return query(R) - query(L - 1);
+        }
+    }
+
+    static class Query {
+        int X , Y , qID;
+        boolean isLeft;
+        Query(int x , int y, boolean left , int qid) {
+            X = x;
+            Y = y;
+            isLeft = left;
+            qID = qid;
+        }
+    }
     
     private static void solve() {
+        int bigPrime[] = preCalBigPrimeSieve();
         
         int T = nextInt();
+
         while(T-->0) {
             
             int N = nextInt();
-            long arr[] = nextLongArray(N);
-            Arrays.sort(arr);
+            int arr[] = nextIntArrayOneBased(N);
+            int Q = nextInt();
+            int ans[] = new int[Q];
             
-            long sumNeg = 0;
-            long sumPos = 0;
-            long cntNonNeg = 0;
-            int zeroPos = -1;
-            for(int i = 0; i < N; i++) {
-                long num = arr[i];
-                
-                if(num < 0) {
-                    sumNeg += num;
-                    zeroPos = i;
-                }
-                else {
-                    sumPos += num;
-                    cntNonNeg++;
-                }
+            ArrayList<Query>[] offline = new ArrayList[N + 1];
+            for(int i = 1; i <= N; i++)
+                offline[i] = new ArrayList<>();
+            
+            for(int i = 0; i < Q; i++) {
+                int L = nextInt();
+                int R = nextInt();
+                int X = nextInt();
+                int Y = nextInt();
+                offline[L].add(new Query(X, Y, true, i));
+                offline[R].add(new Query(X, Y, false, i));
             }
-            
-            long greedyAns = sumNeg + (cntNonNeg * sumPos);
-            
-            for(int i = zeroPos; i >= 0; i--) {
-                sumNeg -= arr[i];
-                sumPos += arr[i];
-                cntNonNeg++;
-                greedyAns = Math.max(greedyAns , sumNeg + (cntNonNeg * sumPos));
-            }
-            
-            println(greedyAns);
             
         }
-        
     }
     
     
