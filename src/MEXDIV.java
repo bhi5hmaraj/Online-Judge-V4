@@ -14,7 +14,7 @@ class MEXDIV {
         int tree[];
         int len;
         int size;
-        CustomSegmentTree(int len) { // arr should be a 1 based array
+        CustomSegmentTree(int len) { 
             this.len = len + 1;
             size = 1 << (32 - Integer.numberOfLeadingZeros(this.len - 1) + 1);  // ceil(log(len)) + 1
             tree = new int[4*this.len];
@@ -98,8 +98,6 @@ class MEXDIV {
         long prefixDP[] = new long[N + 1];
         prefixDP[1] = DP[0] = arr[0] == 0 && K == 0 ? 0 : 1;
         tree.update(arr[0], 0);
-//        println("prefixDP " + Arrays.toString(prefixDP));
-//        println("DP " + Arrays.toString(DP));
         for(int i = 1; i < N; i++) {
             tree.update(arr[i], i);
             int lo = 0 , hi = i;
@@ -107,7 +105,6 @@ class MEXDIV {
             while(lo <= hi) {
                 int mid = (lo + hi) / 2;
                 int mex = tree.query(mid);
-//                println(String.format("lo = %d hi = %d i = %d mex = %d", lo , hi , i , mex));
                 if(mex <= K) {
                     hi = mid - 1;
                     last = mid;
@@ -120,10 +117,7 @@ class MEXDIV {
                 DP[i] = last == 0 ? MM.add(1, prefixDP[i] ): MM.sub(prefixDP[i], prefixDP[last - 1]);
             
             prefixDP[i + 1] = MM.add(prefixDP[i], DP[i]);
-/*
-            println("last " + last);
-            println("prefixDP " + Arrays.toString(prefixDP));
-            println("DP " + Arrays.toString(DP));*/
+
         }
         
         println(DP[N - 1]);
