@@ -1741,31 +1741,40 @@ class helper {
 		}
 
 	}
+    static class FenwickTree {
 
-	static class FenwickTree { 
-		/**************** DONT USE BIT IF YOUR INDEX STARTS FROM ZERO (causes infinite loop) ******************/
-		int tree[];
-		int len;
-		FenwickTree(int len) {
-			this.len = len;
-			tree = new int[len + 10];
-		}
-		void update(int idx , int val) {
-			if(idx == 0) throw new IndexOutOfBoundsException("BIT IS NOT ZERO INDEXED");
-			for(;idx <= len;idx += (idx & -idx))
-				tree[idx] += val;
-		}
-		int query(int idx) {
-			int sum = 0;
-			if(idx == 0) throw new IndexOutOfBoundsException("BIT IS NOT ZERO INDEXED");
-			for(;idx > 0;idx -= (idx & -idx))
-				sum += tree[idx];
+        /****************
+         * DONT USE BIT IF YOU UPDATE INDEX 0 (causes infinite loop)
+         ******************/
 
-			return sum;
-		}
-	}
+        int tree[];
+        int len;
 
-	
+        FenwickTree(int len) {
+            this.len = len;
+            tree = new int[len + 10];
+        }
+
+        void update(int idx, int val) {
+            if (idx == 0)
+                throw new IndexOutOfBoundsException("BIT IS NOT ZERO INDEXED");
+            for (; idx <= len; idx += (idx & -idx))
+                tree[idx] += val;
+        }
+
+        int query(int idx) {
+            int sum = 0;
+            for (; idx > 0; idx -= (idx & -idx))
+                sum += tree[idx];
+
+            return sum;
+        }
+
+        int query(int L, int R) {
+            return query(R) - query(L - 1);
+        }
+    }
+
 	/* LCA <NlogN , logN> dependency : level , log , V , DP = new int[log(V) + 1][V + 1];, parent (for the first level of DP) */
 	static int DP[][]; // One based vertices
 	static int level[];
