@@ -22,6 +22,36 @@ class UNIONSET {
                     set[i].set(nextInt() - 1);
             }
             
+            Arrays.sort(set, (b1 , b2) -> b2.cardinality() - b1.cardinality());
+            
+            int cnt = 0;
+            for(int i = 0; i < N && set[i].cardinality() >= (K + 1) / 2; i++)
+                for(int j = i + 1; j < N; j++) {
+                    BitSet temp = (BitSet) set[i].clone();
+                    temp.or(set[j]);
+                    cnt += temp.cardinality() == K ? 1 : 0;
+                }
+            
+            println(cnt);
+        }
+        
+    }
+    
+  private static void solve2() {
+        
+        int T = nextInt();
+        while(T-->0) {
+            
+            int N = nextInt();
+            int K = nextInt();
+            BitSet set[] = new BitSet[N];
+            for(int i = 0; i < N; i++) {
+                set[i] = new BitSet(K);
+                int len = nextInt();
+                while(len-->0)
+                    set[i].set(nextInt() - 1);
+            }
+            
             int cnt = 0;
             for(int i = 0; i < N; i++)
                 for(int j = i + 1; j < N; j++) {
@@ -35,7 +65,6 @@ class UNIONSET {
         
     }
     
-    
     /************************ SOLUTION ENDS HERE ************************/
     
     
@@ -45,10 +74,13 @@ class UNIONSET {
     /************************ TEMPLATE STARTS HERE **********************/
     
     public static void main(String[] args) throws IOException {
-        reader = new BufferedReader(new InputStreamReader(System.in));
+//        reader = new BufferedReader(new InputStreamReader(System.in));
+        reader = new BufferedReader(new InputStreamReader(new FileInputStream("UNIONSET_IN.txt")));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
+        long start = System.nanoTime();
         solve();
+        System.out.println("Time " + ((System.nanoTime() - start) / 1e9));
         reader.close();
         writer.close();
     }
