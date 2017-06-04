@@ -9,13 +9,11 @@ public class testing {
     
     private static void solve() {
 
-        try {
-            OutputStream stream = new FileOutputStream("test.txt");
-            stream.write("Hello , World !!\n".getBytes());
-            stream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        long all = 0xFFFFFFFFFFFFFFFFL;
+        int sz = 63;
+        System.out.println(Long.toBinaryString(all));
+        all <<= 64 - sz;
+        System.out.println(Long.toBinaryString(all));
         
     }
     

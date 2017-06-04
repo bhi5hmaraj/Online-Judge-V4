@@ -6,6 +6,40 @@ class UNIONSET {
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    static class MyBitSet {
+        long bits[];
+        int cardinality;
+        MyBitSet(int MAX) {
+            bits = new long[(MAX / 64) + 1];
+            cardinality = 0;
+        }
+
+        void set(int n, boolean f) {
+            int index = n / 64;
+            if (f == true) {
+                if((bits[index] & (1L << (n % 64))) == 0)
+                    cardinality++;
+                bits[index] |= (1L << (n % 64));
+            }
+            else
+                bits[index] ^= (1L << (n % 64));
+        }
+
+        void set(int n) {
+            set(n, true);
+        }
+        
+        int cardinality() {
+            return cardinality;
+        }
+        
+        
+        
+        boolean get(int n) {
+            return ((bits[n / 64]) & (1L << (n % 64))) != 0;
+        }
+    }
+
     
     private static void solve() {
         
@@ -24,9 +58,13 @@ class UNIONSET {
             
             Arrays.sort(set, (b1 , b2) -> b2.cardinality() - b1.cardinality());
             
+            int cache[] = new int[N];
+            for(int i = 0; i < N; i++)
+                cache[i] = set[i].cardinality();
+            
             int cnt = 0;
-            for(int i = 0; i < N && set[i].cardinality() >= (K + 1) / 2; i++)
-                for(int j = i + 1; j < N; j++) {
+            for(int i = 0; i < N && cache[i] >= (K + 1) / 2; i++)
+                for(int j = i + 1; j < N && cache[i] + cache[j] >= K; j++) {
                     BitSet temp = (BitSet) set[i].clone();
                     temp.or(set[j]);
                     cnt += temp.cardinality() == K ? 1 : 0;
@@ -79,7 +117,7 @@ class UNIONSET {
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
         long start = System.nanoTime();
-        solve();
+        solve2();
         System.out.println("Time " + ((System.nanoTime() - start) / 1e9));
         reader.close();
         writer.close();
