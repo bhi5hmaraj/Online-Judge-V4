@@ -5,10 +5,10 @@ class PRMQ {
     
     
     /************************ SOLUTION STARTS HERE ************************/
-    
+
     static final int MAX = (int) 1e6;
 
-    private static int[] preCalBigPrimeSieve()  {
+    private static int[] preCalBigPrimeSieve() {
         int bigPrime[] = new int[MAX + 1];
         bigPrime[1] = 1;
         for (int i = 2; i <= MAX; i++) {
@@ -18,74 +18,101 @@ class PRMQ {
                     bigPrime[j] = i;
             }
         }
-        
+
         return bigPrime;
     }
 
-    static class FenwickTree { 
-        /**************** DONT USE BIT IF YOUR INDEX STARTS FROM ZERO (causes infinite loop) ******************/
+    static class FenwickTree {
+
+        /****************
+         * DONT USE BIT IF YOU UPDATE INDEX 0 (causes infinite loop)
+         ******************/
+
         int tree[];
         int len;
+
         FenwickTree(int len) {
             this.len = len;
             tree = new int[len + 10];
         }
-        void update(int idx , int val) {
-            if(idx == 0) throw new IndexOutOfBoundsException("BIT IS NOT ZERO INDEXED");
-            for(;idx <= len;idx += (idx & -idx))
+
+        void update(int idx, int val) {
+            if (idx == 0)
+                throw new IndexOutOfBoundsException("BIT IS NOT ZERO INDEXED");
+            for (; idx <= len; idx += (idx & -idx))
                 tree[idx] += val;
         }
+
         int query(int idx) {
             int sum = 0;
-            for(;idx > 0;idx -= (idx & -idx))
+            for (; idx > 0; idx -= (idx & -idx))
                 sum += tree[idx];
 
             return sum;
         }
-        int query(int L , int R) {
+
+        int query(int L, int R) {
             return query(R) - query(L - 1);
         }
     }
 
     static class Query {
-        int X , Y , qID;
+        int     X, Y, qID;
         boolean isLeft;
-        Query(int x , int y, boolean left , int qid) {
+
+        Query(int x, int y, boolean left, int qid) {
             X = x;
             Y = y;
             isLeft = left;
             qID = qid;
         }
     }
-    
+
     private static void solve() {
         int bigPrime[] = preCalBigPrimeSieve();
-        
-        int T = nextInt();
 
-        while(T-->0) {
-            
-            int N = nextInt();
-            int arr[] = nextIntArrayOneBased(N);
-            int Q = nextInt();
-            int ans[] = new int[Q];
-            
-            ArrayList<Query>[] offline = new ArrayList[N + 1];
-            for(int i = 1; i <= N; i++)
-                offline[i] = new ArrayList<>();
-            
-            for(int i = 0; i < Q; i++) {
-                int L = nextInt();
-                int R = nextInt();
-                int X = nextInt();
-                int Y = nextInt();
-                offline[L].add(new Query(X, Y, true, i));
-                offline[R].add(new Query(X, Y, false, i));
-            }
-            
+        int N = nextInt();
+        int arr[] = nextIntArrayOneBased(N);
+        int Q = nextInt();
+        int ans[] = new int[Q];
+
+        FenwickTree BIT = new FenwickTree(MAX);
+        ArrayList<Query>[] offline = new ArrayList[N + 1];
+        for (int i = 1; i <= N; i++)
+            offline[i] = new ArrayList<>();
+
+        for (int i = 0; i < Q; i++) {
+            int L = nextInt();
+            int R = nextInt();
+            int X = nextInt();
+            int Y = nextInt();
+            offline[L].add(new Query(X, Y, true, i));
+            offline[R].add(new Query(X, Y, false, i));
         }
+
+        for (int i = 1; i <= N; i++) {
+            for (Query q : offline[i])
+                if (q.isLeft)
+                    ans[q.qID] = BIT.query(q.X, q.Y);
+
+            while (arr[i] > 1) {
+                int prime = bigPrime[arr[i]];
+                int exp = 0;
+                while (arr[i] % prime == 0) {
+                    exp++;
+                    arr[i] /= prime;
+                }
+                BIT.update(prime, exp);
+            }
+
+            for (Query q : offline[i])
+                if (!q.isLeft)
+                    ans[q.qID] = BIT.query(q.X, q.Y) - ans[q.qID];
+        }
+
+        for (int a : ans)
+            println(a);
     }
-    
     
     /************************ SOLUTION ENDS HERE ************************/
     
