@@ -1,5 +1,6 @@
 import java.util.*;
 import java.io.*;
+import java.math.BigDecimal;
 public class testing {
     
     
@@ -8,13 +9,10 @@ public class testing {
     
     
     private static void solve() {
-
-        long all = 0xFFFFFFFFFFFFFFFFL;
-        int sz = 63;
-        System.out.println(Long.toBinaryString(all));
-        all >>>= (64 - sz);
-        System.out.println(Long.toBinaryString(all));
-        
+        long s = System.nanoTime();
+        BigDecimal bigDecimal = new BigDecimal("1e4000");
+        bigDecimal = bigDecimal.multiply(bigDecimal).add(bigDecimal);
+        System.out.println("Time : " + ((System.nanoTime() - s) / 1e9));
     }
     
     
