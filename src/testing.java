@@ -12,7 +12,9 @@ public class testing {
         long s = System.nanoTime();
         BigDecimal bigDecimal = new BigDecimal("1e4000");
         bigDecimal = bigDecimal.multiply(bigDecimal).add(bigDecimal);
+        bigDecimal.toBigInteger();
         System.out.println("Time : " + ((System.nanoTime() - s) / 1e9));
+        Long.bitCount(2141231232L);
     }
     
     
