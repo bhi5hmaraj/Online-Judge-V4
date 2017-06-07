@@ -16,7 +16,7 @@ class ES {
             return S(alpha - 1, n).add(sum(n));
         else {
             double beta = alpha / (alpha - 1);
-            BigInteger n_ = new BigDecimal(n).multiply(BigDecimal.valueOf(alpha - 1)).toBigIntegerExact();
+            BigInteger n_ = new BigDecimal(n).multiply(BigDecimal.valueOf(alpha - 1)).setScale(0, BigDecimal.ROUND_FLOOR).toBigInteger();
             BigInteger m = n.add(n_);
             return sum(m).subtract(S(beta, n_));
         }
