@@ -2,9 +2,9 @@ import java.io.*;
 import java.math.*;
 import java.util.*;
 /*
- * Adapted from https://math.stackexchange.com/a/2053713
- */
-public class ES {
+* Adapted from https://math.stackexchange.com/a/2053713
+*/
+class ES {
     static final BigInteger TWO = BigInteger.valueOf(2);
     static BigInteger sum(BigInteger n) {
         return n.multiply(n).add(n).divide(TWO);
@@ -16,16 +16,22 @@ public class ES {
             return S(alpha - 1, n).add(sum(n));
         else {
             double beta = alpha / (alpha - 1);
-            BigInteger n_ = new BigDecimal(n).multiply(BigDecimal.valueOf(alpha - 1)).toBigInteger();
+            BigInteger n_ = new BigDecimal(n).multiply(BigDecimal.valueOf(alpha - 1)).toBigIntegerExact();
             BigInteger m = n.add(n_);
             return sum(m).subtract(S(beta, n_));
         }
     }
     public static void main(String[] args) throws IOException {
-//        BigInteger N = new BigInteger(new Scanner(System.in).nextLine());
-        BigInteger N = BigInteger.TEN.pow(200);
+        new Thread(null, new Runnable() {
+            public void run() {
+                new ES().run();
+            }
+        }, "Increase Stack", 1 << 25).start();
+
+    }
+    void run(){ 
         long start = System.nanoTime();
-        System.out.println(S(Math.E, N));
+        System.out.println(S(Math.E, BigInteger.TEN.pow(200)));
         System.out.println("Time " + (System.nanoTime() - start)/1e9);
     }
 }
