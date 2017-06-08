@@ -1,6 +1,6 @@
 import java.util.*;
 import java.io.*;
-public class Flower {
+public class PrizesPrizesmorePrizes {
     
     
     
@@ -9,23 +9,30 @@ public class Flower {
     
     private static void solve() {
         
-        int T = nextInt();
-        int K = nextInt();
-        int MAX = (int) 1e5;
-        int DP[] = new int[MAX + 1];
-        int MOD = (int)1e9 + 7;
-        Arrays.fill(DP, 0, K, 1);
-        for(int i = K; i <= MAX; i++)
-            DP[i] = (DP[i - K] + DP[i - 1]) % MOD;
-        DP[0] = 0;
-        for(int i = 1; i <= MAX; i++)
-            DP[i] = (DP[i] + DP[i - 1]) % MOD;
+        int N = nextInt();
+        long p[] = nextLongArray(N);
+        long prize[] = nextLongArray(5);
         
-        while(T-->0) {
-            int L = nextInt();
-            int R = nextInt();
-            println((DP[R] - DP[L - 1] + MOD) % MOD);
+        long rem = 0;
+        long cnt[] = new long[5];
+        
+        for(int i = 0; i < N; i++) {
+            rem += p[i];
+            int ptr = prize.length - 1;
+            while(ptr >= 0) {
+                if(rem >= prize[ptr]) {
+                    cnt[ptr] += rem / prize[ptr];
+                    rem %= prize[ptr];
+                }
+                ptr--;
+            }
         }
+        
+        for(long c : cnt)
+            print(c + " ");
+        print('\n');
+        println(rem);
+        
     }
     
     
