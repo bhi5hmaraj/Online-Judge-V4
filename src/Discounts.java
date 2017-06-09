@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.stream.Collectors;
 import java.io.*;
 public class Discounts {
     
@@ -6,6 +7,14 @@ public class Discounts {
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    static class Item {
+        int idx , cost , type;
+        Item (int... arg) {
+            idx = arg[0];
+            cost = arg[1];
+            type = arg[2];
+        }
+    }
     
     private static void solve() {
         
@@ -13,8 +22,52 @@ public class Discounts {
         int n = nextInt();
         int k = nextInt();
         
+        ArrayList<Integer>[] cart = new ArrayList[k];
+        for(int i = 0; i < k; i++)
+            cart[i] = new ArrayList<>();
         
+        Item arr[] = new Item[n];
+        for(int i = 0; i <= n; i++)
+            arr[i] = new Item(i , nextInt() , nextInt());
         
+        List<Integer> stools = Arrays.stream(arr).
+                               filter(item -> item.type == 1).
+                               map(item -> item.idx).
+                               collect(Collectors.toList());
+        
+        stools.sort((id1 , id2) -> Integer.compare(arr[id2].cost, arr[id1].cost));
+        int curr = Math.min(k - 1 , stools.size());
+        boolean marked[] = new boolean[n];
+        long discounted = 0;
+        for(int i = 0; i < curr; i++) {
+            discounted += arr[stools.get(i)].cost;
+            marked[stools.get(i)] = true;
+            cart[i].add(stools.get(i) + 1);
+        }
+        
+        if(stools.size() >= k)
+            discounted += Arrays.stream(arr).min(new Comparator<Item>() {
+                public int compare(Item o1, Item o2) {
+                    return o1.cost - o2.cost;
+                };
+            }).get().cost;
+        else {
+            for(; curr < k - 1; curr++) {
+                for(int i = 0; i < n; i++)
+                    if(!marked[i]) {
+                        marked[i] = true;
+                        cart[curr].add(i + 1);
+                        break;
+                    }
+            }
+        }
+        
+        for(int i = 0; i < n; i++)
+            if(!marked[i])
+                cart[curr].add(i + 1);
+        
+        long total = (2L * Arrays.stream(arr).mapToLong(it -> it.cost).sum()) - discounted;
+        println(String.format("%d.%d", total / 2 , 5 * (total % 2)));
     }
     
     
