@@ -16,6 +16,7 @@ public class Discounts {
         }
     }
     
+    @SuppressWarnings("unchecked")
     private static void solve() {
         
         
@@ -27,7 +28,7 @@ public class Discounts {
             cart[i] = new ArrayList<>();
         
         Item arr[] = new Item[n];
-        for(int i = 0; i <= n; i++)
+        for(int i = 0; i < n; i++)
             arr[i] = new Item(i , nextInt() , nextInt());
         
         List<Integer> stools = Arrays.stream(arr).
@@ -52,11 +53,12 @@ public class Discounts {
                 };
             }).get().cost;
         else {
+            int last = 0;
             for(; curr < k - 1; curr++) {
-                for(int i = 0; i < n; i++)
-                    if(!marked[i]) {
-                        marked[i] = true;
-                        cart[curr].add(i + 1);
+                for(; last < n; last++)
+                    if(!marked[last]) {
+                        marked[last] = true;
+                        cart[curr].add(last + 1);
                         break;
                     }
             }
@@ -68,6 +70,11 @@ public class Discounts {
         
         long total = (2L * Arrays.stream(arr).mapToLong(it -> it.cost).sum()) - discounted;
         println(String.format("%d.%d", total / 2 , 5 * (total % 2)));
+        Arrays.stream(cart).forEach(c -> {
+            print(c.size() + " ");
+            c.stream().forEach(index -> print(index + " "));
+            print('\n');
+        });
     }
     
     
