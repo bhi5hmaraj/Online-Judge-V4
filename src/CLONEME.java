@@ -15,7 +15,7 @@ class CLONEME {
     
     static final int p1 = 100151 , m1 = (int) 1e9 + 7;
     static final int p2 = p1 + 2 , m2 = m1 + 2;
-    static final int MAX = (int) 1e5;
+    static final int MAX = (int) 1e1;
     static final int pow1[] = new int[MAX + 1];
     static final int pow2[] = new int[MAX + 1];
     
@@ -38,7 +38,7 @@ class CLONEME {
         
         @Override
         public String toString() {
-            return String.format("[sz = %d , h1 = %d , h2 = %d", size , hash1 , hash2);
+            return String.format("[sz = %d]", size);
         }
     }
     
@@ -90,11 +90,13 @@ class CLONEME {
         }
         @Override
         public String toString() {
-            
+            return String.format("[L = %d , R = %d]", L , R);
         }
     }
     static SegTreeRangeData move(SegTreeRangeData data) {
+        System.out.println("inside move");
         while(data.L < data.R) {
+            System.out.println(data);
             int mid = (data.L + data.R) >> 1;
             if(equals(data.L1.left, data.R1.left, data.L2.left, data.R2.left)) {
                 data.L = mid + 1;
@@ -107,26 +109,57 @@ class CLONEME {
                 data.R = mid;
                 data.L1 = data.L1.left;
                 data.R1 = data.R1.left;
-                data.L2 = data.L2.right;
-                data.R2 = data.R2.right;
+                data.L2 = data.L2.left;
+                data.R2 = data.R2.left;
             }
             else
                 break;
         }
-        
+        System.out.println("after move " + data);
         return data;
     }
     static int query(SegTreeNode t1 , SegTreeNode t2 , int nl , int nr , int ql , int qr) {
-        if(ql > qr || ql > nr || qr < nl)
+        System.out.print("t1 " + t1 + " t2 " + t2);
+        System.out.printf("nl = %d nr = %d ql = %d qr = %d \n", nl , nr , ql , qr);
+        if(ql > qr)
             return 0;
         else if(nl == ql && nr == qr)
             return t2.size - t1.size;
         else{
             int mn = (nl + nr) >> 1;
-            int mq = (ql + qr) >> 1;
-            return query(t1.left, t2.left, nl, mn, ql, mq) + query(t1.right, t2.right, mn + 1, nr, mq + 1, qr);
+            int lsz = 0 , rsz = 0;
+            if(qr <= mn)
+                lsz = query(t1.left, t2.left, nl, mn, ql, qr);
+            else if(ql > mn)
+                rsz = query(t1.right, t2.right, mn + 1, nr, ql, qr);
+            else {
+                lsz = query(t1.left, t2.left, nl, mn, ql, mn);
+                rsz = query(t1.right, t2.right, mn + 1, nr, mn + 1, qr);
+            }
+            return lsz + rsz;
         }
     }
+    
+    static StringBuilder print(StringBuilder prefix, boolean isTail, StringBuilder sb, SegTreeNode root) {
+
+        if (root == null) {
+            sb.append("Tree Empty\n");
+            return sb;
+        }
+        if (root.right != null) {
+            print(new StringBuilder().append(prefix).append(isTail ? "│   " : "    "), false, sb, root.right);
+        }
+        sb.append(prefix).append(isTail ? "└── " : "┌── ").append(root).append("\n");
+        if (root.left != null) {
+            print(new StringBuilder().append(prefix).append(isTail ? "    " : "│   "), true, sb, root.left);
+        }
+        return sb;
+    }
+
+    static String print(SegTreeNode root) {
+        return print(new StringBuilder(), true, new StringBuilder(), root).toString();
+    }
+    
     private static void solve() {
         
         int T = nextInt();
@@ -134,37 +167,45 @@ class CLONEME {
             int N = nextInt();
             int Q = nextInt();
             int arr[] = nextIntArrayOneBased(N);
-            persistent[0] = initSegTree(1, N);
-            for(int i = 1; i <= N; i++)
-                persistent[i] = initSegTree(persistent[i - 1], 1, N, arr[i]);
+            persistent = new SegTreeNode[N + 1];
+            persistent[0] = initSegTree(1, MAX);
+            System.out.println(print(persistent[0]));
+            for(int i = 1; i <= N; i++) {
+                persistent[i] = initSegTree(persistent[i - 1], 1, MAX, arr[i]);
+                System.out.println(print(persistent[i]));
+            }
             
             while(Q-->0) {
                 int range[] = nextIntArray(4);
                 
-                SegTreeNode L1 = persistent[range[0]];
+                SegTreeNode L1 = persistent[range[0] - 1];
                 SegTreeNode R1 = persistent[range[1]];
-                SegTreeNode L2 = persistent[range[2]];
+                SegTreeNode L2 = persistent[range[2] - 1];
                 SegTreeNode R2 = persistent[range[3]];
                 
                 if(equals(L1, R1, L2, R2))
                     println("YES");
                 else {
-                    SegTreeRangeData top   = move(new SegTreeRangeData(L1, R1, L2, R2, 1, N));
+                    System.out.println("top");
+                    SegTreeRangeData top   = move(new SegTreeRangeData(L1, R1, L2, R2, 1, MAX));
+                    System.out.println("diff1");
                     SegTreeRangeData diff1 = move(new SegTreeRangeData(top.L1.left, top.R1.left, top.L2.left, 
                                                                        top.R2.left, top.L, (top.L + top.R) >> 1));
+                    System.out.println("diff2");
                     SegTreeRangeData diff2 = move(new SegTreeRangeData(top.L1.right, top.R1.right, 
                                                                        top.L2.right, top.R2.right, 
                                                                        ((top.L + top.R) >> 1) + 1, top.R));
-                   
+                    System.out.println("moves finished");
                     if(diff1.L == diff1.R && diff2.L == diff2.R &&
-                       Math.abs((diff1.R2.size - diff1.L2.size) - (diff2.R2.size - diff2.L2.size)) == 1 &&
-                       query(persistent[range[2]], persistent[range[3]], 1, N, diff1.L + 1, diff2.L - 1) == 0) {
+                       Math.abs((diff1.R2.size - diff1.L2.size) - (diff1.R1.size - diff1.L1.size)) == 1 &&
+                       query(persistent[range[2] - 1], persistent[range[3]], 1, MAX, diff1.L + 1, diff2.L - 1) == 0) {
                         println("YES");
                     }
                     else
                         println("NO");
                 }
             }
+            
         }
         
     }
