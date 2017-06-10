@@ -1,3 +1,10 @@
+/*
+ * Thanks to 
+ * https://drive.google.com/file/d/0BwGLW04WRv0ITEZjRWlMSFc2bk0/view
+ * https://blog.anudeep2011.com/persistent-segment-trees-explained-with-spoj-problems/
+ * https://www.youtube.com/watch?v=TH9n_HVkjQM
+ * 
+ */
 import java.util.*;
 import java.io.*;
 class CLONEME {
@@ -69,31 +76,56 @@ class CLONEME {
         return (R1.hash1 - L1.hash1 + m1) % m1 == (R2.hash1 - L2.hash1 + m1) % m1 &&
                (R1.hash2 - L1.hash2 + m2) % m2 == (R2.hash2 - L2.hash2 + m2) % m2;
     }
-    static SegTreeNode L1 , R1 , L2 , R2;
-    static int L , R;
-    static void move(int l , int r) {
-        while(l < r) {
-            int mid = (l + r) >> 1;
-            if(equals(L1.left, R1.left, L2.left, R2.left)) {
-                l = mid + 1;
-                L1 = L1.right;
-                R1 = R1.right;
-                L2 = L2.right;
-                R2 = R2.right;
+
+    static class SegTreeRangeData {
+        SegTreeNode L1 , R1 , L2 , R2;
+        int L , R;
+        public SegTreeRangeData(SegTreeNode l1, SegTreeNode r1, SegTreeNode l2, SegTreeNode r2, int l, int r) {
+            L1 = l1;
+            R1 = r1;
+            L2 = l2;
+            R2 = r2;
+            L = l;
+            R = r;
+        }
+        @Override
+        public String toString() {
+            
+        }
+    }
+    static SegTreeRangeData move(SegTreeRangeData data) {
+        while(data.L < data.R) {
+            int mid = (data.L + data.R) >> 1;
+            if(equals(data.L1.left, data.R1.left, data.L2.left, data.R2.left)) {
+                data.L = mid + 1;
+                data.L1 = data.L1.right;
+                data.R1 = data.R1.right;
+                data.L2 = data.L2.right;
+                data.R2 = data.R2.right;
             }
-            else if(equals(L1.right, R1.right, L2.right, R2.right)) {
-                r = mid;
-                L1 = L1.left;
-                R1 = R1.left;
-                L2 = L2.right;
-                R2 = R2.right;
+            else if(equals(data.L1.right, data.R1.right, data.L2.right, data.R2.right)) {
+                data.R = mid;
+                data.L1 = data.L1.left;
+                data.R1 = data.R1.left;
+                data.L2 = data.L2.right;
+                data.R2 = data.R2.right;
             }
             else
                 break;
         }
         
-        L = l;
-        R = r; // returning 2 values is so mainstream :)
+        return data;
+    }
+    static int query(SegTreeNode t1 , SegTreeNode t2 , int nl , int nr , int ql , int qr) {
+        if(ql > qr || ql > nr || qr < nl)
+            return 0;
+        else if(nl == ql && nr == qr)
+            return t2.size - t1.size;
+        else{
+            int mn = (nl + nr) >> 1;
+            int mq = (ql + qr) >> 1;
+            return query(t1.left, t2.left, nl, mn, ql, mq) + query(t1.right, t2.right, mn + 1, nr, mq + 1, qr);
+        }
     }
     private static void solve() {
         
@@ -117,37 +149,20 @@ class CLONEME {
                 if(equals(L1, R1, L2, R2))
                     println("YES");
                 else {
-                    int L = 1 , R = N;
-                    /*
-                    while(true) {
-                        int mid = (L + R) >> 1;
-                        if(equals(L1.left, R1.left, L2.left, R2.left)) {
-                            L = mid + 1;
-                            L1 = L1.right;
-                            R1 = R1.right;
-                            L2 = L2.right;
-                            R2 = R2.right;
-                        }
-                        else if(equals(L1.right, R1.right, L2.right, R2.right)) {
-                            R = mid;
-                            L1 = L1.left;
-                            R1 = R1.left;
-                            L2 = L2.right;
-                            R2 = R2.right;
-                        }
-                        else
-                            break;
+                    SegTreeRangeData top   = move(new SegTreeRangeData(L1, R1, L2, R2, 1, N));
+                    SegTreeRangeData diff1 = move(new SegTreeRangeData(top.L1.left, top.R1.left, top.L2.left, 
+                                                                       top.R2.left, top.L, (top.L + top.R) >> 1));
+                    SegTreeRangeData diff2 = move(new SegTreeRangeData(top.L1.right, top.R1.right, 
+                                                                       top.L2.right, top.R2.right, 
+                                                                       ((top.L + top.R) >> 1) + 1, top.R));
+                   
+                    if(diff1.L == diff1.R && diff2.L == diff2.R &&
+                       Math.abs((diff1.R2.size - diff1.L2.size) - (diff2.R2.size - diff2.L2.size)) == 1 &&
+                       query(persistent[range[2]], persistent[range[3]], 1, N, diff1.L + 1, diff2.L - 1) == 0) {
+                        println("YES");
                     }
-                    
-                    int a = L , b = (L + R) >> 1;
-                    SegTreeNode sLeftL1 = L1.left;
-                    SegTreeNode sLeftR1 = R1.left;
-                    SegTreeNode sLeftL2 = L2.left;
-                    SegTreeNode sLeftR2 = R2.left;
-                    while(a < b) {
-                        
-                    }
-                    */
+                    else
+                        println("NO");
                 }
             }
         }
