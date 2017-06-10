@@ -49,15 +49,15 @@ class CLONEME {
     }
     static SegTreeNode initSegTree(SegTreeNode prev , int L , int R , int val) {
         if(L == R) 
-            return new SegTreeNode(1, pow1[val], pow2[val]);
+            return new SegTreeNode(1 + prev.size, (prev.hash1 + pow1[val]) % m1, (prev.hash2 + pow2[val]) % m2);
         else {
             int mid = (L + R) >> 1;
             SegTreeNode l = prev.left;
             SegTreeNode r = prev.right;
             if(val <= mid)
-                l = initSegTree(prev , L , mid , val);
+                l = initSegTree(prev.left , L , mid , val);
             else
-                r = initSegTree(prev, mid + 1, R, val);
+                r = initSegTree(prev.right, mid + 1, R, val);
             SegTreeNode newNode = new SegTreeNode(l.size + r.size, (l.hash1 + r.hash1) % m1, (l.hash2 + r.hash2) % m2);
             newNode.left = l;
             newNode.right = r;
@@ -65,10 +65,36 @@ class CLONEME {
         }
     }
     
-    static boolean equals(SegTreeNode... n) {
-        
+    static boolean equals(SegTreeNode L1 , SegTreeNode R1 , SegTreeNode L2 , SegTreeNode R2) {
+        return (R1.hash1 - L1.hash1 + m1) % m1 == (R2.hash1 - L2.hash1 + m1) % m1 &&
+               (R1.hash2 - L1.hash2 + m2) % m2 == (R2.hash2 - L2.hash2 + m2) % m2;
     }
-    
+    static SegTreeNode L1 , R1 , L2 , R2;
+    static int L , R;
+    static void move(int l , int r) {
+        while(l < r) {
+            int mid = (l + r) >> 1;
+            if(equals(L1.left, R1.left, L2.left, R2.left)) {
+                l = mid + 1;
+                L1 = L1.right;
+                R1 = R1.right;
+                L2 = L2.right;
+                R2 = R2.right;
+            }
+            else if(equals(L1.right, R1.right, L2.right, R2.right)) {
+                r = mid;
+                L1 = L1.left;
+                R1 = R1.left;
+                L2 = L2.right;
+                R2 = R2.right;
+            }
+            else
+                break;
+        }
+        
+        L = l;
+        R = r; // returning 2 values is so mainstream :)
+    }
     private static void solve() {
         
         int T = nextInt();
@@ -81,16 +107,47 @@ class CLONEME {
                 persistent[i] = initSegTree(persistent[i - 1], 1, N, arr[i]);
             
             while(Q-->0) {
-                SegTreeNode L1 = persistent[nextInt()];
-                SegTreeNode R1 = persistent[nextInt()];
-                SegTreeNode L2 = persistent[nextInt()];
-                SegTreeNode R2 = persistent[nextInt()];
+                int range[] = nextIntArray(4);
                 
-                if((R1.hash1 - L1.hash1 + m1) % m1 == (R2.hash1 - L2.hash1 + m1) % m1 &&
-                   (R1.hash2 - L1.hash2 + m2) % m2 == (R2.hash2 - L2.hash2 + m2) % m2)
+                SegTreeNode L1 = persistent[range[0]];
+                SegTreeNode R1 = persistent[range[1]];
+                SegTreeNode L2 = persistent[range[2]];
+                SegTreeNode R2 = persistent[range[3]];
+                
+                if(equals(L1, R1, L2, R2))
                     println("YES");
                 else {
+                    int L = 1 , R = N;
+                    /*
+                    while(true) {
+                        int mid = (L + R) >> 1;
+                        if(equals(L1.left, R1.left, L2.left, R2.left)) {
+                            L = mid + 1;
+                            L1 = L1.right;
+                            R1 = R1.right;
+                            L2 = L2.right;
+                            R2 = R2.right;
+                        }
+                        else if(equals(L1.right, R1.right, L2.right, R2.right)) {
+                            R = mid;
+                            L1 = L1.left;
+                            R1 = R1.left;
+                            L2 = L2.right;
+                            R2 = R2.right;
+                        }
+                        else
+                            break;
+                    }
                     
+                    int a = L , b = (L + R) >> 1;
+                    SegTreeNode sLeftL1 = L1.left;
+                    SegTreeNode sLeftR1 = R1.left;
+                    SegTreeNode sLeftL2 = L2.left;
+                    SegTreeNode sLeftR2 = R2.left;
+                    while(a < b) {
+                        
+                    }
+                    */
                 }
             }
         }
