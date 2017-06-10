@@ -4,6 +4,7 @@
  * https://blog.anudeep2011.com/persistent-segment-trees-explained-with-spoj-problems/
  * https://www.youtube.com/watch?v=TH9n_HVkjQM
  * 
+ * Persistence Helped me solving this
  */
 import java.util.*;
 import java.io.*;
@@ -15,7 +16,7 @@ class CLONEME {
     
     static final int p1 = 100151 , m1 = (int) 1e9 + 7;
     static final int p2 = p1 + 2 , m2 = m1 + 2;
-    static final int MAX = (int) 1e1;
+    static final int MAX = (int) 1e5;
     static final int pow1[] = new int[MAX + 1];
     static final int pow2[] = new int[MAX + 1];
     
@@ -94,9 +95,7 @@ class CLONEME {
         }
     }
     static SegTreeRangeData move(SegTreeRangeData data) {
-        System.out.println("inside move");
         while(data.L < data.R) {
-            System.out.println(data);
             int mid = (data.L + data.R) >> 1;
             if(equals(data.L1.left, data.R1.left, data.L2.left, data.R2.left)) {
                 data.L = mid + 1;
@@ -115,12 +114,9 @@ class CLONEME {
             else
                 break;
         }
-        System.out.println("after move " + data);
         return data;
     }
     static int query(SegTreeNode t1 , SegTreeNode t2 , int nl , int nr , int ql , int qr) {
-        System.out.print("t1 " + t1 + " t2 " + t2);
-        System.out.printf("nl = %d nr = %d ql = %d qr = %d \n", nl , nr , ql , qr);
         if(ql > qr)
             return 0;
         else if(nl == ql && nr == qr)
@@ -140,26 +136,6 @@ class CLONEME {
         }
     }
     
-    static StringBuilder print(StringBuilder prefix, boolean isTail, StringBuilder sb, SegTreeNode root) {
-
-        if (root == null) {
-            sb.append("Tree Empty\n");
-            return sb;
-        }
-        if (root.right != null) {
-            print(new StringBuilder().append(prefix).append(isTail ? "│   " : "    "), false, sb, root.right);
-        }
-        sb.append(prefix).append(isTail ? "└── " : "┌── ").append(root).append("\n");
-        if (root.left != null) {
-            print(new StringBuilder().append(prefix).append(isTail ? "    " : "│   "), true, sb, root.left);
-        }
-        return sb;
-    }
-
-    static String print(SegTreeNode root) {
-        return print(new StringBuilder(), true, new StringBuilder(), root).toString();
-    }
-    
     private static void solve() {
         
         int T = nextInt();
@@ -169,11 +145,8 @@ class CLONEME {
             int arr[] = nextIntArrayOneBased(N);
             persistent = new SegTreeNode[N + 1];
             persistent[0] = initSegTree(1, MAX);
-            System.out.println(print(persistent[0]));
-            for(int i = 1; i <= N; i++) {
+            for(int i = 1; i <= N; i++) 
                 persistent[i] = initSegTree(persistent[i - 1], 1, MAX, arr[i]);
-                System.out.println(print(persistent[i]));
-            }
             
             while(Q-->0) {
                 int range[] = nextIntArray(4);
@@ -186,20 +159,18 @@ class CLONEME {
                 if(equals(L1, R1, L2, R2))
                     println("YES");
                 else {
-                    System.out.println("top");
                     SegTreeRangeData top   = move(new SegTreeRangeData(L1, R1, L2, R2, 1, MAX));
-                    System.out.println("diff1");
                     SegTreeRangeData diff1 = move(new SegTreeRangeData(top.L1.left, top.R1.left, top.L2.left, 
                                                                        top.R2.left, top.L, (top.L + top.R) >> 1));
-                    System.out.println("diff2");
                     SegTreeRangeData diff2 = move(new SegTreeRangeData(top.L1.right, top.R1.right, 
                                                                        top.L2.right, top.R2.right, 
                                                                        ((top.L + top.R) >> 1) + 1, top.R));
-                    System.out.println("moves finished");
                     if(diff1.L == diff1.R && diff2.L == diff2.R &&
                        Math.abs((diff1.R2.size - diff1.L2.size) - (diff1.R1.size - diff1.L1.size)) == 1 &&
                        query(persistent[range[2] - 1], persistent[range[3]], 1, MAX, diff1.L + 1, diff2.L - 1) == 0) {
+
                         println("YES");
+                    
                     }
                     else
                         println("NO");
