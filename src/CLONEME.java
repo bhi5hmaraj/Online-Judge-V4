@@ -14,7 +14,7 @@ class CLONEME {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static final int p1 = 100151 , m1 = (int) 1e9 + 7;
+    static final int p1 = 100151 , m1 = (int) 1e9 + 7;  // Twin Primes
     static final int p2 = p1 + 2 , m2 = m1 + 2;
     static final int MAX = (int) 1e5;
     static final int pow1[] = new int[MAX + 1];
