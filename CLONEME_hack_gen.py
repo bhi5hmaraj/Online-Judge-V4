@@ -7,4 +7,4 @@ print "1"
 print N , Q
 print ' '.join(map(str , hack))
 for _ in range(Q):
-	print 1 , N - 3 , 4 , N
+	print 1 , N - 3 , 2 , N - 2

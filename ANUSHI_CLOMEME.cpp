@@ -171,6 +171,8 @@ int main(){
 					if(ans<2) cout<<"YES"<<"\n";
 					else cout<<"NO"<<"\n";
 				}
+				
+				//cout<<"At query" + q<<"\n";
 	     }
 	}
    return 0;
