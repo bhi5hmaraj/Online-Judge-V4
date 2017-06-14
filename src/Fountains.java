@@ -50,6 +50,7 @@ public class Fountains {
     
 
     
+    @SuppressWarnings("unchecked")
     private static void solve() {
         
         int MAX_COST = (int) 1e5;
@@ -59,10 +60,14 @@ public class Fountains {
         
         ArrayList<int[]>[] fountain = new ArrayList[2];
         SegmentTree[] costVsBeauty = new SegmentTree[2]; 
-        for(int i = 0; i < n; i++) {
-            fountain[0] = new ArrayList<>();
+        for(int i = 0; i < 2; i++) {
+            fountain[i] = new ArrayList<>();
             costVsBeauty[i] = new SegmentTree(MAX_COST);
         }
+        TreeMap<Integer , Integer>[][] freq = new TreeMap[2][MAX_COST + 1];
+        for(int type = 0; type < 2; type++)
+            for(int i = 1; i <= MAX_COST; i++)
+                freq[type][i] = new TreeMap<>();
         
         for(int i = 0; i < n; i++) {
             int b = nextInt();
@@ -70,18 +75,36 @@ public class Fountains {
             int type = nextChar() == 'C' ? 0 : 1;
             fountain[type].add(new int[]{b , p});
             costVsBeauty[type].update(p, Math.max(b , costVsBeauty[type].query(p, p)));
+            freq[type][p].put(b, freq[type][p].getOrDefault(b, 0) + 1);
         }
         
         int maxBeautySeperate[] = new int[2];
-        
         for(int type = 0; type < 2; type++) {
             for(int fount[] : fountain[type]) {
+                if(fount[1] <= have[type])
+                    maxBeautySeperate[type] = Math.max(maxBeautySeperate[type] , fount[0]);
                 
-                if(fount[1] < have[type]) 
-                    max = Math.max(max , fount[0] + costVsBeauty[type].query(1, have[type] - fount[1]));
+                if(fount[1] < have[type]) {
+                    TreeMap<Integer , Integer> temp = freq[type][fount[1]];
+                    Map.Entry<Integer, Integer> cache = temp.lastEntry();
+                    boolean flag = false;
+                    if(cache.getKey().intValue() == fount[0] && cache.getValue().intValue() == 1) {
+                        flag = true;
+                        Integer floor = temp.lowerKey(fount[0]);
+                        costVsBeauty[type].update(fount[1], floor == null ? 0 : floor);
+                    }
+                    int q = costVsBeauty[type].query(1, have[type] - fount[1]);
+                    if(q > 0)
+                        max = Math.max(max , fount[0] + q);
+                    if(flag)
+                        costVsBeauty[type].update(fount[1], fount[0]);
+                }
             }
         }
         
+        if(maxBeautySeperate[0] > 0 && maxBeautySeperate[1] > 0)
+            max = Math.max(max , maxBeautySeperate[0] + maxBeautySeperate[1]);
+        println(max);
         
     }
     
