@@ -9,15 +9,19 @@ public class testing {
     
     
     private static void solve() {
+        /*
         long s = System.nanoTime();
         BigDecimal bigDecimal = new BigDecimal("1e4000");
         bigDecimal = bigDecimal.multiply(bigDecimal).add(bigDecimal);
         bigDecimal.toBigInteger();
         System.out.println("Time : " + ((System.nanoTime() - s) / 1e9));
         Long.bitCount(2141231232L);
+        */
+        tr(1 , 1232, "asdas" , 'd' , new int[]{3,6,77,10});
     }
     
-    
+    // from uwi
+    private static void tr(Object... o) { System.out.println(Arrays.deepToString(o)); }
     
     /************************ SOLUTION ENDS HERE ************************/
     

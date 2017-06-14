@@ -23,28 +23,27 @@ public class Fieldexpansion {
             arr[i] = arr[n - i - 1];
             arr[n - i - 1] = temp;
         }
-        System.out.println(Arrays.toString(arr));
+//        System.out.println(Arrays.toString(arr));
         int MAX_POSSIBLE = 34;
         int MAX_NUM = (int) 1e5;
         
         int DP[][] = new int[MAX_POSSIBLE + 1][MAX_NUM + 1];
-        Arrays.fill(DP[0], w);
+        DP[0][h] = w;
         for(int i = 0; i < Math.min(MAX_POSSIBLE , n); i++) {
             for(int j = 1; j <= MAX_NUM; j++) {
-                
                 DP[i + 1][(int) Math.min(MAX_NUM , arr[i] * j)] 
                         = Math.max(DP[i + 1][(int) Math.min(MAX_NUM , arr[i] * j)] , DP[i][j]); // Apply on height
                 DP[i + 1][j] = Math.max(DP[i + 1][j] , (int) Math.min(MAX_NUM , arr[i] * DP[i][j]));   // Apply on width
             }
         }
-        
+        /*
         for(int i = 0; i <= Math.min(n , MAX_POSSIBLE); i++) {
             for(int j = 1; j <= 12; j++) {
                 System.out.printf("%3d ", DP[i][j]);
             }
             System.out.println();
         }   
-        
+        */
         for(int i = 0; i <= MAX_POSSIBLE; i++)
             for(int j = 1; j <= MAX_NUM; j++) {
                 if((a <= j && b <= DP[i][j]) || (a <= DP[i][j] && b <= j)) {
