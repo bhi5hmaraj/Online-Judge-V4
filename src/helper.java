@@ -1767,6 +1767,7 @@ class helper {
 		}
 
 	}
+	
     static class FenwickTree {
 
         /****************
