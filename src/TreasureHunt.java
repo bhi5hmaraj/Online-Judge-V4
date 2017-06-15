@@ -6,67 +6,16 @@ public class TreasureHunt {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static int INF = (int) 1e5 , MINF = -INF;
-    static boolean isValid(int x , int y) {
-        return x >= MINF && x <= INF && y >= MINF && y <= INF;
-    }
-    static int x2 , y2; 
-    static boolean reachable(int x , int y) {
-        return x + y == x2 + y2 || x - y == x2 - y2;
-    }
+    
     private static void solve() {
 
         int x1 = nextInt();
         int y1 = nextInt();
-        x2 = nextInt();
-        y2 = nextInt();
-        
+        int x2 = nextInt();
+        int y2 = nextInt();
         int x = nextInt();
         int y = nextInt();
         
-        int tx = x1 , ty = y1;
-        while(isValid(tx, ty)) {
-            if(reachable(tx, ty)) {
-                println("YES");
-                return;
-            }
-            tx += x;
-            ty += y;
-        }
-        
-        tx = x1; ty = y1;
-        while(isValid(tx, ty)) {
-            if(reachable(tx, ty)) {
-                println("YES");
-                return;
-            }
-            tx += x;
-            ty -= y;
-        }
-        
-
-        tx = x1; ty = y1;
-        while(isValid(tx, ty)) {
-            if(reachable(tx, ty)) {
-                println("YES");
-                return;
-            }
-            tx -= x;
-            ty += y;
-        }
-        
-
-        tx = x1; ty = y1;
-        while(isValid(tx, ty)) {
-            if(reachable(tx, ty)) {
-                println("YES");
-                return;
-            }
-            tx -= x;
-            ty -= y;
-        }
-        
-        println("NO");
         
     }
     
