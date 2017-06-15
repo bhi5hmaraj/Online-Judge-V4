@@ -16,7 +16,27 @@ public class TreasureHunt {
         int x = nextInt();
         int y = nextInt();
         
-        
+        long t1 = 1L * x * (y1 - y2);
+        long t2 = 1L * y * (x1 + x2);
+        if((t1 + t2) % (2L * y) == 0) {
+            long ix = (t1 + t2) / (2L * y);
+            long t3 = 1L * x * y1;
+            long t4 = 1L * y * (x1 - ix);
+            if((t3 + t4) % (long)x == 0) {
+                long iy = (t3 + t4) / (long)x;
+                long a = x;
+                long b = y;
+                // System.out.println("ix = " + ix + " iy = " + iy);
+                if((ix - x1) % a == 0 && (y1 - iy) % b == 0 && (ix - x1) / a == (y1 - iy) / b)
+                    println("YES");
+                else
+                    println("NO");
+            }
+            else
+                println("NO");
+        }
+        else
+            println("NO");
     }
     
     
