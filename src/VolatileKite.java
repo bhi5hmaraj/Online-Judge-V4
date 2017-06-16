@@ -8,25 +8,25 @@ public class VolatileKite {
     
 // https://www.topcoder.com/community/data-science/data-science-tutorials/geometry-concepts-basic-concepts/
   //Compute the dot product AB ⋅ BC
-      static int dot(int[] A, int[] B, int[] C){
+      static long dot(int[] A, int[] B, int[] C){
           int[] AB = new int[2];
           int[] BC = new int[2];
           AB[0] = B[0]-A[0];
           AB[1] = B[1]-A[1];
           BC[0] = C[0]-B[0];
           BC[1] = C[1]-B[1];
-          int dot = AB[0] * BC[0] + AB[1] * BC[1];
+          long dot = 1L * AB[0] * BC[0] + 1L * AB[1] * BC[1];
           return dot;
       }
       //Compute the cross product AB x AC
-      static int cross(int[] A, int[] B, int[] C){
+      static long cross(int[] A, int[] B, int[] C){
           int[] AB = new int[2];
           int[] AC = new int[2];
           AB[0] = B[0]-A[0];
           AB[1] = B[1]-A[1];
           AC[0] = C[0]-A[0];
           AC[1] = C[1]-A[1];
-          int cross = AB[0] * AC[1] - AB[1] * AC[0];
+          long cross = 1L * AB[0] * AC[1] - 1L * AB[1] * AC[0];
           return cross;
       }
       //Compute the distance from A to B
@@ -60,7 +60,7 @@ public class VolatileKite {
         for(int i = 0; i < n; i++) {
             int prev = (i - 1 + n) % n;
             int next = (i + 1) % n;
-            min = Math.min(linePointDist(p[prev], p[next], p[i], true) , min);
+            min = Math.min(linePointDist(p[prev], p[next], p[i], true) / 2.0 , min);
             min = Math.min(min , distance(p[i], p[next]) / 2.0);
         }
         
