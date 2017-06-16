@@ -31,8 +31,8 @@ public class VolatileKite {
       }
       //Compute the distance from A to B
       static double distance(int[] A, int[] B){
-          int d1 = A[0] - B[0];
-          int d2 = A[1] - B[1];
+          long d1 = A[0] - B[0];
+          long d2 = A[1] - B[1];
           return Math.sqrt(d1*d1+d2*d2);
       }
       //Compute the distance from AB to C
@@ -40,9 +40,9 @@ public class VolatileKite {
       static double linePointDist(int[] A, int[] B, int[] C, boolean isSegment){
           double dist = cross(A,B,C) / distance(A,B);
           if(isSegment){
-              int dot1 = dot(A,B,C);
+              long dot1 = dot(A,B,C);
               if(dot1 > 0)return distance(B,C);
-              int dot2 = dot(B,A,C);
+              long dot2 = dot(B,A,C);
               if(dot2 > 0)return distance(A,C);
           }
           return Math.abs(dist);
