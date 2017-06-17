@@ -6,13 +6,103 @@ public class ChoosingTheCommander {
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    static class BinaryTrie {
+
+        static class Node {
+            int size;
+            Node zero;
+            Node one;
+            Node() {
+                size = 1;
+            }
+        }
+        Node root;
+        static final int offset = 27;  //Maximum index of set bit
+        BinaryTrie(){
+            root = new Node();
+        }
+
+        void insert(int num){
+            root = insert(root, num, offset);
+        }
+        
+        int size(Node n) {
+            return n == null ? 0 : n.size;
+        }
+        
+        Node insert(Node curr , int num , int idx){
+            if(idx < 0) {
+                if(curr != null)
+                    curr.size++;
+                else
+                    curr = new Node();
+                return curr;
+            }
+            else{
+                if(curr == null)
+                    curr = new Node();
+                if((num & (1 << idx)) == 0)
+                    curr.zero = insert(curr.zero, num, idx - 1);
+                else
+                    curr.one = insert(curr.one, num, idx - 1);
+                
+                curr.size = size(curr.zero) + size(curr.one);
+                return curr;
+            }
+        }
+        
+        void remove(int num){
+            remove(root, null, num, offset);
+        }
+        
+        void remove(Node curr , Node parent , int num , int idx){
+            if(idx >= 0){
+                if((num & (1 << idx)) == 0)
+                    remove(curr.zero, curr, num, idx - 1);
+                else
+                    remove(curr.one, curr, num, idx - 1);
+            }
+            curr.size--;
+        }
+        
+        int count(Node curr , int a , int b , int idx) {
+            if(idx < 0 || curr == null)
+                return 0;
+            else if((a & (1 << idx)) == 0 && (b & (1 << idx)) == 0)
+                return count(curr.zero, a, b, idx - 1);
+            else if((a & (1 << idx)) == 0 && (b & (1 << idx)) != 0)
+                return size(curr.zero) + count(curr.one, a, b, idx - 1);
+            else if((a & (1 << idx)) != 0 && (b & (1 << idx)) == 0)
+                return count(curr.one, a, b, idx - 1);
+            else
+                return size(curr.one) + count(curr.zero, a, b, idx - 1);
+        }
+        
+        int count(int a , int b) {
+            return count(root, a, b, offset);
+        }
+
+    }
+    
+
     
     private static void solve() {
         
-        
-        
-        
-        
+        int Q = nextInt();
+        BinaryTrie trie = new BinaryTrie();
+        while(Q-->0) {
+            switch(nextInt()) {
+            case 1:
+                trie.insert(nextInt());
+                break;
+            case 2:
+                trie.remove(nextInt());
+                break;
+            case 3:
+                println(trie.count(nextInt(), nextInt()));
+                break;
+            }
+        }
         
     }
     
