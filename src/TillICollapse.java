@@ -49,16 +49,33 @@ public class TillICollapse {
             return newNode;
         }
     }
-    
+    static int sz(SegTreeNode n) {
+        return n == null ? 0 : n.size;
+    }
     static int selection(SegTreeNode root , int k , int l , int r) {
-        if(l == r)
-            return l;
-        else {
+        int sel = -1;
+        while(l <= r) {
             int m = (l + r) >> 1;
-            if(k >= root.left.size)
-                return selection(root.right, k - root.left.size, m + 1, r);
-            else
-                return selection(root.left, k, l, m);
+            if(k >= sz(root.left)) {
+                k -= sz(root.left);
+                l = m + 1;
+                sel = m;
+                root = root.right;
+            }
+            else {
+                r = m;
+                root = root.left;
+            }
+        }
+        return sel;
+    }
+    
+    static void print(SegTreeNode root , int l , int r) {
+        System.out.println("l " + l + " r " + r + " sz " + root.size + " " + (l == r ? "*" : ""));
+        if(l < r) {
+            int m = (l + r) >> 1;
+            print(root.left, l, m);
+            print(root.right , m + 1 , r);
         }
     }
     
@@ -76,14 +93,27 @@ public class TillICollapse {
         
         persistent = new SegTreeNode[n];
         persistent[0] = initSegTree(0, n - 1);
+        System.out.println("next " + Arrays.toString(next));
+        print(persistent[0], 0, n - 1);
         for(int i = 1; i < n; i++) {
+            System.out.println("tree " + i);
             persistent[i] = initSegTree(persistent[i - 1], 0, n - 1, i - 1, 0);
             if(next[i - 1] < n)
                 persistent[i] = initSegTree(persistent[i], 0, n - 1, next[i - 1], 1);
+            print(persistent[i], 0, n - 1);
         }
         
         for(int k = 1; k <= n; k++) {
-            
+            int cnt = 0;
+            int ptr = 0;
+            System.out.println("k " + k);
+            while(ptr < n) {
+                cnt++;
+                System.out.print("from " + ptr);
+                ptr = selection(persistent[ptr], k, 0, n - 1) + 1;
+                System.out.println(" to " + ptr);
+            }
+            print(cnt + " ");
         }
     }
     
