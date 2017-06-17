@@ -5,15 +5,86 @@ public class TillICollapse {
     
     
     /************************ SOLUTION STARTS HERE ************************/
+    static class SegTreeNode {
+        int size;
+        SegTreeNode left , right;
+        public SegTreeNode(int size) {
+            this.size = size;
+        }
+        
+        @Override
+        public String toString() {
+            return String.format("[sz = %d]", size);
+        }
+    }
     
+    static SegTreeNode persistent[];
+    static int arr[] , last[];
+    static SegTreeNode initSegTree(int L , int R) {
+        if(L == R)
+            return new SegTreeNode(last[arr[L]] == L ? 1 : 0);
+        else {
+            SegTreeNode newNode = new SegTreeNode(0);
+            int mid = (L + R) >> 1;
+            newNode.left = initSegTree(L, mid);
+            newNode.right = initSegTree(mid + 1, R);
+            newNode.size = newNode.left.size + newNode.right.size;
+            return newNode;
+        }
+    }
+    static SegTreeNode initSegTree(SegTreeNode prev , int L , int R , int index , int val) {
+        if(L == R) 
+            return new SegTreeNode(val);
+        else {
+            int mid = (L + R) >> 1;
+            SegTreeNode l = prev.left;
+            SegTreeNode r = prev.right;
+            if(index <= mid)
+                l = initSegTree(prev.left , L , mid , index , val);
+            else
+                r = initSegTree(prev.right, mid + 1, R, index , val);
+            SegTreeNode newNode = new SegTreeNode(l.size + r.size);
+            newNode.left = l;
+            newNode.right = r;
+            return newNode;
+        }
+    }
+    
+    static int selection(SegTreeNode root , int k , int l , int r) {
+        if(l == r)
+            return l;
+        else {
+            int m = (l + r) >> 1;
+            if(k >= root.left.size)
+                return selection(root.right, k - root.left.size, m + 1, r);
+            else
+                return selection(root.left, k, l, m);
+        }
+    }
     
     private static void solve() {
         
+        int n = nextInt();
+        arr = nextIntArray(n);
+        last = new int[n + 1];
+        int next[] = new int[n];
+        Arrays.fill(last, n);
+        for(int i = n - 1; i >= 0; i--) {
+            next[i] = last[arr[i]];
+            last[arr[i]] = i;
+        }
         
+        persistent = new SegTreeNode[n];
+        persistent[0] = initSegTree(0, n - 1);
+        for(int i = 1; i < n; i++) {
+            persistent[i] = initSegTree(persistent[i - 1], 0, n - 1, i - 1, 0);
+            if(next[i - 1] < n)
+                persistent[i] = initSegTree(persistent[i], 0, n - 1, next[i - 1], 1);
+        }
         
-        
-        
-        
+        for(int k = 1; k <= n; k++) {
+            
+        }
     }
     
     
