@@ -28,27 +28,34 @@ public class KarenandGame {
             println(-1);
         else {
             
-            int pts[] = new int[N + M];
-            for(int i=0;i<N;i++)
-                pts[i] = C[i][0] - C[0][0];
-            for(int i=0;i<M;i++)
-                pts[N + i] = -C[0][i];
-            
-            Arrays.sort(pts);
-            int x = pts[pts.length / 2];
-            int minCost = 0;
-            for(int pt : pts)
-                minCost += Math.abs(x - pt);
-            
+            int x = 0;
+            int minCost = Integer.MAX_VALUE;
+            outer:
+            for(int k = 0; k <= 500; k++) {
+                int cost = 0;
+                for(int i = 0; i < N; i++) {
+                    if(C[i][0] - C[0][0] + k < 0)
+                        continue outer;
+                    cost += C[i][0] - C[0][0] + k;
+                }
+                
+                for(int j = 0; j < M; j++)
+                    cost += C[0][j] - k;
+                
+                if(cost < minCost) {
+                    minCost = cost;
+                    x = k;
+                }
+            }
             println(minCost);
             for(int i = 0; i < N; i++) {
-                int ROW = Math.abs(C[i][0] - C[0][0] - x);
+                int ROW = C[i][0] - C[0][0] + x;
                 while(ROW-->0)
                     println("row " + (i + 1));
             }
             
             for(int j = 0; j < M; j++) {
-                int COL = Math.abs(-C[0][j] - x);
+                int COL = C[0][j] - x;
                 while(COL-->0)
                     println("col " + (j + 1));
             }
