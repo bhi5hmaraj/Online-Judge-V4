@@ -34,7 +34,6 @@ class MTRNSFRM
 			if(!flag)
 				out.println(-1);
 			else {
-				
 				long pts[] = new long[N + M];
 				for(int i=0;i<N;i++)
 					pts[i] = C[i][0] - C[0][0];

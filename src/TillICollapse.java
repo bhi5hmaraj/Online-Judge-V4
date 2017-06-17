@@ -54,7 +54,7 @@ public class TillICollapse {
     }
     static int selection(SegTreeNode root , int k , int l , int r) {
         int sel = -1;
-        while(l <= r) {
+        while(l <= r && root != null) {
             int m = (l + r) >> 1;
             if(k >= sz(root.left)) {
                 k -= sz(root.left);
