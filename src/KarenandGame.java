@@ -39,14 +39,23 @@ public class KarenandGame {
                     cost += C[i][0] - C[0][0] + k;
                 }
                 
-                for(int j = 0; j < M; j++)
+                for(int j = 0; j < M; j++) {
+                    if(C[0][j] - k < 0)
+                        continue outer;
                     cost += C[0][j] - k;
+                }
                 
                 if(cost < minCost) {
                     minCost = cost;
                     x = k;
                 }
             }
+            /*
+            if(minCost == Integer.MAX_VALUE) {  // Lets see what happens
+                println(-1);
+                return;
+            }
+            */
             println(minCost);
             for(int i = 0; i < N; i++) {
                 int ROW = C[i][0] - C[0][0] + x;
