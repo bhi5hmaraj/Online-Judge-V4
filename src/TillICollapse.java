@@ -49,15 +49,12 @@ public class TillICollapse {
             return newNode;
         }
     }
-    static int sz(SegTreeNode n) {
-        return n == null ? 0 : n.size;
-    }
     static int selection(SegTreeNode root , int k , int l , int r) {
         int sel = -1;
         while(l <= r && root != null) {
             int m = (l + r) >> 1;
-            if(k >= sz(root.left)) {
-                k -= sz(root.left);
+            if(k >= (root.left == null ? 0 : root.left.size)) {
+                k -= (root.left == null ? 0 : root.left.size);
                 l = m + 1;
                 sel = m;
                 root = root.right;
@@ -82,7 +79,8 @@ public class TillICollapse {
     private static void solve() {
         
         int n = nextInt();
-        arr = nextIntArray(n);
+        arr = Arrays.copyOf(nextIntArray(n), n + 1);    // small trick so that selection works properly
+        n++;                                            // having a distinct number at the last
         last = new int[n + 1];
         int next[] = new int[n];
         Arrays.fill(last, n);
@@ -93,25 +91,18 @@ public class TillICollapse {
         
         persistent = new SegTreeNode[n];
         persistent[0] = initSegTree(0, n - 1);
-        System.out.println("next " + Arrays.toString(next));
-        print(persistent[0], 0, n - 1);
         for(int i = 1; i < n; i++) {
-            System.out.println("tree " + i);
             persistent[i] = initSegTree(persistent[i - 1], 0, n - 1, i - 1, 0);
             if(next[i - 1] < n)
                 persistent[i] = initSegTree(persistent[i], 0, n - 1, next[i - 1], 1);
-            print(persistent[i], 0, n - 1);
         }
         
-        for(int k = 1; k <= n; k++) {
+        for(int k = 1; k < n; k++) {
             int cnt = 0;
             int ptr = 0;
-            System.out.println("k " + k);
-            while(ptr < n) {
+            while(ptr < n - 1) {
                 cnt++;
-                System.out.print("from " + ptr);
-                ptr = selection(persistent[ptr], k, 0, n - 1) + 1;
-                System.out.println(" to " + ptr);
+                ptr = selection(persistent[ptr], k, 0, n - 1);
             }
             print(cnt + " ");
         }
