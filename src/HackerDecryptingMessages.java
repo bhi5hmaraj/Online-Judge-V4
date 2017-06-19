@@ -6,7 +6,7 @@ public class HackerDecryptingMessages {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static final int MAX = (int) /*1e6*/50;
+    static final int MAX = (int) 1e6;
     static int bigPrime[];
     
     private static void preCalBigPrimeSieve()  {
@@ -66,7 +66,7 @@ public class HackerDecryptingMessages {
         int Q = nextInt();
         int arr[] = nextIntArray(N);
         
-        MyBitSet powers = new MyBitSet(MAX);
+        MyBitSet powers = new MyBitSet(MAX + 1);
         powers.set(1);
         for(int a : arr) 
             if(a > 1 && !powers.get(a)){
@@ -88,7 +88,7 @@ public class HackerDecryptingMessages {
         
         // System.out.println("pows " + Arrays.toString(pows));
         
-        MyBitSet possible = new MyBitSet(MAX);
+        MyBitSet possible = new MyBitSet(MAX + 1);
         possible.set(1);
         for(int i = 0; i < sz; i++) {
             int lo = i , hi = sz - 1;
@@ -106,7 +106,6 @@ public class HackerDecryptingMessages {
             for(int j = i; j <= floor; j++)
                 possible.set(pows[i] * pows[j]);
         }
-        
         // possible.print();
         int primeFactors[] = new int[10];   // maximum prefix prime product is 10
         while(Q-->0) {
@@ -124,8 +123,9 @@ public class HackerDecryptingMessages {
             for(int i = 0; i < sz; i++)
                 for(int j = i; j < sz; j++)
                     if(primeFactors[i] <= MAX / primeFactors[j] && 
-                       X % primeFactors[i] * primeFactors[j] == 0 &&
+                       X % (primeFactors[i] * primeFactors[j]) == 0 &&
                        possible.get(X / (primeFactors[i] * primeFactors[j]))) {
+                         System.out.println("found " + primeFactors[i] + " " + primeFactors[j]);
                         flag = true;
                         break outer;
                     }
