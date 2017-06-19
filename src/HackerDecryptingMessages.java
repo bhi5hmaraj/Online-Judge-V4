@@ -6,7 +6,7 @@ public class HackerDecryptingMessages {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static final int MAX = (int) 1e6;
+    static final int MAX = (int) /*1e6*/50;
     static int bigPrime[];
     
     private static void preCalBigPrimeSieve()  {
@@ -31,19 +31,11 @@ public class HackerDecryptingMessages {
             cardinality = 0;
         }
 
-        void set(int n, boolean f) {
-            int index = n / 64;
-            if (f) {
-                if((bits[index] & (1L << (n % 64))) == 0)
-                    cardinality++;
-                bits[index] |= (1L << (n % 64));
-            }
-            else
-                bits[index] ^= (1L << (n % 64));
-        }
-
         void set(int n) {
-            set(n, true);
+            int index = n / 64;
+            if((bits[index] & (1L << (n % 64))) == 0)
+                cardinality++;
+            bits[index] |= (1L << (n % 64));
         }
         
         int cardinality() {
@@ -56,8 +48,13 @@ public class HackerDecryptingMessages {
         
         void print() {
             System.out.println("bitset card " + cardinality + " size " + size);
-            for(long l : bits)
-                System.out.println(Long.toBinaryString(l));
+            for(int i = 0; i < bits.length; i++)
+                if(bits[i] > 0) {
+                    for(int j = 0; j < 64; j++)
+                        if((bits[i] & (1L << j)) != 0)
+                            System.out.print((64*i + j) + " ");
+                }
+            System.out.println();
         }
     }
 
@@ -72,7 +69,7 @@ public class HackerDecryptingMessages {
         MyBitSet powers = new MyBitSet(MAX);
         powers.set(1);
         for(int a : arr) 
-            if(!powers.get(a)){
+            if(a > 1 && !powers.get(a)){
                 int pow = a;
                 powers.set(pow);
                 while(pow <= MAX / a) {
@@ -81,8 +78,60 @@ public class HackerDecryptingMessages {
                 }
             }
         
+        // powers.print();
+        
         int pows[] = new int[powers.cardinality];
-        for(int i = )
+        int sz = 0;
+        for(int i = 1; i <= MAX; i++)
+            if(powers.get(i))
+                pows[sz++] = i;
+        
+        // System.out.println("pows " + Arrays.toString(pows));
+        
+        MyBitSet possible = new MyBitSet(MAX);
+        possible.set(1);
+        for(int i = 0; i < sz; i++) {
+            int lo = i , hi = sz - 1;
+            int floor = i - 1;
+            int key = MAX / pows[i];
+            while(lo <= hi) {
+                int mid = (lo + hi) >> 1;
+                if(pows[mid] <= key) {
+                    floor = mid;
+                    lo = mid + 1;
+                }
+                else 
+                    hi = mid - 1;
+            }
+            for(int j = i; j <= floor; j++)
+                possible.set(pows[i] * pows[j]);
+        }
+        
+        // possible.print();
+        int primeFactors[] = new int[10];   // maximum prefix prime product is 10
+        while(Q-->0) {
+            int X = nextInt();
+            sz = 0;
+            int temp = X;
+            boolean flag = false;
+            while(temp > 1) {
+                int p = bigPrime[temp];
+                primeFactors[sz++] = p;
+                while(temp % p == 0)
+                    temp /= p;
+            }
+            outer:
+            for(int i = 0; i < sz; i++)
+                for(int j = i; j < sz; j++)
+                    if(primeFactors[i] <= MAX / primeFactors[j] && 
+                       X % primeFactors[i] * primeFactors[j] == 0 &&
+                       possible.get(X / (primeFactors[i] * primeFactors[j]))) {
+                        flag = true;
+                        break outer;
+                    }
+            
+            println(flag ? "YES" : "NO");
+        }
         
     }
     
