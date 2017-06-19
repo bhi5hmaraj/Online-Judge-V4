@@ -78,39 +78,10 @@ public class HackerDecryptingMessages {
                 }
             }
         
-        // powers.print();
-        
-        int pows[] = new int[powers.cardinality];
-        int sz = 0;
-        for(int i = 1; i <= MAX; i++)
-            if(powers.get(i))
-                pows[sz++] = i;
-        
-        // System.out.println("pows " + Arrays.toString(pows));
-        
-        MyBitSet possible = new MyBitSet(MAX + 1);
-        possible.set(1);
-        for(int i = 0; i < sz; i++) {
-            int lo = i , hi = sz - 1;
-            int floor = i - 1;
-            int key = MAX / pows[i];
-            while(lo <= hi) {
-                int mid = (lo + hi) >> 1;
-                if(pows[mid] <= key) {
-                    floor = mid;
-                    lo = mid + 1;
-                }
-                else 
-                    hi = mid - 1;
-            }
-            for(int j = i; j <= floor; j++)
-                possible.set(pows[i] * pows[j]);
-        }
-        // possible.print();
         int primeFactors[] = new int[10];   // maximum prefix prime product is 10
         while(Q-->0) {
             int X = nextInt();
-            sz = 0;
+            int sz = 0;
             int temp = X;
             boolean flag = false;
             while(temp > 1) {
@@ -124,8 +95,7 @@ public class HackerDecryptingMessages {
                 for(int j = i; j < sz; j++)
                     if(primeFactors[i] <= MAX / primeFactors[j] && 
                        X % (primeFactors[i] * primeFactors[j]) == 0 &&
-                       possible.get(X / (primeFactors[i] * primeFactors[j]))) {
-                         System.out.println("found " + primeFactors[i] + " " + primeFactors[j]);
+                       powers.get(X / (primeFactors[i] * primeFactors[j]))) {
                         flag = true;
                         break outer;
                     }
