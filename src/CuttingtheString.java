@@ -33,6 +33,8 @@ public class CuttingtheString {
     
     static int hash1[] , hash2[];
     static int[] subHash(int l , int r) {
+        if(l > r)
+            return new int[] { 0 , 0 };
         return new int[] {
                 (int) ((1L * modInverse(pow1[l - 1], m1) * ((hash1[r] - hash1[l - 1] + m1) % m1)) % (long)(m1)),
                 (int) ((1L * modInverse(pow2[l - 1], m2) * ((hash2[r] - hash2[l - 1] + m2) % m2)) % (long)(m2))
@@ -42,8 +44,8 @@ public class CuttingtheString {
     
     static int[] concat(int[] h1 , int[] h2 , int len) {
         return new int[] {
-                (h1[0] + (int) ((1L * len * h2[0]) % (long)(m1))) % m1,
-                (h1[1] + (int) ((1L * len * h2[1]) % (long)(m2))) % m2
+                (h1[0] + (int) ((1L * pow1[len] * h2[0]) % (long)(m1))) % m1,
+                (h1[1] + (int) ((1L * pow2[len] * h2[1]) % (long)(m2))) % m2
         };
     }
     
@@ -61,7 +63,33 @@ public class CuttingtheString {
             hash2[i] = (hash2[i - 1] + ((int) ((1L * pow2[i - 1] * str[i - 1]) % (long)(m2)))) % m2;
         }
         
+        long cnt = 0;
         
+        for(int subLen = 1; subLen <= N; subLen++) {
+            for(int L = 1; L + subLen - 1 <= N; L++) {
+                int R = L + subLen - 1;
+                int[] currHash = subHash(L, R);
+                for(int left = 0; left < L - 1; left++) {
+                    int lhash[] = subHash(1, left);
+                    int t1[] = concat(lhash, currHash, left);
+                    int t2[] = concat(subHash(left + 1, L - 1), subHash(R + 1, N), L - left - 1);
+                    int fh[] = concat(t1, t2, left + subLen);
+                    if(fh[0] == hash1[N] && fh[1] == hash2[N])
+                        cnt++;
+                }
+                
+                for(int right = R + 1; right <= N; right++) {
+                    int lh[] = subHash(1, L - 1);
+                    int t1[] = concat(lh, subHash(R + 1, right), L - 1);
+                    int t2[] = concat(currHash, subHash(right + 1, N), subLen);
+                    int fh[] = concat(t1, t2, right - R + L - 2);
+                    if(fh[0] == hash1[N] && fh[1] == hash2[N])
+                        cnt++;
+                }
+            }
+        }
+        
+        println(cnt);
     }
     
     
