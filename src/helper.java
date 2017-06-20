@@ -1242,7 +1242,6 @@ class helper {
         long bits[];
         int cardinality;
         int size;
-        final long ALL = 0xFFFFFFFFFFFFFFFFL;
         MyBitSet(int MAX) {
             size = MAX;
             bits = new long[((MAX - 1) / 64) + 1];
@@ -1257,7 +1256,7 @@ class helper {
                 bits[index] |= (1L << (n % 64));
             }
             else
-                bits[index] ^= (1L << (n % 64));
+                bits[index] ^= (bits[index] & (1L << (n % 64))) != 0 ? (1L << (n % 64)) : 0;
         }
 
         void set(int n) {
@@ -1267,25 +1266,11 @@ class helper {
         int cardinality() {
             return cardinality;
         }
-        
-        boolean unionAll(MyBitSet other) {  // Returns true if union of this and other is universe
-            for(int i = 0; i < bits.length - 1; i++)
-                if((bits[i] | other.bits[i]) != ALL)
-                    return false;
-            
-            int left = size % 64;
-            return (bits[bits.length - 1] | other.bits[bits.length - 1]) == (ALL >>> (64 - left));
-        }
-        
+                
         boolean get(int n) {
             return ((bits[n / 64]) & (1L << (n % 64))) != 0;
         }
         
-        void print() {
-            System.out.println("bitset card " + cardinality + " size " + size);
-            for(long l : bits)
-                System.out.println(Long.toBinaryString(l));
-        }
     }
 
 	/* Increase stack size in java
