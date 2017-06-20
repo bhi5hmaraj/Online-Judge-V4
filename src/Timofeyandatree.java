@@ -1,55 +1,20 @@
 import java.util.*;
 import java.io.*;
-public class RestoreGraph {
+public class Timofeyandatree {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
     
     
+    ArrayList<Integer>[] adj;
+    
     private static void solve() {
         
         
-        int n = nextInt();
-        long k = nextInt();
         
-        ArrayList<Integer> freq[] = new ArrayList[n];
-        for(int i = 0; i < n; i++)
-            freq[i] = new ArrayList<>();
-        int maxDist = 0;
         
-        for(int i = 1; i <= n; i++) {
-            int d = nextInt();
-            freq[d].add(i);
-            maxDist = Math.max(maxDist , d);
-        }
         
-        if(freq[0].size() > 1 || (n > 1 && freq[1].size() > k)) {
-            println(-1);
-            return;
-        }
-        
-        for(int i = 0; i <= maxDist; i++) {
-            if(freq[i].size() == 0) {
-                println(-1);
-                return;
-            }
-        }
-        
-        int E = n > 1 ? freq[1].size() : 0;
-        for(int i = 1; i < maxDist; i++) {
-            E += freq[i + 1].size();
-            if(1L * (k - 1) * freq[i].size() < 1L * freq[i + 1].size()) {
-                println(-1);
-                return;
-            }
-        }
-        
-        println(E);
-        for(int i = 1; i <= maxDist; i++)
-            for(int j = 0 , szTo = freq[i].size(); j < szTo; j++) 
-                println(freq[i - 1].get(j % freq[i - 1].size()) + " " + freq[i].get(j));
-            
         
     }
     
