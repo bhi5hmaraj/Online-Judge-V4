@@ -25,6 +25,22 @@ public class EvenoddBoxes {
                 for(int i = 0; i < N; i++)
                     ones += arr[i] == 1 && i % 2 == 0 ? 1 : 0;
                 
+                if(ones <= cnt - ones) 
+                    println(ones + ((cnt - 2*ones) / 2));
+                else {
+                    long have = 0;
+                    for(int i = 0; i < N; i++) {
+                        if(i % 2 == arr[i] % 2)
+                            have += (arr[i] - (arr[i] % 2 == 0 ? 2 : 1));
+                        else if(arr[i] > 1) 
+                            have += arr[i] - (arr[i] % 2 == 0 ? 1 : 2);
+                        
+                    }
+                    if(have >= (long) ones)
+                        println(cnt);
+                    else
+                        println(-1);
+                }
             }
         }
         
