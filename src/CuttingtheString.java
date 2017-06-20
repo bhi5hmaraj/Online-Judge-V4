@@ -1,50 +1,65 @@
 import java.util.*;
 import java.io.*;
-public class EvenoddBoxes {
+public class CuttingtheString {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    static final int p1 = 100151 , m1 = (int) 1e9 + 7;  // Twin Primes
+    static final int p2 = p1 + 2 , m2 = m1 + 2;
+    static final int MAX = (int) 6e3 + 10;
+    static final int pow1[] = new int[MAX + 1];
+    static final int pow2[] = new int[MAX + 1];
+    static int modPow(long a , long b , long mod) {
+        long pow = 1;
+        while(b > 0) {
+            if((b & 1L) == 1)
+                pow = ((pow * a) % mod);
+
+            a = ((a * a) % (mod));
+            b >>= 1;
+        }
+        return (int) pow;
+    }
+    static int modInverse(long n , long mod)  {return modPow(n, mod - 2 , mod);} // Fermat's little theorem
+    static {
+        pow1[0] = pow2[0] = 1;
+        for(int i = 1; i <= MAX; i++) {
+            pow1[i] = (int) ((1L * pow1[i - 1] * p1) % (long)(m1));
+            pow2[i] = (int) ((1L * pow2[i - 1] * p2) % (long)(m2));
+        }
+    }
+    
+    static int hash1[] , hash2[];
+    static int[] subHash(int l , int r) {
+        return new int[] {
+                (int) ((1L * modInverse(pow1[l - 1], m1) * ((hash1[r] - hash1[l - 1] + m1) % m1)) % (long)(m1)),
+                (int) ((1L * modInverse(pow2[l - 1], m2) * ((hash2[r] - hash2[l - 1] + m2) % m2)) % (long)(m2))
+        };
+    }
+    
+    
+    static int[] concat(int[] h1 , int[] h2 , int len) {
+        return new int[] {
+                (h1[0] + (int) ((1L * len * h2[0]) % (long)(m1))) % m1,
+                (h1[1] + (int) ((1L * len * h2[1]) % (long)(m2))) % m2
+        };
+    }
     
     private static void solve() {
         
         
-        int T = nextInt();
-        while(T-->0) {
-            int N = nextInt();
-            int arr[] = nextIntArray(N);
-            int cnt = 0;
-            for(int i = 0; i < N; i++)
-                cnt += i % 2 != arr[i] % 2 ? 1 : 0;
-            
-            if(cnt % 2 == 1)
-                println(-1);
-            else {
-                int ones = 0;
-                for(int i = 0; i < N; i++)
-                    ones += arr[i] == 1 && i % 2 == 0 ? 1 : 0;
-                
-                if(ones <= cnt - ones) 
-                    println(ones + ((cnt - 2*ones) / 2));
-                else {
-                    long have = 0;
-                    for(int i = 0; i < N; i++) {
-                        if(i % 2 == arr[i] % 2)
-                            have += (arr[i] - (arr[i] % 2 == 0 ? 2 : 1));
-                        else if(arr[i] > 1) {
-                            int t = arr[i] - 1;
-                            have += t - (t % 2 == 0 ? 2 : 1);
-                        }
-                    }
-                    if(have >= (long) (ones - (cnt - ones)))
-                        println(ones);
-                    else
-                        println(-1);
-                }
-            }
-        }
+        char str[] = nextLine().toCharArray();
+        int N = str.length;
+        hash1 = new int[N + 1];
+        hash2 = new int[N + 1];
         
+        hash1[1] = hash2[1] = str[0];
+        for(int i = 2; i <= N; i++) {
+            hash1[i] = (hash1[i - 1] + ((int) ((1L * pow1[i - 1] * str[i - 1]) % (long)(m1)))) % m1;
+            hash2[i] = (hash2[i - 1] + ((int) ((1L * pow2[i - 1] * str[i - 1]) % (long)(m2)))) % m2;
+        }
         
         
     }
