@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.io.*;
 public class UnbearableControvorsyofBeing {
     
@@ -34,7 +35,14 @@ public class UnbearableControvorsyofBeing {
         int cardinality() {
             return cardinality;
         }
-                
+        
+        int intersectSize(MyBitSet other) {
+            int sum = 0;
+            for(int i = 0; i < bits.length; i++)
+                sum += Long.bitCount(bits[i] & other.bits[i]);
+            return sum;
+        }
+        
         boolean get(int n) {
             return ((bits[n / 64]) & (1L << (n % 64))) != 0;
         }
@@ -42,21 +50,44 @@ public class UnbearableControvorsyofBeing {
     }
 
     
+    @SuppressWarnings("unchecked")
     private static void solve() {
         
         
         int V = nextInt();
         int E = nextInt();
-        MyBitSet adj[] = new MyBitSet[V + 1];
+        MyBitSet bitSet[] = new MyBitSet[V + 1];
+        ArrayList<Integer> adj[] = new ArrayList[V + 1];
+        for(int i = 1; i <= V; i++) {
+            bitSet[i] = new MyBitSet(V + 1);
+            adj[i] = new ArrayList<>();
+        }
+        
+        while(E-->0) {
+            int u = nextInt();
+            int v = nextInt();
+            adj[u].add(v);
+            bitSet[u].set(v);
+        }
+        
+        int cache[][] = new int[V + 1][V + 1];
         for(int i = 1; i <= V; i++)
-            adj[i] = new MyBitSet(V + 1);
+            for(int j = 1; j <= V; j++)
+                if(bitSet[i].cardinality > 0 && bitSet[j].cardinality > 0)
+                    cache[i][j] = bitSet[i].intersectSize(bitSet[j]);
         
-        while(E-->0)
-            adj[nextInt()].set(nextInt());
+        int cnt = 0;
+        for(int i = 1; i <= V; i++) 
+            for(int j = 0; j < adj[i].size(); j++) {
+                int jj = adj[i].get(j);
+                for(int k = j + 1; k < adj[i].size(); k++) {
+                    int kk = adj[i].get(k);
+                    cnt += cache[jj][kk] - (bitSet[jj].get(i) && bitSet[kk].get(i) ? 1 : 0);
+                }
+            }
         
-        
-        
-        
+        println(cnt);
+
     }
     
     
