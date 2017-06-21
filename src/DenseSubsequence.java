@@ -55,14 +55,35 @@ public class DenseSubsequence  {
         
         int m = nextInt();
         char str[] = nextLine().toCharArray();
+        int n = str.length;
         SegmentTree RMQ = new SegmentTree(str);
         
-        ArrayList<Character> ans = new ArrayList<>();
-        int curr = 0;
-        while(curr < str.length) {
-            
+        if(m >= n) {
+            println(str[RMQ.query(0, n - 1)]);
+            return;
         }
         
+        ArrayList<Character> ans = new ArrayList<>();
+        char maxChar = 0;
+        for(int i = 0; i <= n - m; i++)
+            maxChar = (char) Math.max(maxChar , str[RMQ.query(i, i + m - 1)]);
+        
+        for(char ch : str)
+            if(ch < maxChar)
+                ans.add(ch);
+        
+        for(int i = 0; i <= n - m;) {
+            int minIndex = RMQ.query(i, i + m - 1);
+            if(str[minIndex] == maxChar) {
+                ans.add(str[minIndex]);
+                i = minIndex + 1;
+            }
+            else
+                i++;
+        }
+        
+        Collections.sort(ans);
+        ans.stream().forEach(writer::print);
     }
     
     
