@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.stream.IntStream;
 import java.io.*;
 public class Password {
     
@@ -21,13 +22,21 @@ public class Password {
             prefix[i] = str[i] == str[border] ? border + 1: 0;
         }
         
-        System.out.println(Arrays.toString(prefix));
-        
         if(prefix[n - 1] == 0)
             println("Just a legend");
         else {
-            int freq[] = new int[n];
-            println("Just a legend");
+            boolean set[] = new boolean[n];
+            for(int i = 0; i < n - 1; i++)
+                set[prefix[i]] = true;
+            int border;
+            for(border = prefix[n - 2]; border > 0 && !(str[border] == str[n - 1] && set[border + 1])
+                    ; border = prefix[border - 1]) 
+                ;
+            
+            if(str[n - 1] == str[border] && set[border + 1])
+                println(new String(str).substring(0, border + 1));
+            else
+                println("Just a legend");
         }
     }
     
