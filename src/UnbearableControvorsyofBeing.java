@@ -49,7 +49,6 @@ public class UnbearableControvorsyofBeing {
     }
 
     
-    @SuppressWarnings("unchecked")
     private static void solve() {
         
         
@@ -58,17 +57,14 @@ public class UnbearableControvorsyofBeing {
         MyBitSet bitSetOut[] = new MyBitSet[V + 1];
         MyBitSet bitSetIn[] = new MyBitSet[V + 1];
         int bitSetLen = (V / 64) + 1;
-        ArrayList<Integer> adj[] = new ArrayList[V + 1];
         for(int i = 1; i <= V; i++) {
             bitSetOut[i] = new MyBitSet(V + 1);
             bitSetIn[i] = new MyBitSet(V + 1);
-            adj[i] = new ArrayList<>();
         }
         
         while(E-->0) {
             int u = nextInt();
             int v = nextInt();
-            adj[u].add(v);
             bitSetOut[u].set(v);
             bitSetIn[v].set(u);
         }
@@ -86,19 +82,20 @@ public class UnbearableControvorsyofBeing {
         println(cnt);
 
     }
-    static int[][] packU(int n, int[] from, int[] to , int isOneBased) {    // Courtesy : UWI ( adjacency list using Jagged Arrays )
+    
+    /*
+     * Courtesy : UWI ( adjacency list using Jagged Arrays )
+     */
+    static int[][] packU(int n, int[] from, int[] to , int isOneBased) {    
         int[][] g = new int[n + isOneBased][];
         int[] p = new int[n + isOneBased];
         for (int f : from)
             p[f]++;
-        for (int t : to)
-            p[t]++;
         for (int i = 0 + isOneBased; i < n + isOneBased; i++)
             g[i] = new int[p[i]];
-        for (int i = 0; i < from.length; i++) {
+        for (int i = 0; i < from.length; i++) 
             g[from[i]][--p[from[i]]] = to[i];
-            g[to[i]][--p[to[i]]] = from[i];
-        }
+        
         return g;
     }
     
@@ -107,19 +104,21 @@ public class UnbearableControvorsyofBeing {
         int V = nextInt();
         int E = nextInt();
         boolean conn[][] = new boolean[V + 1][V + 1];
-        
-        while(E-->0) {
+        int from[] = new int[E];
+        int to[] = new int[E];
+        for(int i = 0; i < E; i++){
             int u = nextInt();
             int v = nextInt();
-            adj[u].add(v);
+            from[i] = u;
+            to[i] = v;
             conn[u][v] = true;
         }
-        
-        int cnt = 0;
+        int adj[][] = packU(V, from, to, 1);
+        long cnt = 0;
         for(int i = 1; i <= V; i++) 
             for(int j = 1; j <= V; j++) 
-                if(i != j && adj[i].size() > 0) {
-                    int canTake = 0;
+                if(i != j && adj[i].length > 0) {
+                    long canTake = 0;
                     for(int k : adj[i])
                         canTake += conn[k][j] ? 1 : 0;
                     cnt += (canTake * (canTake - 1)) / 2;
