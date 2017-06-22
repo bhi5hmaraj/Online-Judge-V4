@@ -1,5 +1,4 @@
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.io.*;
 public class UnbearableControvorsyofBeing {
     
@@ -56,10 +55,13 @@ public class UnbearableControvorsyofBeing {
         
         int V = nextInt();
         int E = nextInt();
-        MyBitSet bitSet[] = new MyBitSet[V + 1];
+        MyBitSet bitSetOut[] = new MyBitSet[V + 1];
+        MyBitSet bitSetIn[] = new MyBitSet[V + 1];
+        int bitSetLen = (V / 64) + 1;
         ArrayList<Integer> adj[] = new ArrayList[V + 1];
         for(int i = 1; i <= V; i++) {
-            bitSet[i] = new MyBitSet(V + 1);
+            bitSetOut[i] = new MyBitSet(V + 1);
+            bitSetIn[i] = new MyBitSet(V + 1);
             adj[i] = new ArrayList<>();
         }
         
@@ -67,30 +69,64 @@ public class UnbearableControvorsyofBeing {
             int u = nextInt();
             int v = nextInt();
             adj[u].add(v);
-            bitSet[u].set(v);
+            bitSetOut[u].set(v);
+            bitSetIn[v].set(u);
         }
         
-        int cache[][] = new int[V + 1][V + 1];
-        for(int i = 1; i <= V; i++)
-            for(int j = 1; j <= V; j++)
-                if(bitSet[i].cardinality > 0 && bitSet[j].cardinality > 0)
-                    cache[i][j] = bitSet[i].intersectSize(bitSet[j]);
-        
         int cnt = 0;
-        for(int i = 1; i <= V; i++) 
-            for(int j = 0; j < adj[i].size(); j++) {
-                int jj = adj[i].get(j);
-                for(int k = j + 1; k < adj[i].size(); k++) {
-                    int kk = adj[i].get(k);
-                    cnt += cache[jj][kk] - (bitSet[jj].get(i) && bitSet[kk].get(i) ? 1 : 0);
+        for(int i = 1; i <= V; i++) {
+            for(int j = i + 1; j <= V; j++) {
+                if(bitSetIn[i].cardinality > 0 && bitSetIn[j].cardinality > 0 && bitSetOut[i].cardinality > 0 && bitSetOut[j].cardinality > 0) {
+                    cnt += bitSetIn[i].intersectSize(bitSetIn[j]) * bitSetOut[i].intersectSize(bitSetOut[j]);
+                    for(int k = 0; k < bitSetLen; k++)
+                        cnt -= Long.bitCount(bitSetIn[i].bits[k] & bitSetIn[j].bits[k] & bitSetOut[i].bits[k] & bitSetOut[j].bits[k]);
                 }
             }
-        
+        }
         println(cnt);
 
     }
+    static int[][] packU(int n, int[] from, int[] to , int isOneBased) {    // Courtesy : UWI ( adjacency list using Jagged Arrays )
+        int[][] g = new int[n + isOneBased][];
+        int[] p = new int[n + isOneBased];
+        for (int f : from)
+            p[f]++;
+        for (int t : to)
+            p[t]++;
+        for (int i = 0 + isOneBased; i < n + isOneBased; i++)
+            g[i] = new int[p[i]];
+        for (int i = 0; i < from.length; i++) {
+            g[from[i]][--p[from[i]]] = to[i];
+            g[to[i]][--p[to[i]]] = from[i];
+        }
+        return g;
+    }
     
-    
+    private static void solve2() {
+        
+        int V = nextInt();
+        int E = nextInt();
+        boolean conn[][] = new boolean[V + 1][V + 1];
+        
+        while(E-->0) {
+            int u = nextInt();
+            int v = nextInt();
+            adj[u].add(v);
+            conn[u][v] = true;
+        }
+        
+        int cnt = 0;
+        for(int i = 1; i <= V; i++) 
+            for(int j = 1; j <= V; j++) 
+                if(i != j && adj[i].size() > 0) {
+                    int canTake = 0;
+                    for(int k : adj[i])
+                        canTake += conn[k][j] ? 1 : 0;
+                    cnt += (canTake * (canTake - 1)) / 2;
+                }
+         
+        println(cnt);
+    }
     
     /************************ SOLUTION ENDS HERE ************************/
     
@@ -104,7 +140,7 @@ public class UnbearableControvorsyofBeing {
         reader = new BufferedReader(new InputStreamReader(System.in));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
-        solve();
+        solve2();
         reader.close();
         writer.close();
     }
