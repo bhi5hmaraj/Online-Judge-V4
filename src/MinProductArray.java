@@ -1,78 +1,28 @@
 import java.util.*;
 import java.io.*;
-import java.math.BigInteger;
-public class ConsecutivePrimeSum {
+public class MinProductArray  {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    public static boolean[] isPrimeArray(int N) // Sieve of Erathanoses
-    {
-        boolean num[] = new boolean[N + 1];
-        Arrays.fill(num, true);
-        num[1] = num[0]=  false;
-        for (int i = 2; i * i <= N; i++)
-            if (num[i])  // i is prime
-                for (int j = i * i; j <= N; j += i)
-                    num[j] = false;
-        
-            
-        return num;
-    }
-    
-    public static int[] sieve(int N) // Sieve of Erathanoses dependency : isPrimeArray()
-    {
-        
-        boolean isPrime[] = isPrimeArray(N);
-        int sz = 0;
-        for(boolean b : isPrime)
-            sz += b ? 1 : 0;
-        int arr[] = new int[sz];
-        int ptr = 0;
-        for (int i = 2; i <= N; i++)
-            if (isPrime[i])
-                arr[ptr++] = i;
-                
-        return arr;
-    }
-
     
     private static void solve() {
         
-        // final long MAX_N = 12000000000L;
-        long n = nextLong();
-        /// long n = MAX_N;
-        final int MAX = (int) 7e5;
-        int primes[] = sieve(MAX);
-        // long s2 = System.nanoTime();
-        long sum = 5;
-        int last;
-        int cnt = 0;
         
-        for(last = 2; last < primes.length && sum <= n; sum += primes[last] , last++) {
-            /*
-            if(BigInteger.valueOf(sum).isProbablePrime(10)) 
-                cnt++;
-            */
+        int N = nextInt();
+        long K = nextLong();
+        long A[] = nextLongArray(N);
+        long B[] = nextLongArray(N);
+        long minSum = 0;
+        for(int i = 0; i < N; i++)
+            minSum += A[i] * B[i];
+        long greedy = 0;
+        for(long b : B) greedy = Math.max(greedy , Math.abs(b));
         
-            
-            boolean flag = true;
-            for(long fac = 2; fac * fac <= sum; fac++)
-                if(sum % fac == 0) {
-                    flag = false;
-                    break;
-                }
-            
-            if(flag)
-                cnt++;
-            
-        }
-        /*
-        System.out.println("Time : " + (System.nanoTime() - s2) / 1e9);
-        println("Total " + last + " ans cnt " + cnt);
-        */
-        print(cnt);
+        minSum += 2L * -greedy * K;
+        print(minSum);
+        
     }
     
     
