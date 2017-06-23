@@ -2314,5 +2314,18 @@ class helper {
             curr.size--;
         }
     }
-
+    
+    static int[] KMPPrefixFunction(char str[]) {
+        int n = str.length;
+        int prefix[] = new int[n];  // Stores the length of largest border for a prefix 
+        for(int i = 1; i < n; i++) {
+            int border;
+            for(border = prefix[i - 1]; border > 0 && str[border] != str[i]; border = prefix[border - 1])
+                ;
+            prefix[i] = str[i] == str[border] ? border + 1: 0;
+        }
+        
+        return prefix;
+    }
+    
 }
