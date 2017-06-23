@@ -2328,4 +2328,20 @@ class helper {
         return prefix;
     }
     
+    static int[][] packU(int n, int[] from, int[] to , int isOneBased) {    // Courtesy : UWI ( adjacency list using Jagged Arrays )
+        int[][] g = new int[n + isOneBased][];
+        int[] p = new int[n + isOneBased];
+        for (int f : from)
+            p[f]++;
+        for (int t : to)
+            p[t]++;
+        for (int i = 0 + isOneBased; i < n + isOneBased; i++)
+            g[i] = new int[p[i]];
+        for (int i = 0; i < from.length; i++) {
+            g[from[i]][--p[from[i]]] = to[i];
+            g[to[i]][--p[to[i]]] = from[i];
+        }
+        return g;
+    }
+    
 }

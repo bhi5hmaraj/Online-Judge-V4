@@ -1,28 +1,69 @@
 import java.util.*;
 import java.io.*;
-import java.math.BigDecimal;
-public class testing {
+public class NHSPCTaskH {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    
-    private static void solve() {
-        /*
-        long s = System.nanoTime();
-        BigDecimal bigDecimal = new BigDecimal("1e4000");
-        bigDecimal = bigDecimal.multiply(bigDecimal).add(bigDecimal);
-        bigDecimal.toBigInteger();
-        System.out.println("Time : " + ((System.nanoTime() - s) / 1e9));
-        Long.bitCount(2141231232L);
-        */
-        long a = 51321321313545L;
-        System.out.println(321 + a);
+    static final long mod = 1000000007;
+    static ArrayList<Edge>[] adj;
+    static int V;
+    static class Edge  {
+        int v;
+        long cost;
+
+        Edge(int v, long cost) {
+            this.v = v;
+            this.cost = cost;
+        }
+    }
+
+    static int size[];
+    static long DP[];
+    static long dfs(int u , int par) {
+        size[u] = 1;
+        long sum = 0;
+        for(Edge e : adj[u])
+            if(e.v != par) {
+                sum = (sum + dfs(e.v, u)) % mod;
+                size[u] += size[e.v];
+                DP[u] = (DP[u] + DP[e.v]) % mod;
+                DP[u] = (DP[u] + (e.cost * size[e.v]) % mod) % mod;
+            }
+        
+        for(Edge e : adj[u])
+            if(e.v != par) {
+                sum = (sum + ((DP[e.v] * (size[u] - size[e.v])) % mod) + (((e.cost * size[e.v]) % mod) * (size[u] - size[e.v]) % mod)) % mod;
+            }
+        
     }
     
-    // from uwi
-    private static void tr(Object... o) { System.out.println(Arrays.deepToString(o)); }
+    private static void solve() {
+        
+        
+        for(int tc = 1 , T = nextInt(); tc <= T; tc++) {
+            V = nextInt();
+            adj = new ArrayList[V + 1];
+            for(int i = 1; i <= V; i++)
+                adj[i] = new ArrayList<>();
+            
+            int E = V - 1;
+            while(E-->0) {
+                int u = nextInt();
+                int v = nextInt();
+                int cost = nextInt();
+                adj[u].add(new Edge(v, cost));
+                adj[v].add(new Edge(u, cost));
+            }
+            
+//            println("Case " + tc + ": " + sum);
+        }
+        
+        
+    }
+    
+    
     
     /************************ SOLUTION ENDS HERE ************************/
     
