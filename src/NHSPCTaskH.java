@@ -21,6 +21,7 @@ public class NHSPCTaskH {
 
     static int size[];
     static long DP[];
+    static long subSum[];
     static long dfs(int u , int par) {
         size[u] = 1;
         long sum = 0;
@@ -33,14 +34,16 @@ public class NHSPCTaskH {
             }
         
         for(Edge e : adj[u])
-            if(e.v != par) {
-                sum = (sum + ((DP[e.v] * (size[u] - size[e.v])) % mod) + (((e.cost * size[e.v]) % mod) * (size[u] - size[e.v]) % mod)) % mod;
-            }
-        
+            if(e.v != par) 
+                sum = (sum + ((DP[e.v] * (size[u] - size[e.v])) % mod) + 
+                        ((((e.cost * size[e.v]) % mod) * (size[u] - size[e.v])) % mod)) % mod;
+            
+        // System.out.println("u " + u + " sum " + sum);
+        return subSum[u] = sum;
     }
     
+    @SuppressWarnings("unchecked")
     private static void solve() {
-        
         
         for(int tc = 1 , T = nextInt(); tc <= T; tc++) {
             V = nextInt();
@@ -57,7 +60,14 @@ public class NHSPCTaskH {
                 adj[v].add(new Edge(u, cost));
             }
             
-//            println("Case " + tc + ": " + sum);
+            size = new int[V + 1];
+            DP = new long[V + 1];
+            subSum = new long[V + 1];
+            dfs(1, 0);
+            long s = 0;
+            for(long l : subSum)
+                s = (s + l) % mod;
+            println("Case " + tc + ": " + s);
         }
         
         
