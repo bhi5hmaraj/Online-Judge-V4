@@ -67,7 +67,35 @@ public class howmanyzeros {
         
     }
     
+    static char num[];
+    static long memo[][][];
+    static long count(int idx , int any , int numStarted) {
+        if(idx == num.length)
+            return 0;
+        else if(memo[idx][any][numStarted] != -1)
+            return memo[idx][any][numStarted];
+        else if(any > 0)
+            return memo[idx][any][numStarted] = 1 + 10L * count(idx + 1, any, numStarted);
+        else {
+            long cnt = 0;
+            int d = num[idx] - '0';
+            if(d == 0)
+                cnt = numStarted + count(idx + 1, any, numStarted);
+            else {
+                cnt = numStarted + count(idx + 1, 1, numStarted); // for 0 
+                cnt += 1L * (d - 1) * count(idx + 1, 1, 1);       // < d
+                cnt += count(idx + 1, 0, 1);                      // = d
+            }
+            
+            return memo[idx][any][numStarted] = cnt;
+        }
+    }
     
+    private static void solve2() {
+        
+        
+        
+    }
     
     /************************ SOLUTION ENDS HERE ************************/
     
