@@ -11,6 +11,14 @@ public class howmanyzeros {
     static final int MAX_DIGIT = 10;
     static long pow10[];
     
+    static {
+        numOfZeros = new long[MAX_DIGIT + 1];
+        numOfZeros[1] = 1;
+        long pow9 = 9;
+        for(int i = 2; i <= MAX_DIGIT; i++ , pow9 *= 9)
+            numOfZeros[i] = 10 * numOfZeros[i - 1] + pow9;
+    }
+    
     static long countZeros(long n) {
         
         if(n < 0)
@@ -70,12 +78,21 @@ public class howmanyzeros {
     static char num[];
     static long memo[][][];
     static long count(int idx , int any , int numStarted) {
+        System.out.println("idx " + idx + " " + (idx < num.length ? (char) num[idx] : "") + " any " + any + " start " + numStarted);
+        /*
+        long ret = 0;
         if(idx == num.length)
             return 0;
         else if(memo[idx][any][numStarted] != -1)
             return memo[idx][any][numStarted];
-        else if(any > 0)
-            return memo[idx][any][numStarted] = 1 + 10L * count(idx + 1, any, numStarted);
+        else if(any > 0) {
+            if(numStarted > 0)
+                ret = numOfZeros[num.length - idx];
+            else {
+                ret = count(idx + 1, any, numStarted);
+                ret += 9L * count(idx + 1, 1, 1);
+            }
+        }
         else {
             long cnt = 0;
             int d = num[idx] - '0';
@@ -87,12 +104,33 @@ public class howmanyzeros {
                 cnt += count(idx + 1, 0, 1);                      // = d
             }
             
-            return memo[idx][any][numStarted] = cnt;
+            ret = cnt;
         }
+        return memo[idx][any][numStarted] = ret;
+        System.out.println("idx " + idx + " any " + any + " start " + numStarted + " ret " + ret);
+     */ 
+        
+    }
+    
+    static long count(long n) {
+        if(n < 0) return 0;
+        memo = new long[MAX_DIGIT][2][2];
+        for(long a[][] : memo) for(long b[] : a) Arrays.fill(b, -1);
+        num = String.valueOf(n).toCharArray();
+        return 1 + count(0, 0, 0);
     }
     
     private static void solve2() {
         
+        int x = nextInt();
+        System.out.println("count " + count(x));
+        
+        int[] cnt = new int[1];
+        IntStream.rangeClosed(0, x).
+            forEach(i -> String.valueOf(i).chars()
+                            .forEach(ch -> cnt[0] += ch == '0' ? 1 : 0));
+        
+        System.out.println("brute " + cnt[0]);
         
         
     }
@@ -109,7 +147,7 @@ public class howmanyzeros {
         reader = new BufferedReader(new InputStreamReader(System.in));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
-        solve();
+        solve2();
         reader.close();
         writer.close();
     }
