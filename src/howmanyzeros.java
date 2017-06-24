@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.stream.IntStream;
 import java.io.*;
 public class howmanyzeros {
     
@@ -8,31 +9,61 @@ public class howmanyzeros {
 
     static long numOfZeros[];
     static final int MAX_DIGIT = 10;
+    static long pow10[];
     
     static long countZeros(long n) {
         
+        if(n < 0)
+            return 0;
+        
         char str[] = String.valueOf(n).toCharArray();
-        long cnt = 0;
-        for(int i = 0; i < str.length; i++) {
+        long cnt = 1;
+        int zerosCnt = 0;
+        
+        for(int i = 1 , len = str.length; i < len - 1; i++)
+            cnt += 9L * numOfZeros[len - i - 1];
+        
+        cnt += 1L * (str[0] - '0' - 1) * numOfZeros[str.length - 1];
+        System.out.println("cnt0 " + cnt);
+        for(int i = 1 , len = str.length; i < len; i++) {
             int dig = str[i] - '0';
-            
+            if(i < len - 1 && dig > 0) {
+                cnt += 1L * dig * numOfZeros[len - i - 1];
+                cnt += 1L * (zerosCnt + 1) * dig * pow10[len - i - 1];
+            }
+            else
+                zerosCnt++;
         }
         
+        return cnt + zerosCnt;
     }
     
     private static void solve() {
         
         numOfZeros = new long[MAX_DIGIT + 1];
         numOfZeros[1] = 1;
+        pow10 = new long[MAX_DIGIT + 1];
+        pow10[0] = 1;
         long pow9 = 9;
         for(int i = 2; i <= MAX_DIGIT; i++ , pow9 *= 9)
             numOfZeros[i] = 10 * numOfZeros[i - 1] + pow9;
-        
+        for(int i = 1; i <= MAX_DIGIT; i++)
+            pow10[i] = pow10[i - 1] * 10;
+        /*
         long L , R;
         while((L = nextLong()) != -1 && (R = nextLong()) != -1) {
             
         }
+        */
+        int x = nextInt();
+        System.out.println(countZeros(x));
         
+        int[] cnt = new int[1];
+        IntStream.rangeClosed(0, x).
+            forEach(i -> String.valueOf(i).chars()
+                            .forEach(ch -> cnt[0] += ch == '0' ? 1 : 0));
+        
+        System.out.println("brute " + cnt[0]);
         
     }
     
