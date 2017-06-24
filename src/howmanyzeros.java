@@ -14,9 +14,9 @@ public class howmanyzeros {
     static {
         numOfZeros = new long[MAX_DIGIT + 1];
         numOfZeros[1] = 1;
-        long pow9 = 9;
-        for(int i = 2; i <= MAX_DIGIT; i++ , pow9 *= 9)
-            numOfZeros[i] = 10 * numOfZeros[i - 1] + pow9;
+        long pow10 = 10;
+        for(int i = 2; i <= MAX_DIGIT; i++ , pow10 *= 10)
+            numOfZeros[i] = 10 * numOfZeros[i - 1] + pow10;
     }
     
     static long countZeros(long n) {
@@ -36,27 +36,28 @@ public class howmanyzeros {
         for(int i = 1 , len = str.length; i < len - 1; i++) {
             int dig = str[i] - '0';
             if(dig > 0) {
-                cnt += 1L * dig * numOfZeros[len - i - 1];
-                cnt += 1L * (zerosCnt + 1) * dig * pow10[len - i - 1];
+                cnt += 1L * (dig) * numOfZeros[len - i - 1];
+                cnt += 1L * (zerosCnt + dig)  * pow10[len - i - 1];
             }
             else
                 zerosCnt++;
         }
-        
+        System.out.println("before last " + cnt);
         return cnt + (zerosCnt * (str[str.length - 1] - '0' + 1)) + 1;
     }
     
     private static void solve() {
-        
-        numOfZeros = new long[MAX_DIGIT + 1];
-        numOfZeros[1] = 1;
         pow10 = new long[MAX_DIGIT + 1];
         pow10[0] = 1;
+        for(int i = 1; i <= MAX_DIGIT; i++)
+            pow10[i] = pow10[i - 1] * 10;
+        /*
+        numOfZeros = new long[MAX_DIGIT + 1];
+        numOfZeros[1] = 1;
         long pow9 = 9;
         for(int i = 2; i <= MAX_DIGIT; i++ , pow9 *= 9)
             numOfZeros[i] = 10 * numOfZeros[i - 1] + pow9;
-        for(int i = 1; i <= MAX_DIGIT; i++)
-            pow10[i] = pow10[i - 1] * 10;
+        */
         /*
         long L , R;
         while((L = nextLong()) != -1 && (R = nextLong()) != -1) {
