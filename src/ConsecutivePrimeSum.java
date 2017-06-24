@@ -40,23 +40,23 @@ public class ConsecutivePrimeSum {
     
     private static void solve() {
         
-        // final long MAX_N = 12000000000L;
         long n = nextLong();
-        /// long n = MAX_N;
         final int MAX = (int) 7e5;
         int primes[] = sieve(MAX);
-        // long s2 = System.nanoTime();
+        // long s2 = System.nanoTime(); // Used for timing
         long sum = 5;
         int last;
         int cnt = 0;
         
         for(last = 2; last < primes.length && sum <= n; sum += primes[last] , last++) {
-            /*
+            
+            
             if(BigInteger.valueOf(sum).isProbablePrime(10)) 
                 cnt++;
-            */
-        
             
+            
+            /*
+             * sqrt approach
             boolean flag = true;
             for(long fac = 2; fac * fac <= sum; fac++)
                 if(sum % fac == 0) {
@@ -66,11 +66,10 @@ public class ConsecutivePrimeSum {
             
             if(flag)
                 cnt++;
-            
+            */
         }
         /*
         System.out.println("Time : " + (System.nanoTime() - s2) / 1e9);
-        println("Total " + last + " ans cnt " + cnt);
         */
         print(cnt);
     }

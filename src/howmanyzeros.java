@@ -33,9 +33,9 @@ public class howmanyzeros {
         
         cnt += 1L * (str[0] - '0' - 1) * numOfZeros[str.length - 1];
         System.out.println("cnt0 " + cnt);
-        for(int i = 1 , len = str.length; i < len; i++) {
+        for(int i = 1 , len = str.length; i < len - 1; i++) {
             int dig = str[i] - '0';
-            if(i < len - 1 && dig > 0) {
+            if(dig > 0) {
                 cnt += 1L * dig * numOfZeros[len - i - 1];
                 cnt += 1L * (zerosCnt + 1) * dig * pow10[len - i - 1];
             }
@@ -43,7 +43,7 @@ public class howmanyzeros {
                 zerosCnt++;
         }
         
-        return cnt + zerosCnt;
+        return cnt + (zerosCnt * (str[str.length - 1] - '0' + 1)) + 1;
     }
     
     private static void solve() {
@@ -77,9 +77,10 @@ public class howmanyzeros {
     
     static char num[];
     static long memo[][][];
+    
     static long count(int idx , int any , int numStarted) {
         System.out.println("idx " + idx + " " + (idx < num.length ? (char) num[idx] : "") + " any " + any + " start " + numStarted);
-        /*
+        
         long ret = 0;
         if(idx == num.length)
             return 0;
@@ -106,10 +107,9 @@ public class howmanyzeros {
             
             ret = cnt;
         }
-        return memo[idx][any][numStarted] = ret;
         System.out.println("idx " + idx + " any " + any + " start " + numStarted + " ret " + ret);
-     */ 
-        
+        return memo[idx][any][numStarted] = ret;
+      
     }
     
     static long count(long n) {
@@ -147,7 +147,7 @@ public class howmanyzeros {
         reader = new BufferedReader(new InputStreamReader(System.in));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
-        solve2();
+        solve();
         reader.close();
         writer.close();
     }
