@@ -15,10 +15,36 @@ public class OkabeandBoxes {
         pq.add(Integer.MAX_VALUE);
         boolean lazy = false;
         int cnt = 0;
-        
+        int last = -1;
+        int curr = 1;
+        int reserve = 0;
         while(n-->0) {
-            
+            switch(next()) {
+            case "add":
+                int x = nextInt();
+                if(!lazy) {
+                    lazy = x > pq.peek();
+                    if(lazy)
+                        reserve = 0;
+                    else
+                        reserve++;
+                }
+                pq.add(x);
+                last = x;
+                break;
+            case "remove":
+                if(last != curr && lazy) {
+                    cnt++;
+                    lazy = false;
+                }
+                pq.remove();
+                curr++;
+                break;
+            }
+            // println(Arrays.toString(pq.stream().sorted().toArray()));
         }
+        
+        println(cnt);
     }
     
     
