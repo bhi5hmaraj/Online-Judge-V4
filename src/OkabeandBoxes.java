@@ -10,10 +10,15 @@ public class OkabeandBoxes {
     private static void solve() {
         
         
+        int n = nextInt() * 2;
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        pq.add(Integer.MAX_VALUE);
+        boolean lazy = false;
+        int cnt = 0;
         
-        
-        
-        
+        while(n-->0) {
+            
+        }
     }
     
     
