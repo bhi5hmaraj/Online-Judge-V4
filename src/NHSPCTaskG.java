@@ -7,12 +7,13 @@ public class NHSPCTaskG {
     /************************ SOLUTION STARTS HERE ************************/
     
 
-    static class MergeSortTree  { // Implemented to store min in a range , point update and range query
+    static class MergeSortTree  { 
         int tree[][];
         boolean lazy[];
         int len;
         int size;
         final int INF = (int) 1e6;
+        final int MASK = 20;
         MergeSortTree(int arr[]) { // arr should be a 1 based array
             len = arr.length - 1;
             size = 1 << (32 - Integer.numberOfLeadingZeros(len - 1) + 1);  // ceil(log(len)) + 1
@@ -20,110 +21,91 @@ public class NHSPCTaskG {
             lazy = new boolean[size];
             build(arr, 1, 1, len);
         }
-        void update(int node,int idx,int val,int nl,int nr) {
-            if(nl == nr && nl == idx)
-                tree[node] = val;
+        
+        void update(int node,int L , int R , int nl,int nr) {
+            if(nl == L && nr == R)
+                lazy[node] ^= true;
             else {
-                int mid = (nl + nr) / 2;
-                if(idx <= mid)
-                    update(2*node, idx , val ,nl , mid);
-                else
-                    update((2*node) + 1, idx ,val , mid + 1, nr);
-
-                tree[node] = Math.min(tree[2*node],tree[(2 * node) + 1]);
+                int mid = (nl + nr) >> 1;
+                propagate(node);
+                if(R <= mid)
+                    update(2 * node, L, R, nl, mid);
+                else if(L > mid)
+                    update((2*node) + 1, L, R, mid + 1 , nr);
+                else {
+                    update(2 * node, L, mid, nl, mid);
+                    update(2 * node + 1, mid + 1, R, mid + 1, nr);
+                }
             }
         }
-        void update(int idx , int val){
-            update(1, idx, val, 1, len);
+        void update(int L , int R){
+            update(1, L, R, 1, len);
         }
-        int query(int L , int R){
-            return query(1, L, R, 1, len);
-        }
-        int query(int node , int L , int R, int nl, int nr) {
-            int mid = (nl + nr) / 2;
-            if(nl == L && nr == R)
-                return tree[node];
-            else if(R <= mid)
-                return query(2 * node, L, R, nl, mid);
-            else if(L > mid)
-                return query((2*node)+1, L, R, mid + 1 , nr);
-            else
-                return Math.min(query(2*node, L, mid , nl , mid) ,  query((2*node)+1, mid+1, R , mid+1,nr));
-        }
-        
         boolean propagate(int node) {
             boolean ret = lazy[node];
-            if(2 * node < size && 2 * node + 1 < size) {
+            if(lazy[node] && 2 * node < size && 2 * node + 1 < size) {
                 lazy[2 * node] ^= true;
                 lazy[2 * node + 1] ^= true;
             }
             lazy[node] = false;
             return ret;
         }
+        int ceil(int A[] , int key) {
+            int lo = 0 , hi = A.length - 1;
+            int ceil_ = INF;
+            while(lo <= hi) {
+                int m = (lo + hi) >> 1;
+                if(A[m] >= key) {
+                    ceil_ = A[m];
+                    hi = m - 1;
+                }
+                else 
+                    lo = m + 1;
+            }
+            return ceil_;
+        }
+        int floor(int A[] , int key) {
+            int lo = 0 , hi = A.length - 1;
+            int floor_ = -INF;
+            while(lo <= hi) {
+                int m = (lo + hi) >> 1;
+                if(A[m] <= key) {
+                    floor_ = A[m];
+                    lo = m + 1;
+                }
+                else 
+                    hi = m - 1;
+            }
+            return floor_;
+        }
         
         int ceil(int node , int L , int R , int nl , int nr , int val) {
             boolean rev = propagate(node);
             int mid = (nl + nr) / 2;
-            if(L == nl && R == nr) {
-                int lo = 0 , hi = R - L;
-                int ceil_ = INF;
-                while(lo <= hi) {
-                    int m = (lo + hi) >> 1;
-                    if(tree[node][m] >= val) {
-                        ceil_ = tree[node][m];
-                        if(!rev)
-                            hi = m - 1;
-                        else
-                            lo = m + 1;
-                    }
-                    else {
-                        if(!rev)
-                            lo = m + 1;
-                        else
-                            hi = m - 1;
-                    }
-                }
-                return ceil_;
-            }
+            if(L == nl && R == nr) 
+                return rev ? MASK - floor(tree[node], MASK - val) : ceil(tree[node], val);
             else if(R <= mid)
                 return ceil(2 * node, L, R, nl, mid , val);
             else if(L > mid)
                 return ceil((2*node)+1, L, R, mid + 1 , nr , val);
             else
-                return Math.min(ceil(2 * node, L, R, nl, mid , val) ,  ceil((2*node)+1, L, R, mid + 1 , nr , val));
+                return Math.min(ceil(2 * node, L, mid, nl, mid , val) ,
+                                ceil((2*node)+1, mid + 1, R, mid + 1 , nr , val));
             
         }
         
         int floor(int node , int L , int R , int nl , int nr , int val) {
             boolean rev = propagate(node);
             int mid = (nl + nr) / 2;
-            if(L == nl && R == nr) {
-                int lo = 0 , hi = R - L;
-                int floor_ = -INF;
-                while(lo <= hi) {
-                    int m = (lo + hi) >> 1;
-                    if(tree[node][m] <= val) {
-                        floor_ = tree[node][m];
-                        if(!rev)
-                            hi = m - 1;
-                        else
-                            lo = m + 1;
-                    }
-                    else {
-                        if(!rev)
-                            lo = m + 1;
-                        else
-                            hi = m - 1;
-                    }
-                }
-                return ceil_;
-            }
+            if(L == nl && R == nr) 
+                return rev ? MASK - ceil(tree[node], MASK - val) : floor(tree[node], val);
             else if(R <= mid)
-                return ceil(2 * node, L, R, nl, mid , val);
+                return floor(2 * node, L, R, nl, mid , val);
             else if(L > mid)
-                return ceil((2*node)+1, L, R, mid + 1 , nr , val);
+                return floor((2*node)+1, L, R, mid + 1 , nr , val);
             else
-                return Math.min(ceil(2 * node, L, R, nl, mid , val) ,  ceil((2*node)+1, L, R, mid + 1 , nr , val));
+                return Math.max(floor(2 * node, L, mid, nl, mid , val), 
+                                floor((2*node)+1, mid + 1, R, mid + 1 , nr , val));
             
         }
         
