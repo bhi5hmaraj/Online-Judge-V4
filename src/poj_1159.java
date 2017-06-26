@@ -7,29 +7,30 @@ public class poj_1159 {
     /************************ SOLUTION STARTS HERE ************************/
     
     
-    static int rec(int l , int r) {
-        State s = new State(l, r);
-        if(r - l <= 0)
-            return 0;
-        else if(memo.containsKey(s))
-            return memo.get(s);
-        else {
-            int min = Math.min(1 + rec(l + 1, r) , 1 + rec(l, r - 1));
-            if(str[l] == str[r])
-                min = Math.min(min , rec(l + 1, r - 1));
-            memo.put(s, min);
-            return min;
-        }
-    }
-    
     private static void solve() {
         
         int N = nextInt();
         char str[] = nextLine().toCharArray();
-        int DP[] = new int[N];
+        int DPm1[] = new int[N];
+        int DPm2[] = new int[N];
+        int min = Integer.MAX_VALUE;
+        
         for(int len = 2; len <= N; len++) {
+            int DP[] = new int[N - len + 1];
+            for(int i = 0; i + len <= N; i++) {
+                DP[i] = Math.min(1 + DPm1[i] , 1 + DPm1[i + 1]);
+                if(str[i] == str[i + len - 1])
+                    DP[i] = Math.min(DP[i] , DPm2[i + 1]);
+            }
             
+            if(len == N)
+                min = DP[0];
+            
+            DPm2 = DPm1;
+            DPm1 = DP;
         }
+        
+        println(min);
     }
     
     
