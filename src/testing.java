@@ -17,12 +17,10 @@ public class testing {
         System.out.println("Time : " + ((System.nanoTime() - s) / 1e9));
         Long.bitCount(2141231232L);
         */
-        long a = 51321321313545L;
-        System.out.println(321 + a);
+        int n = 5;
+        println(String.format("%20s", Integer.toBinaryString(n)));
     }
     
-    // from uwi
-    private static void tr(Object... o) { System.out.println(Arrays.deepToString(o)); }
     
     /************************ SOLUTION ENDS HERE ************************/
     

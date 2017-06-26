@@ -100,8 +100,7 @@ public class NHSPCTaskG {
                 build(arr, (2 * node) + 1, mid + 1, R);
                 tree[node] = tree[2 * node] | tree[2 * node + 1];
             }
-        }
-        
+        }      
     }
     
 
@@ -136,12 +135,17 @@ public class NHSPCTaskG {
                         else if(floor < 0)
                             println(segTree.query(L, R , ceil));
                         else {
-                            
+                            if(parity - floor < ceil - parity)
+                                println(segTree.query(L, R, floor));
+                            else if(parity - floor > ceil - parity)
+                                println(segTree.query(L, R , ceil));
+                            else
+                                println(Math.min(segTree.query(L, R , ceil) , segTree.query(L, R , floor)));
                         }
                     }
                     break;
                 case 2:
-                    
+                    segTree.update(nextInt(), nextInt());
                     break;
                 }
             }
