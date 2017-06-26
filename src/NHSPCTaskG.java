@@ -6,12 +6,12 @@ public class NHSPCTaskG {
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    static final int MAX_LEN = 20;
     static class SegmentTreeLazyPropagation {
         int tree[];
         boolean lazy[];
         int len;
         int size;
-        final int MAX_LEN = 20;
         SegmentTreeLazyPropagation(int arr[]) {
             len = arr.length - 1;
             size = 1 << (32 - Integer.numberOfLeadingZeros(len - 1) + 1);  // ceil(log(len)) + 1
@@ -27,7 +27,70 @@ public class NHSPCTaskG {
                     rev |= 1 << (MAX_LEN - i);
             return rev;
         }
+        void propagate(int node) {
+            if (lazy[node]) {
+                if (2 * node < size && 2 * node + 1 < size) {
+                    lazy[2 * node] ^= true;
+                    lazy[2 * node + 1] ^= true;
+                }
+                tree[node] = reverse(tree[node]);
+                lazy[node] = false;
+            }
+        }
+        int query(int L , int R) {
+            return query(1, L, R, 1, len);
+        }
+        void update(int L , int R) {
+            update(1, L, R, 1, len);
+        }
         
+        int query(int L , int R , int parity) {
+            while(L < R) {
+                int mid = (L + R) >> 1;
+                if((query(L, mid) & (1 << parity)) != 0)
+                    R = mid;
+                else
+                    L = mid + 1;
+            }
+            return L;
+        }
+        
+        int query(int node , int L , int R, int nl, int nr) {
+            int mid = (nl + nr) >> 1;
+            propagate(node);
+            if(nl == L && nr == R)
+                return tree[node];
+            else if(R <= mid)
+                return query(2 * node, L, R, nl, mid);
+            else if(L > mid)
+                return query((2*node)+1, L, R, mid + 1 , nr);
+            else
+                return query(2*node, L, mid , nl , mid) | query((2*node)+1, mid+1, R , mid+1,nr);
+        }
+        int update(int node , int L , int R , int nl , int nr) {
+            int mid = (nl + nr) >> 1;
+            if(nl == L && nr == R) {
+                lazy[node] ^= true;
+                propagate(node);
+                return tree[node];
+            }
+            else {
+                propagate(node);
+                propagate(2 * node);
+                propagate(2 * node + 1);
+                int l = tree[2 * node];
+                int r = tree[2 * node + 1];
+                if(R <= mid)
+                    l = update(2 * node, L, R, nl, mid);
+                else if(L > mid)
+                    r = update(2 * node + 1, L, R, mid + 1, nr);
+                else {
+                    l = update(2 * node, L, mid, nl, mid);
+                    r = update(2 * node + 1, mid + 1, R, mid + 1, nr);
+                }
+                return tree[node] = l | r;
+            }
+        }
         void build(int arr[],int node,int L,int R) {
             if(L == R) 
                 tree[node] = 1 << Integer.bitCount(arr[L]);
@@ -42,195 +105,6 @@ public class NHSPCTaskG {
     }
     
 
-    static class MergeSortTree  { 
-        final int INF = (int) 1e6;
-        final int MASK = 20;
-        int parity[];
-        
-        static class Pair {
-            int idx , p;
-            Pair(int id , int pp) {
-                idx = id;
-                p = pp;
-            }
-            static Pair max(Pair a , Pair b) {
-                if(a.p == b.p)
-                    return a.idx < b.idx ? a : b;
-                else if(a.p < b.p)
-                    return b;
-                else
-                    return a;
-            }
-            static Pair min(Pair a , Pair b) {
-                if(a.p == b.p) 
-                    return a.idx < b.idx ? a : b;
-                else if(a.p < b.p)
-                    return a;
-                else
-                    return b;
-            }
-        }
-        
-        MergeSortTree(int arr[]) { // arr should be a 1 based array
-            len = arr.length - 1;
-            size = 1 << (32 - Integer.numberOfLeadingZeros(len - 1) + 1);  // ceil(log(len)) + 1
-            tree = new int[size][];
-            lazy = new boolean[size];
-            parity = new int[len + 2];
-            parity[0] = -INF;
-            parity[len + 1] = INF;
-            for(int i = 1; i <= len; i++)
-                parity[i] = Integer.bitCount(arr[i]);
-            build(arr, 1, 1, len);
-        }
-        
-        void update(int node,int L , int R , int nl,int nr) {
-            if(nl == L && nr == R)
-                lazy[node] ^= true;
-            else {
-                int mid = (nl + nr) >> 1;
-                propagate(node);
-                if(R <= mid)
-                    update(2 * node, L, R, nl, mid);
-                else if(L > mid)
-                    update((2*node) + 1, L, R, mid + 1 , nr);
-                else {
-                    update(2 * node, L, mid, nl, mid);
-                    update(2 * node + 1, mid + 1, R, mid + 1, nr);
-                }
-            }
-        }
-        void update(int L , int R){
-            update(1, L, R, 1, len);
-        }
-        int query(int L , int R , int v) {
-            int pari = Integer.bitCount(v);
-            Pair up   = ceil(1, L, R, 1, len, pari);
-            Pair down = floor(1, L, R, 1, len, pari);
-            int diffUp = Math.abs(up.p - pari);
-            int diffDown = Math.abs(down.p - pari);
-            if(diffUp == diffDown)
-                return Math.min(up.idx , down.idx);
-            else if(diffUp < diffDown)
-                return up.idx;
-            else
-                return down.idx;
-        }
-        boolean propagate(int node) {
-            boolean ret = lazy[node];
-            if(lazy[node] && 2 * node < size && 2 * node + 1 < size) {
-                lazy[2 * node] ^= true;
-                lazy[2 * node + 1] ^= true;
-            }
-            return ret;
-        }
-        int ceil(int A[] , int key) {
-            int lo = 0 , hi = A.length - 1;
-            int pos = len + 1;
-            while(lo <= hi) {
-                int m = (lo + hi) >> 1;
-                if(parity[A[m]] >= key) {
-                    pos = A[m];
-                    hi = m - 1;
-                }
-                else 
-                    lo = m + 1;
-            }
-            return pos;
-        }
-        int floor(int A[] , int key) {
-            int lo = 0 , hi = A.length - 1;
-            int floorParity = -INF;
-            while(lo <= hi) {
-                int m = (lo + hi) >> 1;
-                if(parity[A[m]] <= key) {
-                    floorParity = parity[A[m]];
-                    lo = m + 1;
-                }
-                else 
-                    hi = m - 1;
-            }
-            return floorParity == -INF ? 0 : ceil(A, floorParity);
-        }
-        
-        Pair ceil(int node , int L , int R , int nl , int nr , int val) {
-            boolean rev = propagate(node);
-            int mid = (nl + nr) / 2;
-            if(L == nl && R == nr) { 
-                if(!rev) {
-                    int pos = ceil(tree[node], val);
-                    return new Pair(pos, parity[pos]);
-                } else {
-                    int pos = floor(tree[node], MASK - val);
-                    if(pos == 0)
-                        return new Pair(len + 1, INF);
-                    else
-                        return new Pair(pos, MASK - parity[pos]);
-                }
-            }
-            else if(R <= mid)
-                return ceil(2 * node, L, R, nl, mid , val);
-            else if(L > mid)
-                return ceil((2*node)+1, L, R, mid + 1 , nr , val);
-            else
-                return Pair.min(ceil(2 * node, L, mid, nl, mid , val) ,
-                                ceil((2*node)+1, mid + 1, R, mid + 1 , nr , val));
-            
-        }
-        
-        Pair floor(int node , int L , int R , int nl , int nr , int val) {
-            boolean rev = propagate(node);
-            int mid = (nl + nr) / 2;
-            if(L == nl && R == nr) {
-                if(!rev) {
-                    int pos = floor(tree[node] , val);
-                    return new Pair(pos, parity[pos]);
-                } else {
-                    int pos = ceil(tree[node], MASK - val);
-                    if(pos == len + 1)
-                        return new Pair(0, -INF);
-                    else
-                        return new Pair(pos, MASK - parity[pos]);
-                }
-            }
-            else if(R <= mid)
-                return floor(2 * node, L, R, nl, mid , val);
-            else if(L > mid)
-                return floor((2*node)+1, L, R, mid + 1 , nr , val);
-            else
-                return Pair.max(floor(2 * node, L, mid, nl, mid , val), 
-                                floor((2*node)+1, mid + 1, R, mid + 1 , nr , val));
-            
-        }
-        
-        void build(int arr[],int node,int L,int R) {
-            if(L == R) {
-                tree[node] = new int[1];
-                tree[node][0] = L;
-            }
-            else {
-                int mid = (L + R) >> 1;
-                build(arr, 2 * node, L, mid);
-                build(arr, (2 * node) + 1, mid + 1, R);
-                tree[node] = merge(tree[2 * node] , tree[2 * node + 1]);
-            }
-        }
-        
-        private int[] merge(int A[] , int B[]) {
-            int C[] = new int[A.length + B.length];
-            int k = 0;
-            for (int i = 0, j = 0; i < A.length || j < B.length;) {
-                if (i < A.length && (j >= B.length || parity[A[i]] <= parity[B[j]]))
-                    C[k++] = A[i++];
-                else if (j < B.length && (i >= A.length || parity[B[j]] < parity[A[i]]))
-                    C[k++] = B[j++];
-            }
-            
-            return C;
-        }
-        
-    }
-
     
     private static void solve() {
         
@@ -238,15 +112,36 @@ public class NHSPCTaskG {
         for(int tc = 1 , T = nextInt(); tc <= T; tc++) {
             int n = nextInt();
             int m = nextInt();
-            MergeSortTree mergeSortTree = new MergeSortTree(nextIntArrayOneBased(n));
+            SegmentTreeLazyPropagation segTree = new SegmentTreeLazyPropagation(nextIntArrayOneBased(n));
             println("Case " + tc + ":");
             while(m-->0) {
                 switch(nextInt()) {
                 case 1:
-                    println(mergeSortTree.query(nextInt(), nextInt(), nextInt()));
+                    int L = nextInt();
+                    int R = nextInt();
+                    int parity = Integer.bitCount(nextInt());
+                    int mask = segTree.query(L, R);
+                    if((mask & (1 << parity)) != 0)
+                        println(segTree.query(L, R, parity));
+                    else {
+                        int ceil = parity;
+                        int floor = parity;
+                        for(; ceil <= MAX_LEN && (mask & (1 << ceil)) == 0; ceil++)
+                            ;
+                        for(; floor >= 0 && (mask & (1 << floor)) == 0; floor--)
+                            ;
+                        
+                        if(ceil > MAX_LEN)
+                            println(segTree.query(L, R, floor));
+                        else if(floor < 0)
+                            println(segTree.query(L, R , ceil));
+                        else {
+                            
+                        }
+                    }
                     break;
                 case 2:
-                    mergeSortTree.update(nextInt(), nextInt());
+                    
                     break;
                 }
             }
