@@ -14,11 +14,42 @@ public class NHSPCTaskG {
         int size;
         final int INF = (int) 1e6;
         final int MASK = 20;
+        int parity[];
+        
+        static class Pair {
+            int idx , p;
+            Pair(int id , int pp) {
+                idx = id;
+                p = pp;
+            }
+            static Pair max(Pair a , Pair b) {
+                if(a.p == b.p)
+                    return a.idx < b.idx ? a : b;
+                else if(a.p < b.p)
+                    return b;
+                else
+                    return a;
+            }
+            static Pair min(Pair a , Pair b) {
+                if(a.p == b.p) 
+                    return a.idx < b.idx ? a : b;
+                else if(a.p < b.p)
+                    return a;
+                else
+                    return b;
+            }
+        }
+        
         MergeSortTree(int arr[]) { // arr should be a 1 based array
             len = arr.length - 1;
             size = 1 << (32 - Integer.numberOfLeadingZeros(len - 1) + 1);  // ceil(log(len)) + 1
             tree = new int[size][];
             lazy = new boolean[size];
+            parity = new int[len + 2];
+            parity[0] = -INF;
+            parity[len + 1] = INF;
+            for(int i = 1; i <= len; i++)
+                parity[i] = Integer.bitCount(arr[i]);
             build(arr, 1, 1, len);
         }
         
@@ -52,31 +83,34 @@ public class NHSPCTaskG {
         }
         int ceil(int A[] , int key) {
             int lo = 0 , hi = A.length - 1;
-            int ceil_ = INF;
+            int pos = len + 1;
             while(lo <= hi) {
                 int m = (lo + hi) >> 1;
-                if(A[m] >= key) {
-                    ceil_ = A[m];
+                if(parity[A[m]] >= key) {
+                    pos = A[m];
                     hi = m - 1;
                 }
                 else 
                     lo = m + 1;
             }
-            return ceil_;
+            return pos;
         }
         int floor(int A[] , int key) {
             int lo = 0 , hi = A.length - 1;
-            int floor_ = -INF;
+            int pos = 0;
             while(lo <= hi) {
                 int m = (lo + hi) >> 1;
-                if(A[m] <= key) {
-                    floor_ = A[m];
-                    lo = m + 1;
+                if(parity[A[m]] <= key) {
+                    pos = A[m];
+                    if(parity[A[m]] < key)
+                        lo = m + 1;
+                    else
+                        hi = m - 1;
                 }
                 else 
                     hi = m - 1;
             }
-            return floor_;
+            return pos;
         }
         
         int ceil(int node , int L , int R , int nl , int nr , int val) {
@@ -113,7 +147,7 @@ public class NHSPCTaskG {
         void build(int arr[],int node,int L,int R) {
             if(L == R) {
                 tree[node] = new int[1];
-                tree[node][0] = Integer.bitCount(arr[L]);
+                tree[node][0] = L;
             }
             else {
                 int mid = (L + R) >> 1;
@@ -127,9 +161,9 @@ public class NHSPCTaskG {
             int C[] = new int[A.length + B.length];
             int k = 0;
             for (int i = 0, j = 0; i < A.length || j < B.length;) {
-                if (i < A.length && (j >= B.length || A[i] <= B[j]))
+                if (i < A.length && (j >= B.length || parity[A[i]] <= parity[B[j]]))
                     C[k++] = A[i++];
-                else if (j < B.length && (i >= A.length || B[j] < A[i]))
+                else if (j < B.length && (i >= A.length || parity[B[j]] < parity[A[i]]))
                     C[k++] = B[j++];
             }
             
