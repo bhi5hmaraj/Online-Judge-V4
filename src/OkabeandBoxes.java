@@ -11,37 +11,22 @@ public class OkabeandBoxes {
         
         
         int n = nextInt() * 2;
-        PriorityQueue<Integer> pq = new PriorityQueue<>();
-        pq.add(Integer.MAX_VALUE);
-        boolean lazy = false;
+        ArrayDeque<Integer> stack = new ArrayDeque<>();
         int cnt = 0;
-        int last = -1;
         int curr = 1;
-        int reserve = 0;
         while(n-->0) {
             switch(next()) {
             case "add":
-                int x = nextInt();
-                if(!lazy) {
-                    lazy = x > pq.peek();
-                    if(lazy)
-                        reserve = 0;
-                    else
-                        reserve++;
-                }
-                pq.add(x);
-                last = x;
+                stack.push(nextInt());
                 break;
             case "remove":
-                if(last != curr && lazy) {
+                if(!stack.isEmpty() && stack.pop().intValue() != curr) {
                     cnt++;
-                    lazy = false;
+                    stack.clear();
                 }
-                pq.remove();
                 curr++;
                 break;
             }
-            // println(Arrays.toString(pq.stream().sorted().toArray()));
         }
         
         println(cnt);
