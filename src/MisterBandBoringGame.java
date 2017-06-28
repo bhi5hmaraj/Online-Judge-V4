@@ -17,8 +17,29 @@ public class MisterBandBoringGame  {
         
         String greedy = "";
         for(char ch = 'a'; ch <= 'a' + a - 1; ch++) greedy += ch; 
+        for(int i = 0; i < b; i++) greedy += greedy.charAt(a - 1);
+        greedy += greedy.substring(0, Math.min(b , a - 1));
+        for(int i = 0; i < Math.max(a - b , 1); i++) greedy += (char) ('a' + a + i);
+        for(int i = 0; i < b; i++) greedy += greedy.charAt(2* a + b - 1);
         
+         println(greedy);
         
+        boolean alph[] = new boolean[26];
+        if(R - L + 1 >= greedy.length()) 
+            greedy.chars().forEach(ch -> alph[ch - 'a'] = true);
+        else {
+            R--;
+            L--;
+            int gLen = greedy.length();
+            for(int i = L; i <= (R >= L ? R : R + gLen); i++)
+                alph[greedy.charAt(i % gLen) - 'a'] = true;
+        }
+        
+        int unique = 0;
+        for(boolean bool : alph) unique += bool ? 1 : 0;
+        
+        println(unique);
+
     }
     
     
