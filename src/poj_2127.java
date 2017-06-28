@@ -8,9 +8,6 @@ public class poj_2127 {
     
 
     static class FenwickTree2D {
-        /*
-         * Stores max(1 ... i)
-         */
         int tree[][];
         int N , M;
         FenwickTree2D(int N , int M) {
@@ -55,18 +52,35 @@ public class poj_2127 {
         for(int b : B) set.add(b);
 
         int DP[][] = new int[n][m];
-        FenwickTree2D BIT2D = new FenwickTree2D(n, m);
+//        FenwickTree2D BIT2D = new FenwickTree2D(n, m);
+        
+        int RMQ[][] = new int[n][m];
         
         for(int asc : set) {
             for(int i = 0; i < n; i++)
-                for(int j = 0; j < m; j++)
+                for(int j = 0; j < m; j++) {
                     if(A[i] == B[j] && A[i] == asc) {
-                        DP[i][j] = BIT2D.query(i, j) + 1;
-                        BIT2D.update(i + 1, j + 1, DP[i][j]);
+//                        DP[i][j] = BIT2D.query(i, j) + 1;
+//                        BIT2D.update(i + 1, j + 1, DP[i][j]);
+                    /*
+                        for(int x = 0; x < i; x++)
+                            for(int y = 0; y < j; y++)
+                                DP[i][j] = Math.max(DP[i][j] , RMQ[x][y]);
+                        DP[i][j]++;
+                        RMQ[i][j] = Math.max(RMQ[i][j] , DP[i][j]);
+                    */
+                        if(i > 0 && j > 0)
+                            DP[i][j] = RMQ[i - 1][j - 1];
+                        DP[i][j]++;
+                        
                     }
+                    RMQ[i][j] = Math.max(RMQ[i][j] , DP[i][j]);
+                    if(i > 0) RMQ[i][j] = Math.max(RMQ[i][j] , RMQ[i - 1][j]);
+                    if(j > 0) RMQ[i][j] = Math.max(RMQ[i][j] , RMQ[i][j - 1]);
+                }
+            
         }
         
-        // debug(DP);
         
         int LCISLen = 0;
         int curr_i = -1 , curr_j = -1;
@@ -114,8 +128,10 @@ public class poj_2127 {
     /************************ TEMPLATE STARTS HERE **********************/
     
     public static void main(String[] args) throws IOException {
-        reader = new BufferedReader(new InputStreamReader(System.in));
-        writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
+         reader = new BufferedReader(new InputStreamReader(System.in));
+         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
+//        reader = new BufferedReader(new FileReader("gcis.in"));
+//        writer = new PrintWriter("gcis.out");
         st     = null;
         solve();
         reader.close();
