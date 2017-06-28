@@ -21,22 +21,25 @@ public class poj_2127 {
         int A[] = nextIntArray(n);  
         int m = nextInt();
         int B[] = nextIntArray(m);  
+        
+        HashSet<Integer> set = new HashSet<Integer>();
+        for(int a : A) set.add(a);
+        
+        TreeSet<Integer> intersection = new TreeSet<Integer>();
+        for(int b : B) if(set.contains(b)) intersection.add(b);
 
-        
-        
         int DP[][] = new int[n][m];
         int RMQ[][] = new int[n][m];
         
-        for(int asc : intersection) {
-            
-            for(int i = 0; i < n; i++)
-                for(int j = 0; j < m; j++) 
-                    if(A[i] == B[j] && A[i] == asc) {
-                        if(i > 0 && j > 0)
+
+        for (int asc : intersection) {
+            for (int i = 0; i < n; i++)
+                for (int j = 0; j < m; j++)
+                    if (A[i] == B[j] && A[i] == asc) {
+                        if (i > 0 && j > 0)
                             DP[i][j] = RMQ[i - 1][j - 1];
                         DP[i][j]++;
                     }
-                
 
             for (int i = 0; i < n; i++)
                 for (int j = 0; j < m; j++) {
@@ -46,11 +49,7 @@ public class poj_2127 {
                     if (j > 0)
                         RMQ[i][j] = Math.max(RMQ[i][j], RMQ[i][j - 1]);
                 }
-             
         }
-        
-        
-//        debug(DP);
         
         int LCISLen = 0;
         int curr_i = -1 , curr_j = -1;
@@ -63,14 +62,14 @@ public class poj_2127 {
                     curr_j = j;
                 }
         
-        ArrayDeque<Integer> stack = new ArrayDeque<Integer>();
         int new_i = -1, new_j = -1;
-        
+        int ans[] = new int[LCISLen];
+        int ptr = LCISLen - 1;
         while(!(new_i == curr_i && new_j == curr_j)) {
             // System.out.println("curr x " + curr_i + " curr_y " + curr_j);
             new_i = curr_i;
             new_j = curr_j;
-            stack.push(A[curr_i]);
+            ans[ptr--] = A[curr_i];
             outer:
             for(int i = 0; i < curr_i; i++)
                 for(int j = 0; j < curr_j; j++)
@@ -82,8 +81,8 @@ public class poj_2127 {
             
         }
         
-        println(stack.size());
-        for(int num : stack)
+        println(LCISLen);
+        for(int num : ans)
             print(num + " ");
         print('\n');
     }
@@ -99,10 +98,10 @@ public class poj_2127 {
     /************************ TEMPLATE STARTS HERE **********************/
     
     public static void main(String[] args) throws IOException {
-         reader = new BufferedReader(new InputStreamReader(System.in));
-         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
-//        reader = new BufferedReader(new FileReader("gcis.in"));
-//        writer = new PrintWriter("gcis.out");
+//         reader = new BufferedReader(new InputStreamReader(System.in));
+//         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
+        reader = new BufferedReader(new FileReader("gcis.in"));
+        writer = new PrintWriter(new BufferedWriter(new FileWriter("gcis.out")));
         st     = null;
         solve();
         reader.close();
