@@ -7,105 +7,91 @@ public class poj_2127 {
     /************************ SOLUTION STARTS HERE ************************/
     
 
-    static class FenwickTreeRMQ {
+    static class FenwickTree2D {
         /*
          * Stores max(1 ... i)
          */
-        int tree[];
-        int len;
-
-        FenwickTreeRMQ(int len) {
-            this.len = len;
-            tree = new int[len + 10];
+        int tree[][];
+        int N , M;
+        FenwickTree2D(int N , int M) {
+            this.N = N;
+            this.M = M;
+            tree = new int[N + 1][M + 1];
         }
 
-        void update(int idx, int val) {
-            for (; idx <= len; idx += (idx & -idx))
-                tree[idx] = Math.max(tree[idx] , val);
+        void update(int x, int y , int val) {
+            for (; x <= N; x += (x & -x))
+                for(int yy = y; yy <= M; yy += (yy & -yy))
+                    tree[x][yy] = Math.max(tree[x][yy] , val);
         }
 
-        int query(int idx) {
+        int query(int x, int y) {
             int max = 0;
-            for (; idx > 0; idx -= (idx & -idx))
-                max = Math.max(max , tree[max]);
+            for (; x > 0; x -= (x & -x))
+                for(int yy = y; yy > 0; yy -= (yy & -yy))
+                    max = Math.max(max , tree[x][yy]);
 
             return max;
         }
     }
 
 
-    static class SegmentTree  { 
-        int tree[];
-        int len;
-        int size;
-        SegmentTree(int len) { // arr should be a 1 based array
-            this.len = len;
-            size = 1 << (32 - Integer.numberOfLeadingZeros(len - 1) + 1);  // ceil(log(len)) + 1
-            tree = new int[size];
-        }
-        void update(int node,int idx,int val,int nl,int nr) {
-            if(nl == nr)
-                tree[node] = Math.max(tree[idx] , val);
-            else {
-                int mid = (nl + nr) >> 1;
-                if(idx <= mid)
-                    update(2*node, idx , val ,nl , mid);
-                else
-                    update((2*node) + 1, idx ,val , mid + 1, nr);
-
-                tree[node] = Math.max(tree[2*node],tree[(2 * node) + 1]);
-            }
-        }
-        void update(int idx , int val){
-            update(1, idx, val, 1, len);
-        }
-        int query(int L , int R){
-            if(L > R) return 0;
-            return query(1, L, R, 1, len);
-        }
-        int query(int node , int L , int R, int nl, int nr) {
-            int mid = (nl + nr) >> 1;
-            if(nl == L && nr == R)
-                return tree[node];
-            else if(R <= mid)
-                return query(2 * node, L, R, nl, mid);
-            else if(L > mid)
-                return query((2*node)+1, L, R, mid + 1 , nr);
-            else
-                return Math.max(query(2*node, L, mid , nl , mid) ,  query((2*node)+1, mid+1, R , mid+1,nr));
-        }
-    }
-
     
     private static void solve() {
         
         int n = nextInt();
-        int A[] = nextIntArray(n);  // small
+        int A[] = nextIntArray(n);  
         int m = nextInt();
-        int B[] = nextIntArray(m);  // big
-        
-        if(m < n) {
-            int tA[] = A;
-            int tI = n;
-            A = B;
-            n = m;
-            B = tA;
-            m = tI;
-        }
-        
+        int B[] = nextIntArray(m);  
+
         TreeSet<Integer> set = new TreeSet<>();
         for(int a : A) set.add(a);
         for(int b : B) set.add(b);
-        
+        /*
         HashMap<Integer , Integer> compress = new HashMap<>();
-        for(int num : set) compress.put(num, compress.size() + 1);
+        for(int num : set) compress.put(num, compress.size());
         
         for(int i = 0; i < n; i++) A[i] = compress.get(A[i]);
         for(int i = 0; i < m; i++) B[i] = compress.get(B[i]);
-        
-        SegmentTree segTree = new SegmentTree(compress.size());
+        */
         int DP[][] = new int[n][m];
+        FenwickTree2D BIT2D = new FenwickTree2D(n, m);
         
+        for(int asc : set) {
+            for(int i = 0; i < n; i++)
+                for(int j = 0; j < m; j++)
+                    if(A[i] == B[j] && A[i] == asc) {
+                        DP[i][j] = BIT2D.query(i, j) + 1;
+                        BIT2D.update(i + 1, j + 1, DP[i][j]);
+                    }
+        }
+        
+        int LCISLen = 0;
+        int curr_i = -1 , curr_j = -1;
+        
+        for(int i = 0; i < n; i++)
+            for(int j = 0; j < m; j++)
+                if(DP[i][j] > LCISLen) {
+                    LCISLen = DP[i][j];
+                    curr_i = i;
+                    curr_j = j;
+                }
+        
+        ArrayDeque<Integer> stack = new ArrayDeque<>();
+        int new_i = -1, new_j = -1;
+        while(!(new_i == curr_i && new_j == curr_j)) {
+            stack.push(A[curr_i]);
+            outer:
+            for(int i = 0; i < curr_i; i++)
+                for(int j = 0; j < curr_j; j++)
+                    if(A[i] == B[i] && A[i] < A[curr_i] && DP[i][j] == DP[curr_i][curr_j] - 1) {
+                        new_i = i;
+                        new_j = j;
+                        break outer;
+                    }
+            
+            
+        }
         
     }
     
