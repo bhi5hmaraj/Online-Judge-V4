@@ -55,9 +55,6 @@ public class CommonDivisors {
         return hh;
     }
     
-    static void pa(Object... o) {
-        println(Arrays.deepToString(o));
-    }
     
     static boolean equals(int a[] , int b[]) {
         return a[0] == b[0] && a[1] == b[1];
