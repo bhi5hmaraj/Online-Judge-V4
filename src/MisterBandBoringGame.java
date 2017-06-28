@@ -20,7 +20,7 @@ public class MisterBandBoringGame  {
         for(int i = 0; i < b; i++) greedy += greedy.charAt(a - 1);
         greedy += greedy.substring(0, Math.min(b , a - 1));
         for(int i = 0; i < Math.max(a - b , 1); i++) greedy += (char) ('a' + a + i);
-        for(int i = 0; i < b; i++) greedy += greedy.charAt(2* a + b - 1);
+        for(int i = 0; i < b; i++) greedy += greedy.charAt(2 * a + b - 1);
         
          println(greedy);
         

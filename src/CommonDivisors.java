@@ -48,11 +48,19 @@ public class CommonDivisors {
     static int[] repeat(int h[] , int period , int len) {
         int hh[] = new int[2];
         for(int i = 0; i < 2; i++) {
-            int num = sub(pow[len][i], 1, m[i]);
-            int den = sub(pow[period][i], 1, m[i]);
+            int num = sub(1 , pow[len][i] , m[i]);
+            int den = sub(1 , pow[period][i], m[i]);
             hh[i] = div(mul(h[i], num, m[i]), den, m[i]);
         }
         return hh;
+    }
+    
+    static void pa(Object... o) {
+        println(Arrays.deepToString(o));
+    }
+    
+    static boolean equals(int a[] , int b[]) {
+        return a[0] == b[0] && a[1] == b[1];
     }
     
     private static void solve() {
@@ -70,13 +78,17 @@ public class CommonDivisors {
         int commonPeriod = 0;
         
         for(int divCand = 1; divCand * divCand <= n; divCand++) {
-            if(n % divCand == 0 && m % divCand == 0) {
-                int hh1[] = repeat(h1[divCand - 1], divCand, n);
-                int hh2[] = repeat(h2[divCand - 1], divCand, m);
-                if(hh1[0] == h1[n - 1][0] && hh1[1] == h1[n - 1][1] &&
-                   hh2[0] == h2[m - 1][0] && hh2[1] == h2[m - 1][1])
+            if(n % divCand == 0) {
+                if(m % divCand == 0 && equals(repeat(h1[divCand - 1], divCand, n), h1[n - 1])
+                                    && equals(repeat(h1[divCand - 1], divCand, m), h2[m - 1]))
                     commonPeriod++;
-                    
+                
+                int other = n / divCand;
+                
+                if(other != divCand && m % other == 0 && 
+                   equals(repeat(h1[other - 1], other, n), h1[n - 1]) &&
+                   equals(repeat(h1[other - 1], other, m), h2[m - 1]))
+                    commonPeriod++;
             }
         }
         
