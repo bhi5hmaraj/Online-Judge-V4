@@ -7,31 +7,6 @@ public class poj_2127 {
     /************************ SOLUTION STARTS HERE ************************/
     
 
-    static class FenwickTree2D {
-        int tree[][];
-        int N , M;
-        FenwickTree2D(int N , int M) {
-            this.N = N;
-            this.M = M;
-            tree = new int[N + 1][M + 1];
-        }
-
-        void update(int x, int y , int val) {
-            for (; x <= N; x += (x & -x))
-                for(int yy = y; yy <= M; yy += (yy & -yy))
-                    tree[x][yy] = Math.max(tree[x][yy] , val);
-        }
-
-        int query(int x, int y) {
-            int max = 0;
-            for (; x > 0; x -= (x & -x))
-                for(int yy = y; yy > 0; yy -= (yy & -yy))
-                    max = Math.max(max , tree[x][yy]);
-
-            return max;
-        }
-    }
-
     static void debug(int arr[][]) {
         for(int a[] : arr) {
             for(int b : a)
@@ -47,40 +22,35 @@ public class poj_2127 {
         int m = nextInt();
         int B[] = nextIntArray(m);  
 
-        TreeSet<Integer> set = new TreeSet<Integer>();
-        for(int a : A) set.add(a);
-        for(int b : B) set.add(b);
-
-        int DP[][] = new int[n][m];
-//        FenwickTree2D BIT2D = new FenwickTree2D(n, m);
         
+        
+        int DP[][] = new int[n][m];
         int RMQ[][] = new int[n][m];
         
-        for(int asc : set) {
+        for(int asc : intersection) {
+            
             for(int i = 0; i < n; i++)
-                for(int j = 0; j < m; j++) {
+                for(int j = 0; j < m; j++) 
                     if(A[i] == B[j] && A[i] == asc) {
-//                        DP[i][j] = BIT2D.query(i, j) + 1;
-//                        BIT2D.update(i + 1, j + 1, DP[i][j]);
-                    /*
-                        for(int x = 0; x < i; x++)
-                            for(int y = 0; y < j; y++)
-                                DP[i][j] = Math.max(DP[i][j] , RMQ[x][y]);
-                        DP[i][j]++;
-                        RMQ[i][j] = Math.max(RMQ[i][j] , DP[i][j]);
-                    */
                         if(i > 0 && j > 0)
                             DP[i][j] = RMQ[i - 1][j - 1];
                         DP[i][j]++;
-                        
                     }
-                    RMQ[i][j] = Math.max(RMQ[i][j] , DP[i][j]);
-                    if(i > 0) RMQ[i][j] = Math.max(RMQ[i][j] , RMQ[i - 1][j]);
-                    if(j > 0) RMQ[i][j] = Math.max(RMQ[i][j] , RMQ[i][j - 1]);
+                
+
+            for (int i = 0; i < n; i++)
+                for (int j = 0; j < m; j++) {
+                    RMQ[i][j] = Math.max(RMQ[i][j], DP[i][j]);
+                    if (i > 0)
+                        RMQ[i][j] = Math.max(RMQ[i][j], RMQ[i - 1][j]);
+                    if (j > 0)
+                        RMQ[i][j] = Math.max(RMQ[i][j], RMQ[i][j - 1]);
                 }
-            
+             
         }
         
+        
+//        debug(DP);
         
         int LCISLen = 0;
         int curr_i = -1 , curr_j = -1;
@@ -115,6 +85,7 @@ public class poj_2127 {
         println(stack.size());
         for(int num : stack)
             print(num + " ");
+        print('\n');
     }
     
     
