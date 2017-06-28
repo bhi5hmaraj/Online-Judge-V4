@@ -35,7 +35,13 @@ public class poj_2127 {
         }
     }
 
-
+    static void debug(int arr[][]) {
+        for(int a[] : arr) {
+            for(int b : a)
+                print(String.format("%2d ", b));
+            print('\n');
+        }
+    }
     
     private static void solve() {
         
@@ -44,16 +50,10 @@ public class poj_2127 {
         int m = nextInt();
         int B[] = nextIntArray(m);  
 
-        TreeSet<Integer> set = new TreeSet<>();
+        TreeSet<Integer> set = new TreeSet<Integer>();
         for(int a : A) set.add(a);
         for(int b : B) set.add(b);
-        /*
-        HashMap<Integer , Integer> compress = new HashMap<>();
-        for(int num : set) compress.put(num, compress.size());
-        
-        for(int i = 0; i < n; i++) A[i] = compress.get(A[i]);
-        for(int i = 0; i < m; i++) B[i] = compress.get(B[i]);
-        */
+
         int DP[][] = new int[n][m];
         FenwickTree2D BIT2D = new FenwickTree2D(n, m);
         
@@ -66,6 +66,8 @@ public class poj_2127 {
                     }
         }
         
+        // debug(DP);
+        
         int LCISLen = 0;
         int curr_i = -1 , curr_j = -1;
         
@@ -77,22 +79,28 @@ public class poj_2127 {
                     curr_j = j;
                 }
         
-        ArrayDeque<Integer> stack = new ArrayDeque<>();
+        ArrayDeque<Integer> stack = new ArrayDeque<Integer>();
         int new_i = -1, new_j = -1;
+        
         while(!(new_i == curr_i && new_j == curr_j)) {
+            // System.out.println("curr x " + curr_i + " curr_y " + curr_j);
+            new_i = curr_i;
+            new_j = curr_j;
             stack.push(A[curr_i]);
             outer:
             for(int i = 0; i < curr_i; i++)
                 for(int j = 0; j < curr_j; j++)
-                    if(A[i] == B[i] && A[i] < A[curr_i] && DP[i][j] == DP[curr_i][curr_j] - 1) {
-                        new_i = i;
-                        new_j = j;
+                    if(A[i] == B[j] && A[i] < A[curr_i] && DP[i][j] == DP[curr_i][curr_j] - 1) {
+                        curr_i = i;
+                        curr_j = j;
                         break outer;
                     }
             
-            
         }
         
+        println(stack.size());
+        for(int num : stack)
+            print(num + " ");
     }
     
     
