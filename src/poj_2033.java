@@ -7,13 +7,31 @@ public class poj_2033  {
     /************************ SOLUTION STARTS HERE ************************/
     
     static String line;
+    static long memo[];
+    static long rec(int idx) {
+        if(idx == line.length())
+            return 1;
+        else if(line.charAt(idx) == '0')
+            return 0;
+        else if(memo[idx] != -1)
+            return memo[idx];
+        else {
+            long ret = rec(idx + 1);
+            int num = line.charAt(idx) - '0';
+            if(idx < line.length() - 1 && (num * 10 + (line.charAt(idx + 1) - '0') <= 26))
+                ret += rec(idx + 2);
+            
+            return memo[idx] = ret;
+        }
+    }
     
     private static void solve() {
         
         
         while(!(line = nextLine()).equals("0")) {
-            int n = line.length();
-            
+            memo = new long[line.length()];
+            Arrays.fill(memo, -1);
+            println(rec(0));
         }
         
     }
