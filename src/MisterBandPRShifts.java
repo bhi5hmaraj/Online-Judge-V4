@@ -15,15 +15,23 @@ public class MisterBandPRShifts {
         return deviation;
     }
     
+    static void rotate(int arr[] , int k) {
+        int temp[] = new int[arr.length];
+        System.arraycopy(arr, arr.length - k, temp, 0, k);
+        System.arraycopy(arr, 0, temp, k, arr.length - k);
+        pa(temp);
+    }
+    
+    static void pa(int arr[]) {
+        System.out.println(Arrays.toString(arr));
+        System.out.println(Arrays.toString(IntStream.range(0, arr.length).toArray()));
+    }
+    
     private static void solve() {
         
         
         int n = nextInt();
         int arr[] = Arrays.stream(nextIntArray(n)).map(a -> a - 1).toArray();
-        
-         System.out.println(Arrays.toString(arr));
-         System.out.println(Arrays.toString(IntStream.range(0, n).toArray()));
-        
         int edgeCase[] = new int[n];    // arr[i] = 0 and n - 1
         
         for(int i = 0; i < n; i++) {
@@ -47,31 +55,41 @@ public class MisterBandPRShifts {
                 else
                     dec++;
                 deviation[0] += Math.abs(i - arr[i]);
-                inflection[(i - arr[i] + n) % n]++;
+                inflection[(arr[i] - i + n) % n]++;
             }
         }
-        
+        /*
+        System.out.println("inflection");
+        pa(inflection);
+        pa(arr);
+        */
         for(int i = 1; i < n; i++) {
             int diff = 0;
             if(arr[n - i] != 0 && arr[n - i] != n - 1) {
                 inc--;
                 diff = -(n - 1 - arr[n - i]) + arr[n - i];
             }
+
+            // System.out.println("inc " + inc + " dec " + dec + " deviation i - 1 " + deviation[i - 1] + " diff " + diff);
+            // rotate(arr, i);
             
-             System.out.println("inc " + inc + " dec " + dec + " deviation i - 1 " + deviation[i - 1] + " diff " + diff);
             deviation[i] = deviation[i - 1] + diff + inc - dec;
             
             dec -= inflection[i];
             inc += inflection[i];
             
+            if(arr[n - i] != 0 && arr[n - i] != n - 1) 
+                dec++;
         }
         
         int id = 0;
         long minDeviation = Long.MAX_VALUE;
-        
+        /*
         System.out.println(Arrays.toString(deviation));
         System.out.println(Arrays.toString(edgeCase));
+        System.out.println();
         System.out.println(Arrays.toString(brute(arr)));
+        */
         for(int i = 0; i < n; i++)
             if(deviation[i] + edgeCase[i] < minDeviation) {
                 minDeviation = deviation[i] + edgeCase[i];
