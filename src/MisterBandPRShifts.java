@@ -13,7 +13,55 @@ public class MisterBandPRShifts {
         int n = nextInt();
         int arr[] = Arrays.stream(nextIntArray(n)).map(a -> a - 1).toArray();
         
+        int edgeCase[] = new int[n];    // arr[i] = 0 and n - 1
         
+        for(int i = 0; i < n; i++) {
+            if(arr[i] == 0) {
+                for(int j = 0; j < n; j++)
+                    edgeCase[j] += (i + j) % n;
+            } else if(arr[i] == n - 1) {
+                for(int j = 0; j < n; j++)
+                    edgeCase[j] += Math.abs(n - 1 - ((i + j) % n));
+            }
+        }
+        
+        long deviation[] = new long[n];
+        int inflection[] = new int[n];
+        
+        int inc = 0 , dec = 0;
+        for(int i = 0; i < n; i++) {
+            if(arr[i] != 0 && arr[i] != n - 1) {
+                if(i - arr[i] >= 0)
+                    inc++;
+                else
+                    dec++;
+                deviation[0] += Math.abs(i - arr[i]);
+                inflection[(i - arr[i] + n) % n]++;
+            }
+        }
+        
+        for(int i = 1; i < n; i++) {
+            int diff = 0;
+            if(arr[n - i] != 0 && arr[n - i] != n - 1) {
+                inc--;
+                diff = -(n - 1 - arr[n - i]) + arr[n - i];
+            }
+            deviation[i] = deviation[i - 1] + diff + inc - dec;
+            
+            dec -= inflection[i];
+            inc += inflection[i];
+        }
+        
+        int id = 0;
+        long minDeviation = Long.MAX_VALUE;
+        
+        for(int i = 0; i < n; i++)
+            if(deviation[i] + edgeCase[i] < minDeviation) {
+                minDeviation = deviation[i] + edgeCase[i];
+                id = i;
+            }
+        
+        println(minDeviation + " " + id);
     }
     
     
