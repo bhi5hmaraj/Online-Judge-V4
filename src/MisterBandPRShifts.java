@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.stream.IntStream;
 import java.io.*;
 public class MisterBandPRShifts {
     
@@ -6,12 +7,22 @@ public class MisterBandPRShifts {
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    static int[] brute(int arr[]) {
+        int deviation[] = new int[arr.length];
+        for(int k = 0; k < arr.length; k++)
+            for(int i = 0; i < arr.length; i++)
+                deviation[k] += Math.abs(i - arr[(i - k + arr.length) % arr.length]);
+        return deviation;
+    }
     
     private static void solve() {
         
         
         int n = nextInt();
         int arr[] = Arrays.stream(nextIntArray(n)).map(a -> a - 1).toArray();
+        
+         System.out.println(Arrays.toString(arr));
+         System.out.println(Arrays.toString(IntStream.range(0, n).toArray()));
         
         int edgeCase[] = new int[n];    // arr[i] = 0 and n - 1
         
@@ -46,15 +57,21 @@ public class MisterBandPRShifts {
                 inc--;
                 diff = -(n - 1 - arr[n - i]) + arr[n - i];
             }
+            
+             System.out.println("inc " + inc + " dec " + dec + " deviation i - 1 " + deviation[i - 1] + " diff " + diff);
             deviation[i] = deviation[i - 1] + diff + inc - dec;
             
             dec -= inflection[i];
             inc += inflection[i];
+            
         }
         
         int id = 0;
         long minDeviation = Long.MAX_VALUE;
         
+        System.out.println(Arrays.toString(deviation));
+        System.out.println(Arrays.toString(edgeCase));
+        System.out.println(Arrays.toString(brute(arr)));
         for(int i = 0; i < n; i++)
             if(deviation[i] + edgeCase[i] < minDeviation) {
                 minDeviation = deviation[i] + edgeCase[i];
