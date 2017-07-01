@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.function.UnaryOperator;
 import java.io.*;
 public class Matrix {
     
@@ -13,17 +14,21 @@ public class Matrix {
         int a = nextInt();
         int arr[] = nextLine().chars().map(Character::getNumericValue).toArray();
         int n = arr.length;
-        
+        long cnt = 0;
         int freq[] = new int[9 * n + 1];
         for(int i = 0; i < n; i++)
             for(int j = i , sum = 0; j < n; sum += arr[j++] , freq[sum]++)
                 ;
         
-        long cnt = 0;
-        for(int i = 1; i * i <= a; i++)
-            if(a % i == 0 && i < freq.length && a / i < freq.length) 
-                cnt += (i * i != a ? 2L : 1L) * freq[i] * freq[a / i];
-            
+        if(a > 0) {
+            for(int i = 1; i * i <= a; i++)
+                if(a % i == 0 && i < freq.length && a / i < freq.length) 
+                    cnt += (i * i != a ? 2L : 1L) * freq[i] * freq[a / i];
+        }
+        else {
+            UnaryOperator<Long> subArrayCnt = val -> (val * (val + 1)) / 2;
+            cnt = 1L * freq[0] * (2L * subArrayCnt.apply((long) n) - freq[0]);
+        }
         println(cnt);
     }
     
