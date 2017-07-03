@@ -6,29 +6,7 @@ public class VanyaandTriangles {
     
     
     /************************ SOLUTION STARTS HERE ************************/
-    
-    static class Rational {
-        // static int gcd(int a , int b) { return (b == 0) ? a : gcd(b, a % b); }
-        int num , den;
-        Rational(int a , int b) {
-            num = a;
-            den = b;
-        }
-        @Override
-        public boolean equals(Object obj) {
-            Rational other = (Rational) obj;
-            return other.num == num && other.den == den;
-        }
-        @Override
-        public int hashCode() {
-            return Objects.hash(num , den);
-        }
-        @Override
-        public String toString() {
-            return "[" + num + " / " + den + "]";
-        }
-    }
-    
+
     private static void solve() {
         
         
@@ -38,11 +16,11 @@ public class VanyaandTriangles {
             pt[i] = nextIntArray(2);
         
         UnaryOperator<Long> choose3 = a -> (1L * a * (a - 1) * (a - 2))  / 6;
-        HashMap<Rational , HashSet<Integer>> slopes = new HashMap<>();
+        HashMap<Line2D.Double , HashSet<Integer>> slopes = new HashMap<>();
         for(int i = 0; i < n; i++)
             for(int j = 0; j < n; j++)
                 if(i != j) {
-                    Rational slope = new Rational(pt[j][1] - pt[i][1], pt[j][0] - pt[i][0]);
+                    Line2D.Double line 
                     HashSet<Integer> set = slopes.getOrDefault(slope, new HashSet<>());
                     set.add(i);
                     slopes.put(slope, set);
