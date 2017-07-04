@@ -78,9 +78,14 @@ public class TableCF232B {
         int n = nextInt();
         long m = nextLong();
         int k = nextInt();
-        int DP[][] = new int[n][k + 1];
+        int DP[] = new int[k + 1];
+        DP[0] = 1;   // base case
+        for(int i = 1; i <= k; i++) 
+            DP[i] = MM.modPow(nCr(n, i), m / n);
         
-        
+        for(int i = n - 2; i >= 0; i--) {
+            
+        }
     }
     
     
