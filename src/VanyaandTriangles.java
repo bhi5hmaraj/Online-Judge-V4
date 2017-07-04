@@ -8,52 +8,57 @@ public class VanyaandTriangles {
     /************************ SOLUTION STARTS HERE ************************/
 
     static class Line implements Comparable<Line> {
-        int xInNum , xInDen , yInNum , yInDen;
+        int sNum , sDen , yInNum , yInDen;
+        int x; // for lines parallel to y axis
         static int gcd(int a , int b) { return (b == 0) ? a : gcd(b, a % b); }
         Line(int x1 , int y1 , int x2 , int y2) {
-            xInNum = x1 * y2 - y1 * x2;
-            xInDen = y2 - y1;
+            sNum = y2 - y1;
+            sDen = x2 - x1;
             yInNum = y1 * x2 - x1 * y2;
             yInDen = x2 - x1;
             // System.out.println("before " + xInNum + " / " + xInDen + " " + yInNum + " / " + yInDen);
-            int g1 = gcd(xInNum, xInDen);
+            int g1 = gcd(sNum, sDen);
             if(g1 != 0) {
-                xInNum /= g1;
-                xInDen /= g1;
+                sNum /= g1;
+                sDen /= g1;
             }
             int g2 = gcd(yInNum, yInDen);
             if(g2 != 0) {
                 yInNum /= g2;
                 yInDen /= g2;
             }
-            //System.out.println(xInNum + " / " + xInDen + " " + yInNum + " / " + yInDen);
+            
+            if(sDen == 0 && yInDen == 0)
+                x = x1;
         }
         @Override
         public boolean equals(Object obj) {
             Line other = (Line) obj;
-            return xInDen == other.xInDen && xInNum == other.xInNum &&
-                   yInDen == other.yInDen && yInNum == other.yInNum;
+            return sDen == other.sDen && sNum == other.sNum &&
+                   yInDen == other.yInDen && yInNum == other.yInNum && x == other.x;
         }
         @Override
         public int hashCode() {
-            return Objects.hash(xInNum , xInDen , yInNum , yInDen);
+            return Objects.hash(sNum , sDen , yInNum , yInDen , x);
         }
         @Override
         public int compareTo(Line o) {
-            if(xInNum != o.xInNum)
-                return xInNum - o.xInNum;
-            else if(xInDen != o.xInDen)
-                return xInDen - o.xInDen;
+            if(sNum != o.sNum)
+                return sNum - o.sNum;
+            else if(sDen != o.sDen)
+                return sDen - o.sDen;
             else if(yInNum != o.yInNum)
                 return yInNum - o.yInNum;
             else if(yInDen != o.yInDen)
                 return yInDen - o.yInDen;
+            else if(x != o.x)
+                return x - o.x;
             else
                 return 0;
         }
         @Override
         public String toString() {
-            return xInNum + " / " + xInDen + " " + yInNum + " / " + yInDen;
+            return sNum + " / " + sDen + " " + yInNum + " / " + yInDen + " x = " + x;
         }
     }
     
@@ -70,31 +75,50 @@ public class VanyaandTriangles {
         return cnt;
     }
     
+    static long choose3(long a) {
+        return (a * (a - 1) * (a - 2)) / 6;
+    }
+    static long choose2(long a) {
+        return (a * (a - 1)) / 2;
+    }
+    static final double EPS = 1e-8;
+    static int compare(double a , double b) {
+        if(a <= b - EPS)
+            return -1;
+        else if(a >= b + EPS)
+            return 1;
+        else
+            return 0;
+    }
+    
     private static void solve() {
-        
         
         int n = nextInt();
         int pt[][] = new int[n][];
         for(int i = 0; i < n; i++)
             pt[i] = nextIntArray(2);
         
-        UnaryOperator<Long> choose3 = a -> (1L * a * (a - 1) * (a - 2)) / 6;
-        TreeMap<Line , HashSet<Integer>> lines = new TreeMap<>();
-        for(int i = 0; i < n; i++)
-            for(int j = 0; j < n; j++) 
-                if(i != j) {
-                    Line l = new Line(pt[i][0], pt[i][1], pt[j][0], pt[j][1]);
-                    HashSet<Integer> set = lines.getOrDefault(l, new HashSet<>());
-                    set.add(i);
-                    lines.put(l, set);
+        long total = choose3(n);
+        
+        for(int i = 0; i < n; i++) {
+            Double slopes[] = new Double[n - i - 1];
+            for(int j = i + 1; j < n; j++)
+                slopes[j - i - 1] = Math.atan2(pt[j][1] - pt[i][1], pt[j][0] - pt[i][0]);
+            Arrays.sort(slopes, VanyaandTriangles::compare);
+            println(Arrays.toString(slopes));
+            int streak = 1;
+            for(int k = 1; k < slopes.length; k++) {
+                if(compare(slopes[k] , slopes[k - 1]) == 0)
+                    streak++;
+                else {
+                    total -= choose2(streak);
+                    streak = 1;
                 }
+            }
+            total -= choose2(streak);
+            streak = 1;
+        }
         
-        long total = choose3.apply((long) n) - lines.entrySet()
-                                               .stream()
-                                               .map(e -> choose3.apply((long) e.getValue().size()))
-                                               .reduce(0L, Long::sum);
-        
-        lines.forEach((k , v) -> println(k + " ==> " + v));
         println(total);
         println("brute " + brute(pt));
     }
