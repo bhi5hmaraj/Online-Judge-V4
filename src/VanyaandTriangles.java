@@ -74,8 +74,8 @@ public class VanyaandTriangles {
         long total = choose3.apply((long) n) - lines.entrySet()
                                                .stream()
                                                .map(e -> choose3.apply((long) e.getValue().size()))
-                                               .reduce(0L, (a , b) -> a + b);
-        
+                                               .reduce(0L, Long::sum);
+        HashMap<Integer , Integer> freq = new HashMap<>();
         println(total);
     }
     
