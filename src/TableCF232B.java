@@ -37,7 +37,7 @@ public class TableCF232B {
             invFact[i] = MM.modInverse(fact[i]);
     }
 
-    static long nCr(int n, int r) { // Precompute inv Factorials (Dont compute every time) 
+    static int nCr(int n, int r) { // Precompute inv Factorials (Dont compute every time) 
         return MM.mul(fact[n], MM.mul(invFact[r], invFact[n - r]));
     }
     
@@ -72,20 +72,40 @@ public class TableCF232B {
         println(rec(0, k));
         System.out.println("Time : " + (System.nanoTime() - st) / 1e9);
     }
-    
+
     private static void solve2() {
         
         int n = nextInt();
         long m = nextLong();
         int k = nextInt();
+        long quo = m / n;
+        int rem = (int) (m % n);
+        int cache[][] = new int[Math.min(n , k) + 1][2];
+        
+        long st = System.nanoTime();
+        
+        for(int i = 0; i <= Math.min(n , k); i++) {
+            int comb = nCr(n, i);
+            cache[i][0] = MM.modPow(comb , quo);
+            cache[i][1] = MM.mul(cache[i][0], comb);
+        }
         int DP[] = new int[k + 1];
         DP[0] = 1;   // base case
-        for(int i = 1; i <= k; i++) 
-            DP[i] = MM.modPow(nCr(n, i), m / n);
+        for(int i = 1; i <= Math.min(n , k); i++) 
+            DP[i] = cache[i][0];
         
         for(int i = n - 2; i >= 0; i--) {
-            
+            int temp[] = new int[k + 1];
+            int flag  = (i < rem ? 1 : 0);
+            for(int kk = 0; kk <= k; kk++)
+                for(int j = 0; j <= Math.min(n , kk); j++)
+                    temp[kk] = MM.add(temp[kk], MM.mul(cache[j][flag], DP[kk - j]));
+            DP = temp;
         }
+        
+        println(DP[k]);
+        
+        System.out.println("Time : " + (System.nanoTime() - st) / 1e9);
     }
     
     
@@ -101,7 +121,7 @@ public class TableCF232B {
         reader = new BufferedReader(new InputStreamReader(System.in));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
-        solve();
+        solve2();
         reader.close();
         writer.close();
     }
