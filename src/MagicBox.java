@@ -16,10 +16,10 @@ public class MagicBox {
             boundry = b;
             fixed = f;
         }
-        boolean intersect(int line[][]) {   // line[0] = direction vector   line[1] = point in line
-            if(line[0][fixed] == 0)
-                return true;
-            
+        boolean parallel(double line[][]) {
+            return line[0][fixed] == 0;
+        }
+        boolean intersect(double line[][]) {   // line[0] = direction vector   line[1] = point in line
             double lambda = (double)(boundry[fixed] - line[1][fixed]) / line[0][fixed];   
             double intersect[] = new double[3];
             for(int i = 0; i < 3; i++)
@@ -37,6 +37,19 @@ public class MagicBox {
             
             return flag;
         }
+        
+        double distSq(double line[][]) {
+            double lambda = (double)(boundry[fixed] - line[1][fixed]) / line[0][fixed];   
+            double intersect[] = new double[3];
+            double dSq = 0;
+            for(int i = 0; i < 3; i++) {
+                intersect[i] = lambda * line[0][i] + line[1][i];
+                dSq += Math.pow(intersect[i] - line[1][i], 2);
+            }
+            
+            return dSq;
+        }
+         
     }
     
     private static void solve() {
@@ -55,15 +68,34 @@ public class MagicBox {
         for(int i = 0; i < 6; i++) {
             double pt[] = new double[3];
             double b[] = new double[3];
-            for(int j = 0; j < 3; j++)
-                if(j != perm[i]) {
+            for(int j = 0; j < 3; j++) {
+                if(j != perm[i / 2]) {
                     pt[j] = box[j] / 2.0;
                     b[j] = box[j];
                 }
-            
-            
+                else if(i % 2 == 1)
+                    pt[j] = b[j] = box[j];
+            }
+            planes[i] = new Plane(pt, b, perm[i / 2]);
         }
         
+        double payload[][] = new double[2][];
+        
+        for(int i = 0; i < 6; i++) {
+            boolean flag = true;
+            double dir[] = new double[3];
+            for(int j = 0; j < 3; j++)
+                dir[j] = curr[j] - planes[i].pt[j];
+            
+            payload[0] = dir;
+            payload[1] = curr;
+            if(!planes[i].parallel(payload)) {
+                double thresh = planes[i].distSq(payload);
+                for(int j = 0; j < 6; j++)
+                    if(i != j && !planes[j].parallel(payload) && planes[j].intersect(payload)) 
+                        flag &= planes[j].distSq(payload) > planes[]
+            }
+        }
     }
     
     
