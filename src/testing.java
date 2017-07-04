@@ -17,8 +17,9 @@ public class testing {
         System.out.println("Time : " + ((System.nanoTime() - s) / 1e9));
         Long.bitCount(2141231232L);
         */
-        int n = 5;
-        println(String.format("%20s", Integer.toBinaryString(n)));
+        long l = 1L << 32;
+        int n = 100;
+        System.out.println("rem " + (l % n));
     }
     
     

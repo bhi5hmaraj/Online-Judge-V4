@@ -6,14 +6,14 @@ public class TableCF232B {
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    static final int mod = (int) (1e9) + 7; // Default
     static class MM {       // MM (Modular Math) class 
-        static final long mod = (long) (1e9) + 7; // Default
-        static long sub(long a, long b) {return (a - b  + mod) % mod;}
-        static long mul(long a, long b) {return ((a % mod) * (b % mod)) % mod;}
-        static long add(long a, long b) {return (a + b) % mod;}
-        static long div(long a, long b) {return mul(a, modInverse(b));}
-        static long modInverse(long n)  {return modPow(n, mod - 2);} // Fermat's little theorem
-        static long modPow(long a , long b) {
+        static int sub(int a, int b) {return (a - b  + mod) % mod;}
+        static int mul(int a, int b) {return (int) ((1L * a * b ) % mod);}
+        static int add(int a, int b) {return (a + b) % mod;}
+        static int div(int a, int b) {return mul(a, modInverse(b));}
+        static int modInverse(int n)  {return modPow(n, mod - 2);} // Fermat's little theorem
+        static int modPow(long a , long b) {
             long pow = 1;
             while(b > 0) {
                 if((b & 1L) == 1)
@@ -22,19 +22,66 @@ public class TableCF232B {
                 a = ((a * a) % (mod));
                 b >>= 1;
             }
-            return pow;
+            return (int) pow;
         }
     }
+    
+    static final int MAX = 128;                    
+    static int fact[] = new int[MAX];
+    static int invFact[] = new int[MAX];
+    static {
+        fact[0] = fact[1] = 1;
+        for (int i = 2; i < MAX; i++)
+            fact[i] = MM.mul(i, fact[i - 1]);
+        for (int i = 0; i < MAX; i++)
+            invFact[i] = MM.modInverse(fact[i]);
+    }
 
+    static long nCr(int n, int r) { // Precompute inv Factorials (Dont compute every time) 
+        return MM.mul(fact[n], MM.mul(invFact[r], invFact[n - r]));
+    }
+    
+    static long m;
+    static int n;
+    static int memo[][];
+    static int rec(int idx , int k) {
+        if(idx == n)
+            return k == 0 ? 1 : 0;
+        else if(memo[idx][k] != -1)
+            return memo[idx][k];
+        else {
+            long pow = (m / n) + (idx < m % n ? 1 : 0);
+            int sum = 0;
+            for(int i = 0; i <= Math.min(k , n); i++) 
+                sum = MM.add(sum, MM.mul(rec(idx + 1, k - i), MM.modPow(nCr(n, i), pow)));
+            
+            return memo[idx][k] = sum;
+        }
+    }
     
     private static void solve() {
         
+        n = nextInt();
+        m = nextLong();
+        int k = nextInt();
         
+        memo = new int[n][k + 1];
+        for(int temp[] : memo) Arrays.fill(temp, -1);
         
+        long st = System.nanoTime();
+        println(rec(0, k));
+        System.out.println("Time : " + (System.nanoTime() - st) / 1e9);
+    }
+    
+    private static void solve2() {
+        
+        int n = nextInt();
+        long m = nextLong();
+        int k = nextInt();
+        int DP[][] = new int[n][k + 1];
         
         
     }
-    
     
     
     /************************ SOLUTION ENDS HERE ************************/
