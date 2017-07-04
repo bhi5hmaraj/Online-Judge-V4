@@ -7,6 +7,51 @@ public class VanyaandTriangles {
     
     /************************ SOLUTION STARTS HERE ************************/
 
+    static class Line implements Comparable<Line> {
+        int xInNum , xInDen , yInNum , yInDen;
+        static int gcd(int a , int b) { return (b == 0) ? a : gcd(b, a % b); }
+        Line(int x1 , int y1 , int x2 , int y2) {
+            xInNum = x1 * y2 - y1 * x2;
+            xInDen = y2 - y1;
+            yInNum = y1 * x2 - x1 * y2;
+            yInDen = x2 - x1;
+//            System.out.println(xInNum + " / " + xInDen + " " + yInNum + " / " + yInDen);
+            int g1 = gcd(xInNum, xInDen);
+            if(g1 != 0) {
+                xInNum /= g1;
+                xInDen /= g1;
+            }
+            int g2 = gcd(yInNum, yInDen);
+            if(g2 != 0) {
+                yInNum /= g2;
+                yInDen /= g2;
+            }
+        }
+        @Override
+        public boolean equals(Object obj) {
+            Line other = (Line) obj;
+            return xInDen == other.xInDen && xInNum == other.xInNum &&
+                   yInDen == other.yInDen && yInNum == other.yInNum;
+        }
+        @Override
+        public int hashCode() {
+            return Objects.hash(xInNum , xInDen , yInNum , yInDen);
+        }
+        @Override
+        public int compareTo(Line o) {
+            if(xInNum != o.xInNum)
+                return xInNum - o.xInNum;
+            else if(xInDen != o.xInDen)
+                return xInDen - o.xInDen;
+            else if(yInNum != o.yInNum)
+                return yInNum - o.yInNum;
+            else if(yInDen != o.yInDen)
+                return yInDen - o.yInDen;
+            else
+                return 0;
+        }
+    }
+    
     private static void solve() {
         
         
@@ -15,23 +60,22 @@ public class VanyaandTriangles {
         for(int i = 0; i < n; i++)
             pt[i] = nextIntArray(2);
         
-        UnaryOperator<Long> choose3 = a -> (1L * a * (a - 1) * (a - 2))  / 6;
-        HashMap<Line2D.Double , HashSet<Integer>> slopes = new HashMap<>();
+        UnaryOperator<Long> choose3 = a -> (1L * a * (a - 1) * (a - 2)) / 6;
+        TreeMap<Line , HashSet<Integer>> lines = new TreeMap<>();
         for(int i = 0; i < n; i++)
-            for(int j = 0; j < n; j++)
+            for(int j = 0; j < n; j++) 
                 if(i != j) {
-                    Line2D.Double line 
-                    HashSet<Integer> set = slopes.getOrDefault(slope, new HashSet<>());
+                    Line l = new Line(pt[i][0], pt[i][1], pt[j][0], pt[j][1]);
+                    HashSet<Integer> set = lines.getOrDefault(l, new HashSet<>());
                     set.add(i);
-                    slopes.put(slope, set);
+                    lines.put(l, set);
                 }
         
-        long total = choose3.apply((long) n) - slopes.entrySet()
+        long total = choose3.apply((long) n) - lines.entrySet()
                                                .stream()
                                                .map(e -> choose3.apply((long) e.getValue().size()))
                                                .reduce(0L, (a , b) -> a + b);
         
-         println(slopes);
         println(total);
     }
     
