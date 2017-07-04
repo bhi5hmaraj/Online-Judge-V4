@@ -72,7 +72,6 @@ public class TableCF232B {
         println(rec(0, k));
         System.out.println("Time : " + (System.nanoTime() - st) / 1e9);
     }
-
     private static void solve2() {
         
         int n = nextInt();
@@ -81,9 +80,6 @@ public class TableCF232B {
         long quo = m / n;
         int rem = (int) (m % n);
         int cache[][] = new int[Math.min(n , k) + 1][2];
-        
-        long st = System.nanoTime();
-        
         for(int i = 0; i <= Math.min(n , k); i++) {
             int comb = nCr(n, i);
             cache[i][0] = MM.modPow(comb , quo);
@@ -105,7 +101,6 @@ public class TableCF232B {
         
         println(DP[k]);
         
-        System.out.println("Time : " + (System.nanoTime() - st) / 1e9);
     }
     
     

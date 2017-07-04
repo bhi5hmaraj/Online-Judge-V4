@@ -1411,6 +1411,26 @@ class helper {
 		}
 	}
 
+    static class MMInt {       // MM (Modular Math) class 
+        static final int mod = (int) (1e9) + 7; // Default
+        static int sub(int a, int b) {return (a - b  + mod) % mod;}
+        static int mul(int a, int b) {return (int) ((1L * a * b ) % mod);}
+        static int add(int a, int b) {return (a + b) % mod;}
+        static int div(int a, int b) {return mul(a, modInverse(b));}
+        static int modInverse(int n) {return modPow(n, mod - 2);} // Fermat's little theorem
+        static int modPow(long a , long b) {
+            long pow = 1;
+            while(b > 0) {
+                if((b & 1L) == 1)
+                    pow = ((pow * a) % mod);
+
+                a = ((a * a) % (mod));
+                b >>= 1;
+            }
+            return (int) pow;
+        }
+    }
+	
 	static class MM {   	// MM (Modular Math) class 
 		static final long mod = (long) (1e9) + 7; // Default
 		static long sub(long a, long b) {return (a - b  + mod) % mod;}
