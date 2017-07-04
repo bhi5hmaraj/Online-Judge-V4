@@ -26,7 +26,7 @@ public class MagicBox {
                 intersect[i] = lambda * line[0][i] + line[1][i];
             
             boolean flag = true;
-            System.out.println("intersection " + Arrays.toString(intersect));
+             System.out.println("intersection " + Arrays.toString(intersect));
             
             for(int i = 0; i < 3; i++) {
                 if(i == fixed)
@@ -93,9 +93,13 @@ public class MagicBox {
                 double thresh = planes[i].distSq(payload);
                 for(int j = 0; j < 6; j++)
                     if(i != j && !planes[j].parallel(payload) && planes[j].intersect(payload)) 
-                        flag &= planes[j].distSq(payload) > planes[]
+                        flag &= planes[j].distSq(payload) >= thresh;
+                        
+                score += flag ? A[i] : 0;
             }
         }
+        
+        println(score);
     }
     
     
