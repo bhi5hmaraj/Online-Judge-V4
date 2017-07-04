@@ -2364,4 +2364,14 @@ class helper {
         return g;
     }
     
+    static final double EPS = 1e-8;
+    static int compare(double a , double b) {
+        if(a <= b - EPS)
+            return -1;
+        else if(a >= b + EPS)
+            return 1;
+        else
+            return 0;
+    }
+    
 }

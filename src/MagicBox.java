@@ -6,7 +6,17 @@ public class MagicBox {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static final double EPS = 1e-9;
+    static final double EPS = 1e-8;
+    
+    static int compare(double a , double b) {
+        if(a <= b - EPS)
+            return -1;
+        else if(a >= b + EPS)
+            return 1;
+        else
+            return 0;
+    }
+    
     static class Plane {
         double pt[];
         int fixed;  // This coordinate is constant for this particular plane
@@ -26,13 +36,13 @@ public class MagicBox {
                 intersect[i] = lambda * line[0][i] + line[1][i];
             
             boolean flag = true;
-             System.out.println("intersection " + Arrays.toString(intersect));
+            // System.out.println("intersection " + Arrays.toString(intersect));
             
             for(int i = 0; i < 3; i++) {
                 if(i == fixed)
-                    flag &= intersect[i] == boundry[fixed];
+                    flag &= compare(intersect[i] , boundry[fixed]) == 0;
                 else
-                    flag &= intersect[i] >= 0.0 && intersect[i] <= boundry[i];
+                    flag &= compare(intersect[i] , 0.0) >= 0 && compare(intersect[i] , boundry[i]) <= 0;
             }
             
             return flag;
@@ -93,7 +103,7 @@ public class MagicBox {
                 double thresh = planes[i].distSq(payload);
                 for(int j = 0; j < 6; j++)
                     if(i != j && !planes[j].parallel(payload) && planes[j].intersect(payload)) 
-                        flag &= planes[j].distSq(payload) >= thresh;
+                        flag &= compare(planes[j].distSq(payload), thresh) >= 0;
                         
                 score += flag ? A[i] : 0;
             }

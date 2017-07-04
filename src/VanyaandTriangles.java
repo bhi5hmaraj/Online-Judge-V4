@@ -15,7 +15,7 @@ public class VanyaandTriangles {
             xInDen = y2 - y1;
             yInNum = y1 * x2 - x1 * y2;
             yInDen = x2 - x1;
-//            System.out.println(xInNum + " / " + xInDen + " " + yInNum + " / " + yInDen);
+            // System.out.println("before " + xInNum + " / " + xInDen + " " + yInNum + " / " + yInDen);
             int g1 = gcd(xInNum, xInDen);
             if(g1 != 0) {
                 xInNum /= g1;
@@ -26,6 +26,7 @@ public class VanyaandTriangles {
                 yInNum /= g2;
                 yInDen /= g2;
             }
+            //System.out.println(xInNum + " / " + xInDen + " " + yInNum + " / " + yInDen);
         }
         @Override
         public boolean equals(Object obj) {
@@ -50,6 +51,23 @@ public class VanyaandTriangles {
             else
                 return 0;
         }
+        @Override
+        public String toString() {
+            return xInNum + " / " + xInDen + " " + yInNum + " / " + yInDen;
+        }
+    }
+    
+    static int brute(int pt[][]) {
+        int n = pt.length;
+        int cnt = 0;
+        for(int i = 0; i < n; i++)
+            for(int j = i + 1; j < n; j++) {
+                Line l1 = new Line(pt[i][0], pt[i][1], pt[j][0], pt[j][1]);
+                for(int k = j + 1; k < n; k++)
+                    cnt += !l1.equals(new Line(pt[i][0], pt[i][1], pt[k][0], pt[k][1])) ? 1 : 0;
+            }
+        
+        return cnt;
     }
     
     private static void solve() {
@@ -75,8 +93,10 @@ public class VanyaandTriangles {
                                                .stream()
                                                .map(e -> choose3.apply((long) e.getValue().size()))
                                                .reduce(0L, Long::sum);
-        HashMap<Integer , Integer> freq = new HashMap<>();
+        
+        lines.forEach((k , v) -> println(k + " ==> " + v));
         println(total);
+        println("brute " + brute(pt));
     }
     
     
