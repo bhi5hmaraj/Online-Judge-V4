@@ -72,6 +72,7 @@ public class TableCF232B {
         println(rec(0, k));
         System.out.println("Time : " + (System.nanoTime() - st) / 1e9);
     }
+    
     private static void solve2() {
         
         int n = nextInt();
