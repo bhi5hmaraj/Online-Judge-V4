@@ -2373,5 +2373,80 @@ class helper {
         else
             return 0;
     }
-    
+    static class Line implements Comparable<Line> {
+        int sNum , sDen , yInNum , yInDen;
+        int x; // for lines parallel to y axis
+        static int gcd(int a , int b) { return (b == 0) ? a : gcd(b, a % b); }
+        Line(int x1 , int y1 , int x2 , int y2) {
+            sNum = y2 - y1;
+            sDen = x2 - x1;
+            yInNum = y1 * x2 - x1 * y2;
+            yInDen = x2 - x1;
+            // System.out.println("before " + xInNum + " / " + xInDen + " " + yInNum + " / " + yInDen);
+            int g1 = gcd(sNum, sDen);
+            if(g1 != 0) {
+                sNum /= g1;
+                sDen /= g1;
+            }
+            int g2 = gcd(yInNum, yInDen);
+            if(g2 != 0) {
+                yInNum /= g2;
+                yInDen /= g2;
+            }
+            
+            if(sDen == 0 && yInDen == 0)
+                x = x1;
+        }
+        @Override
+        public boolean equals(Object obj) {
+            Line other = (Line) obj;
+            return sDen == other.sDen && sNum == other.sNum &&
+                   yInDen == other.yInDen && yInNum == other.yInNum && x == other.x;
+        }
+        @Override
+        public int hashCode() {
+            return Objects.hash(sNum , sDen , yInNum , yInDen , x);
+        }
+        @Override
+        public int compareTo(Line o) {
+            if(sNum != o.sNum)
+                return sNum - o.sNum;
+            else if(sDen != o.sDen)
+                return sDen - o.sDen;
+            else if(yInNum != o.yInNum)
+                return yInNum - o.yInNum;
+            else if(yInDen != o.yInDen)
+                return yInDen - o.yInDen;
+            else if(x != o.x)
+                return x - o.x;
+            else
+                return 0;
+        }
+        @Override
+        public String toString() {
+            return sNum + " / " + sDen + " " + yInNum + " / " + yInDen + " x = " + x;
+        }
+    }
+    static class Rational {
+        static int gcd(int a , int b) { return (b == 0) ? a : gcd(b, a % b); }
+        int num , den;
+        Rational(int a , int b) {
+            int g = gcd(a, b);
+            num = a / g;
+            den = b / g;
+        }
+        @Override
+        public boolean equals(Object obj) {
+            Rational other = (Rational) obj;
+            return other.num == num && other.den == den;
+        }
+        @Override
+        public int hashCode() {
+            return Objects.hash(num , den);
+        }
+        @Override
+        public String toString() {
+            return "[" + num + " / " + den + "]";
+        }
+    }
 }
