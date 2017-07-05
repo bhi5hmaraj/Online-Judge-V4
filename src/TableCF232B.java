@@ -44,16 +44,20 @@ public class TableCF232B {
     static long m;
     static int n;
     static int memo[][];
+    static int cache[][];   
+    /*
+     * Lesson learnt : modPow is very expensive (ok for linear but catastrophic for quad or cubic)
+     */
     static int rec(int idx , int k) {
         if(idx == n)
             return k == 0 ? 1 : 0;
         else if(memo[idx][k] != -1)
             return memo[idx][k];
         else {
-            long pow = (m / n) + (idx < m % n ? 1 : 0);
+            int flag = (idx < m % n ? 1 : 0);
             int sum = 0;
             for(int i = 0; i <= Math.min(k , n); i++) 
-                sum = MM.add(sum, MM.mul(rec(idx + 1, k - i), MM.modPow(nCr(n, i), pow)));
+                sum = MM.add(sum, MM.mul(rec(idx + 1, k - i), cache[i][flag]));
             
             return memo[idx][k] = sum;
         }
@@ -68,9 +72,14 @@ public class TableCF232B {
         memo = new int[n][k + 1];
         for(int temp[] : memo) Arrays.fill(temp, -1);
         
-        long st = System.nanoTime();
+        cache = new int[Math.min(n , k) + 1][2];
+        for(int i = 0; i <= Math.min(n , k); i++) {
+            int comb = nCr(n, i);
+            cache[i][0] = MM.modPow(comb , m / n);
+            cache[i][1] = MM.mul(cache[i][0], comb);
+        }
+        
         println(rec(0, k));
-        System.out.println("Time : " + (System.nanoTime() - st) / 1e9);
     }
     
     private static void solve2() {
@@ -80,12 +89,13 @@ public class TableCF232B {
         int k = nextInt();
         long quo = m / n;
         int rem = (int) (m % n);
-        int cache[][] = new int[Math.min(n , k) + 1][2];
+        cache = new int[Math.min(n , k) + 1][2];
         for(int i = 0; i <= Math.min(n , k); i++) {
             int comb = nCr(n, i);
             cache[i][0] = MM.modPow(comb , quo);
             cache[i][1] = MM.mul(cache[i][0], comb);
         }
+        
         int DP[] = new int[k + 1];
         DP[0] = 1;   // base case
         for(int i = 1; i <= Math.min(n , k); i++) 
@@ -117,7 +127,7 @@ public class TableCF232B {
         reader = new BufferedReader(new InputStreamReader(System.in));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
-        solve2();
+        solve();
         reader.close();
         writer.close();
     }
