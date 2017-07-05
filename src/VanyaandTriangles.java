@@ -50,7 +50,9 @@ public class VanyaandTriangles {
             for(int j = i + 1; j < n; j++) 
                 freq.merge(new Rational(pt[j][0] - pt[i][0], pt[j][1] - pt[i][1]), 1, Integer::sum);
 
+            // 100 ms overhead for map-reduce
             total -= freq.entrySet().stream().map(e -> choose2(e.getValue())).reduce(0L, Long::sum);
+            
         }
         
         println(total);
