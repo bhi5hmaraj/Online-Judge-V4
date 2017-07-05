@@ -1,5 +1,4 @@
 import java.util.*;
-import java.util.function.UnaryOperator;
 import java.io.*;
 public class VanyaandTriangles {
     
@@ -90,7 +89,11 @@ public class VanyaandTriangles {
         else
             return 0;
     }
-    
+    static int compare(int[] a , int b[]) {
+        int left = a[0] * b[1];
+        int right = a[1] * b[0];
+        return left - right;
+    }
     private static void solve() {
         
         int n = nextInt();
@@ -103,9 +106,10 @@ public class VanyaandTriangles {
         for(int i = 0; i < n; i++) {
             Double slopes[] = new Double[n - i - 1];
             for(int j = i + 1; j < n; j++)
-                slopes[j - i - 1] = Math.atan2(pt[j][1] - pt[i][1], pt[j][0] - pt[i][0]);
-            Arrays.sort(slopes, VanyaandTriangles::compare);
-            println(Arrays.toString(slopes));
+                slopes[j - i - 1] = Math.atan2(pt[i][1] - pt[j][1], pt[i][0] - pt[j][0]);
+            
+            Arrays.sort(slopes , VanyaandTriangles::compare);
+            
             int streak = 1;
             for(int k = 1; k < slopes.length; k++) {
                 if(compare(slopes[k] , slopes[k - 1]) == 0)
@@ -116,11 +120,10 @@ public class VanyaandTriangles {
                 }
             }
             total -= choose2(streak);
-            streak = 1;
         }
         
         println(total);
-        println("brute " + brute(pt));
+         println("brute " + brute(pt));
     }
     
     
