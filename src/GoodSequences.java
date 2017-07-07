@@ -10,6 +10,9 @@ public class GoodSequences {
     private static void solve() {
         
         
+        final int MAX = (int)1e5; 
+        int n = nextInt();
+        int arr[] = nextIntArray(n);
         
         
         
