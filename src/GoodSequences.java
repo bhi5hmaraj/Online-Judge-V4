@@ -14,9 +14,28 @@ public class GoodSequences {
         int n = nextInt();
         int arr[] = nextIntArray(n);
         
+        int DP[] = new int[MAX + 1];
+        int max = 0;
         
+        for(int a : arr) {
+            int seqLen = 0;
+            for(int i = 2; i * i <= a; i++) 
+                if(a % i == 0) 
+                    seqLen = Math.max(seqLen , Math.max(DP[i] , DP[a / i]));
+            
+            seqLen++;
+            DP[a] = Math.max(DP[a] , seqLen);
+            
+            for(int i = 2; i * i <= a; i++)
+                if(a % i == 0) {
+                    DP[i] = Math.max(DP[i] , seqLen);
+                    DP[a / i] = Math.max(DP[a / i] , seqLen);
+                }
+            
+            max = Math.max(max , seqLen);
+        }
         
-        
+        println(max);
     }
     
     
