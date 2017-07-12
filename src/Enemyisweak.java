@@ -1,41 +1,73 @@
 import java.util.*;
 import java.io.*;
-public class MagicTrick {
+public class Enemyisweak {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    /*
-     * http://imgur.com/a/PdjIa
-     */
-    
-    static double logFact[];
-    static final int MAX = (int) 1e6;
-    static {
-        logFact = new double[MAX + 1];
-        for(int i = 1; i <= MAX; i++)
-            logFact[i] = Math.log(i) + logFact[i - 1];
+
+    static class FenwickTree {
+
+        /****************
+         * DONT USE BIT IF YOU UPDATE INDEX 0 (causes infinite loop)
+         ******************/
+
+        int tree[];
+        int len;
+
+        FenwickTree(int len) {
+            this.len = len;
+            tree = new int[len + 10];
+        }
+
+        void update(int idx, int val) {
+            if (idx == 0)
+                throw new IndexOutOfBoundsException("BIT IS NOT ZERO INDEXED");
+            for (; idx <= len; idx += (idx & -idx))
+                tree[idx] += val;
+        }
+
+        int query(int idx) {
+            int sum = 0;
+            for (; idx > 0; idx -= (idx & -idx))
+                sum += tree[idx];
+
+            return sum;
+        }
+
     }
-    
-    static double logNCR(int n , int r) {
-        return logFact[n] - logFact[r] - logFact[n - r];
-    }
+
     
     private static void solve() {
         
-        
         int n = nextInt();
-        int m = nextInt();
+        TreeSet<Integer> set = new TreeSet<>();
         
-        double prob = 0;
+        int arr[] = nextIntArray(n);
+        Arrays.stream(arr).forEach(set::add);
         
-        for(int i = 1; i <= Math.min(n , m); i++)
-            prob += Math.exp(logNCR(m, i) + logNCR((n - 1) * m, n - i) + 2 * Math.log(i)
-                             - (logNCR(n * m, n) + Math.log(n)));
+        int m = set.size();
         
+        HashMap<Integer , Integer> map = new HashMap<>();
+        set.stream().forEach(num -> map.put(num, map.size() + 1));
         
-        println(prob);
+        FenwickTree left = new FenwickTree(m);
+        FenwickTree right = new FenwickTree(m);
+        left.update(map.get(arr[0]), 1);
+        
+        for(int i = 1; i < n; i++)
+            right.update(map.get(arr[i]), 1);
+        
+        long weakness = 0;
+        for(int i = 1; i < n - 1; i++) {
+            int x = map.get(arr[i]);
+            right.update(x, -1);
+            weakness += 1L * right.query(x - 1) * (left.query(m) - left.query(x));
+            left.update(x, 1);
+        }
+        
+        println(weakness);
     }
     
     
