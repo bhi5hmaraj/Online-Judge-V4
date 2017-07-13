@@ -65,9 +65,25 @@ public class poj_2292 {
             memo = new int[CUT + 1][chars.length];
             for(int a[] : memo) Arrays.fill(a, -1);
             
+//            println("cost = " + findOpt(0, 0));
             findOpt(0, 0);
             StringBuilder ans = new StringBuilder();
             
+            int idx = 0 , off = 0;
+            while(idx < CUT) {
+                int curr = 0;
+                for(int i = 1; i <= chars.length - off; i++) {
+                    curr += i * freq[off + i - 1];
+                    if(memo[idx][off] == curr + memo[idx + 1][off + i]) {
+                        ans.append(chars[off + i]);
+                        idx++;
+                        off += i;
+                        break;
+                    }
+                }
+            }
+            
+            println(ans);
         }
         
         
