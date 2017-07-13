@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.stream.IntStream;
 import java.io.*;
 public class OfficeKeys {
     
@@ -10,7 +11,12 @@ public class OfficeKeys {
     private static void solve() {
         
         
+        int n = nextInt();
+        int k = nextInt();
+        int p = nextInt();
         
+        int a[] = nextIntArray(n);
+        int b[] = nextIntArray(k);
         
         
         
