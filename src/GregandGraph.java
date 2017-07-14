@@ -16,8 +16,49 @@ public class GregandGraph {
             cost[i] = nextIntArray(n);
         
         long sum = 0;
-        int order[] = Arrays.stream(nextIntArray(n)).map(Math::decrementExact).toArray();
+        int ord[] = Arrays.stream(nextIntArray(n)).map(Math::decrementExact).toArray();
         
+        int DP[][] = new int[n][n];
+        for(int a[] : DP) Arrays.fill(a, Integer.MAX_VALUE);
+        
+        ArrayDeque<Long> stack = new ArrayDeque<>();
+        
+        for(int i = n - 1; i >= 0; i--) {
+            // i is new vertex
+            DP[ord[i]][ord[i]] = 0;
+            for(int j = i + 1; j < n; j++) {
+                for(int k = i + 1; k < n; k++) {
+                    DP[ord[j]][ord[i]] = Math.min(DP[ord[j]][ord[i]] , DP[ord[j]][ord[k]] + cost[ord[k]][ord[i]]);
+                    DP[ord[i]][ord[j]] = Math.min(DP[ord[i]][ord[j]] , cost[ord[i]][ord[k]] + DP[ord[k]][ord[j]]);
+                }
+                sum += DP[ord[j]][ord[i]];
+                sum += DP[ord[i]][ord[j]];
+            }
+            /*
+            for(int a[] : DP)
+                println(Arrays.toString(a));
+            */
+            
+            for(int j = i + 1; j < n; j++) {
+                for(int k = i + 1; k < n; k++) 
+                    if(k != j && DP[ord[j]][ord[k]] > DP[ord[j]][ord[i]] + DP[ord[i]][ord[k]]) {
+                        sum -= DP[ord[j]][ord[k]];
+                        sum += DP[ord[j]][ord[i]] + DP[ord[i]][ord[k]];
+                        DP[ord[j]][ord[k]] = DP[ord[j]][ord[i]] + DP[ord[i]][ord[k]];
+                    }
+            }
+            
+            /*
+            for(int a[] : DP)
+                println(Arrays.toString(a));
+            
+            println("=========================");
+            */
+            
+            stack.push(sum);
+        }
+        
+        stack.stream().forEach(a -> print(a + " "));
     }
     
     
