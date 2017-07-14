@@ -9,6 +9,7 @@ public class poj_1160 {
     static int position[];
     static int V;
     static int cost[][];
+    static int memo[][];
     static int findOpt(int idx , int remain) {
         if(idx == V)
             return 0;
@@ -20,13 +21,27 @@ public class poj_1160 {
                 min = Math.min(min , cost[0][i] + findOpt(i + 1, remain - 1));
             return min;
         }
+        else if(memo[idx][remain] != -1)
+            return memo[idx][remain];
         else {
             int min = Integer.MAX_VALUE;
             for(int i = idx; i < V; i++) {
                 int lo = idx - 1 , hi = i;
                 int floor = lo;
                 int key = (position[lo] + position[hi]) >> 1;
+                while(lo <= hi) {
+                    int mid = (lo + hi) >> 1;
+                    if(key >= position[mid]) {
+                        lo = mid + 1;
+                        floor = mid;
+                    }
+                    else
+                        hi = mid - 1;
+                }
+                
+                min = Math.min(min , cost[floor][idx - 1] + cost[floor + 1][i] + findOpt(i + 1, remain - 1));
             }
+            return memo[idx][remain] = min;
         }
     }
     
@@ -37,6 +52,11 @@ public class poj_1160 {
         int P = nextInt();
         position = nextIntArray(V);
         
+        // long st = System.nanoTime();
+        
+        memo = new int[V][P + 1];
+        for(int a[] : memo) Arrays.fill(a, -1);
+        
         cost = new int[V][V];
         for(int i = 0; i < V; i++)
             for(int j = 0; j <= i; j++)
@@ -45,6 +65,8 @@ public class poj_1160 {
                     cost[k][j] += position[i] - position[j];
                 }
         
+        println(findOpt(0, P));
+        // println("Time " + (System.nanoTime() - st) / 1e9);
     }
     
     
