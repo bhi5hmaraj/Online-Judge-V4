@@ -6,13 +6,44 @@ public class poj_1160 {
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    static int position[];
+    static int V;
+    static int cost[][];
+    static int findOpt(int idx , int remain) {
+        if(idx == V)
+            return 0;
+        else if(remain == 0)
+            return cost[V - 1][idx - 1];
+        else if(idx == 0) {
+            int min = Integer.MAX_VALUE;
+            for(int i = 0; i < V; i++)
+                min = Math.min(min , cost[0][i] + findOpt(i + 1, remain - 1));
+            return min;
+        }
+        else {
+            int min = Integer.MAX_VALUE;
+            for(int i = idx; i < V; i++) {
+                int lo = idx - 1 , hi = i;
+                int floor = lo;
+                int key = (position[lo] + position[hi]) >> 1;
+            }
+        }
+    }
     
     private static void solve() {
         
         
+        V = nextInt();
+        int P = nextInt();
+        position = nextIntArray(V);
         
-        
-        
+        cost = new int[V][V];
+        for(int i = 0; i < V; i++)
+            for(int j = 0; j <= i; j++)
+                for(int k = i; k < V; k++) {
+                    cost[j][k] += position[k] - position[i];
+                    cost[k][j] += position[i] - position[j];
+                }
         
     }
     
