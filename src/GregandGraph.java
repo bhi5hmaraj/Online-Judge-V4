@@ -58,7 +58,7 @@ public class GregandGraph {
             stack.push(sum);
         }
         
-        stack.stream().forEach(a -> print(a + " "));
+         stack.stream().forEach(a -> print(a + " "));
     }
     
     
