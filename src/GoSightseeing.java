@@ -6,16 +6,8 @@ public class GoSightseeing {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static class Pair {
-        int start , freq , dur;
-        Pair(int a , int b , int c) {
-            start = a;
-            freq = b;
-            dur = c;
-        }
-    }
  
- /*   static class Pair {
+    static class Pair {
         long start , freq , dur;
         Pair(long a , long b , long c) {
             start = a;
@@ -23,68 +15,14 @@ public class GoSightseeing {
             dur = c;
         }
     }
- */   
     
- /*   
-    static long completeTime(long end , int from , Pair arr[]) {
-        // System.out.print(end);
-        for(; from < arr.length; from++) {
-            long hop = (end - arr[from].start + arr[from].freq - 1) / arr[from].freq;
-            hop = Math.max(0 , hop);
-            end = (arr[from].start + hop * arr[from].freq) + arr[from].dur;
-            // System.out.print(" ==> " + end);
-        }
-        // System.out.println();
-        return end;
-    }
-    private static void solve() {
-        
-        
-        for(int tc = 1 , T = nextInt(); tc <= T; tc++) {
-            
-            int N = nextInt();
-            long Ts = nextLong();
-            long Tf = nextLong();
-            
-            Pair arr[] = new Pair[N - 1];
-            for(int i = 0; i < N - 1; i++)
-                arr[i] = new Pair(nextLong(), nextLong(), nextLong());
-            
-            if(completeTime(0, 0, arr) > Tf) {
-                println("Case #" + tc + ": IMPOSSIBLE");
-                continue;
-            }
-            
-            int cnt = 0;
-            long end = 0;
-            for(int i = 0; i < N - 1; i++) {
-                // System.out.print("i " + i + " from " + end);
-                // System.out.println();
-                if(completeTime(end + Ts, i, arr) <= Tf) {
-                    cnt++;
-                    end += Ts;
-                    // System.out.print(" taken ");
-                }
-                long hop = (end - arr[i].start + arr[i].freq - 1) / arr[i].freq;
-                hop = Math.max(0 , hop);
-                end = (arr[i].start + hop * arr[i].freq) + arr[i].dur;
-                // System.out.println("to " + end);
-            }
-            
-            println("Case #" + tc + ": " + cnt);
-        }
-        
-        
-    }
-    */
-    
-    static int next(int time , int idx) {
-        int hop = (time - arr[idx].start + arr[idx].freq - 1) / arr[idx].freq;
+    static long next(int time , int idx) {
+        long hop = (time - arr[idx].start + arr[idx].freq - 1) / arr[idx].freq;
         hop = Math.max(hop , 0);
         return (arr[idx].start + hop * arr[idx].freq) + arr[idx].dur; 
     }
     
-    static int rec(int idx , int time) {
+    static long rec(int idx , int visit) {
         if(time > Tf)
             return -INF;
         else if(idx == N - 1)
@@ -94,11 +32,12 @@ public class GoSightseeing {
         else 
             return memo[idx][time] = Math.max(rec(idx + 1, next(time, idx)) , 1 + rec(idx + 1, next(time + Ts, idx)));
     }
+    
     static Pair arr[];
     static int Ts , N , Tf;
     static final int INF = (int) 1e8;
-    //static int memo[][];
-    static HashMap<Integer , HashMap<Integer , Integer>> memo;
+    static int memo[][];
+
     private static void solve2() {
 
         for(int tc = 1 , T = nextInt(); tc <= T; tc++) {
