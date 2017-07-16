@@ -16,43 +16,50 @@ public class GoSightseeing {
         }
     }
     
-    static long next(int time , int idx) {
+    static long next(long time , int idx) {
         long hop = (time - arr[idx].start + arr[idx].freq - 1) / arr[idx].freq;
         hop = Math.max(hop , 0);
         return (arr[idx].start + hop * arr[idx].freq) + arr[idx].dur; 
     }
     
     static long rec(int idx , int visit) {
-        if(time > Tf)
-            return -INF;
-        else if(idx == N - 1)
-            return 0;
-        else if(memo[idx][time] != -1)
-            return memo[idx][time];
-        else 
-            return memo[idx][time] = Math.max(rec(idx + 1, next(time, idx)) , 1 + rec(idx + 1, next(time + Ts, idx)));
+        if(visit < 0)
+            return INF;
+        else if(idx < 0)
+            return visit == 0 ? 0 : INF;
+        else if(memo[idx][visit] != -1)
+            return memo[idx][visit];
+        else {
+            long min = Math.min(next(rec(idx - 1, visit), idx) , 
+                                next(rec(idx - 1, visit - 1) + Ts, idx));
+            min = Math.min(min , INF);
+            return memo[idx][visit] = min;
+        }
     }
     
     static Pair arr[];
-    static int Ts , N , Tf;
-    static final int INF = (int) 1e8;
-    static int memo[][];
-
-    private static void solve2() {
+    static int N;
+    static long Ts , Tf;
+    static long memo[][];
+    static final long INF = (long) 1e16; 
+    private static void solve() {
 
         for(int tc = 1 , T = nextInt(); tc <= T; tc++) {
             N = nextInt();
-            Ts = nextInt();
-            Tf = nextInt();
+            Ts = nextLong();
+            Tf = nextLong();
             
             arr = new Pair[N - 1];
             for(int i = 0; i < N - 1; i++)
                 arr[i] = new Pair(nextInt(), nextInt(), nextInt());
             
-            memo = new int[N][Tf + 1];
-            for(int a[] : memo) Arrays.fill(a, -1);
+            memo = new long[N][N];
+            for(long a[] : memo) Arrays.fill(a, -1);
             
-            int ans = rec(0, 0);
+            int ans;
+            for(ans = N - 1; ans >= 0 && rec(N - 2, ans) > Tf; ans--)
+                ;
+            
             println("Case #" + tc + ": " + (ans < 0 ? "IMPOSSIBLE" : ans));
         }
     }
@@ -70,7 +77,7 @@ public class GoSightseeing {
 //        writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         writer = new PrintWriter("out.txt");
         st     = null;
-        solve2();
+        solve();
         reader.close();
         writer.close();
     }
