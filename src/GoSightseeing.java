@@ -98,7 +98,7 @@ public class GoSightseeing {
     static int Ts , N , Tf;
     static final int INF = (int) 1e8;
     //static int memo[][];
-    static HashMap<Integer , Integer> memo;
+    static HashMap<Integer , HashMap<Integer , Integer>> memo;
     private static void solve2() {
 
         for(int tc = 1 , T = nextInt(); tc <= T; tc++) {
