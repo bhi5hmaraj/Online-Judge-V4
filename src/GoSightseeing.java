@@ -14,8 +14,18 @@ public class GoSightseeing {
             dur = c;
         }
     }
+ 
+ /*   static class Pair {
+        long start , freq , dur;
+        Pair(long a , long b , long c) {
+            start = a;
+            freq = b;
+            dur = c;
+        }
+    }
+ */   
     
-    
+ /*   
     static long completeTime(long end , int from , Pair arr[]) {
         // System.out.print(end);
         for(; from < arr.length; from++) {
@@ -66,7 +76,7 @@ public class GoSightseeing {
         
         
     }
-    
+    */
     
     static int next(int time , int idx) {
         int hop = (time - arr[idx].start + arr[idx].freq - 1) / arr[idx].freq;
@@ -87,7 +97,8 @@ public class GoSightseeing {
     static Pair arr[];
     static int Ts , N , Tf;
     static final int INF = (int) 1e8;
-    static int memo[][];
+    //static int memo[][];
+    static HashMap<Integer , Integer> memo;
     private static void solve2() {
 
         for(int tc = 1 , T = nextInt(); tc <= T; tc++) {
