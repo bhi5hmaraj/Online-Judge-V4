@@ -29,11 +29,19 @@ public class CardsSorting {
         }
         
         long simulate() {
+            
             long steps = 0;
             for(int i = 1; i <= arr.length; i++) {
                 steps += root.minPos + 1;
                 VertexPair pair = split(root, root.minPos);
+                pair.left = pair.left.left; // remove min
+                if(pair.left != null)
+                    pair.left.parent = null;
+                update(pair.left);
+                root = merge(pair.right , pair.left);
             }
+            
+            return steps;
         }
         
         static class Vertex {
@@ -181,43 +189,6 @@ public class CardsSorting {
             return v;
         }
 
-        // Searches for the given key in the tree with the given root
-        // and calls splay for the deepest visited node after that.
-        // Returns pair of the result and the new root.
-        // If found, result is a pointer to the node with the given key.
-        // Otherwise, result is a pointer to the node with the smallest
-        // bigger key (next value in the order).
-        // If the key is bigger than all keys in the tree,
-        // then result is null.
-        private VertexPair find(Vertex root, int key) {  //searches for a elem and splays the last touched node.
-            Vertex v = root;    // Returns a vertex pair with 
-            Vertex last = root; // Left node  = ceil of the search
-            Vertex next = null; // Right node = last touched node in the search
-            while (v != null) {
-                if (v.key >= key && (next == null || v.key < next.key)) {
-                    next = v;
-                }
-                last = v;
-                if (v.key == key) {
-                    break;
-                }
-                if (v.key < key) {
-                    v = v.right;
-                } else {
-                    v = v.left;
-                }
-            }
-            root = splay(last);
-            return new VertexPair(next, root);
-        }
-
-        private static void print(Vertex root) {
-            if (root != null) {
-                print(root.left);
-                System.out.println(root);
-                print(root.right);
-            }
-        }
         
         VertexPair split(Vertex root, int pos) {
             VertexPair result = new VertexPair();
@@ -259,35 +230,6 @@ public class CardsSorting {
             update(left);
             return left;
         }
-        
-        public void erase(int x) {
-            VertexPair vp = find(root, x);
-            root = vp.right;
-            if (root != null)
-                root.parent = null;
-            update(root);
-            if (vp.right != null && vp.right.key == x) {
-                if (vp.right.right == null) {
-                    root = vp.right.left;
-                    if (root != null)
-                        root.parent = null;
-                    update(root);
-                } else {        //First splay the ceil of x then splay x now the ceil of x is in the right ,                            
-                    find(root, x + 1);  //so we can just redirect the root = root.right 
-                    vp = find(root, x);
-                    root = vp.right.right;
-                    root.left = vp.right.left;
-                    root.parent = null;
-                    update(root);
-                }
-            }
-        }
-
-        public boolean find(int x) {
-            VertexPair vp = find(root, x);
-            root = vp.right;
-            return root != null && root.key == x;
-        }
 
         
         private StringBuilder toString(StringBuilder prefix, boolean isTail, StringBuilder sb, Vertex root) {
@@ -317,8 +259,7 @@ public class CardsSorting {
     private static void solve() {
         
         
-        
-        
+        println(new SplayTree(nextIntArray(nextInt())).simulate());
         
         
     }
