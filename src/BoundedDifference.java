@@ -53,8 +53,23 @@ public class BoundedDifference {
         
         for(int i = 0; i < n - 1; i++) {
             if(Math.abs(arr[i] - arr[i + 1]) > k) {
+                
+                if(i == n - 2) {
+                    for(int j = 0; j < n - 1; j++)
+                        if(check(n - 1, j)) {
+                            println((i + 2) + " " + (j + 1));
+                            return;
+                        }
+                }
+                
                 for(int j = i + 2; j < n; j++) 
                     if(check(i + 1, j) && (j == n - 1 ? true : suffix[j + 1]) && full(i + 2, j - 2)) {
+                        swap(i + 1, j);
+                        // System.out.println(Arrays.toString(arr));
+                        for(int p = 0; p < n - 1; p++)
+                            if(Math.abs(arr[p] - arr[p + 1]) > k)
+                                throw new RuntimeException("gotcha");
+                        
                         println((i + 2) + " " + (j + 1));
                         return;
                     }
