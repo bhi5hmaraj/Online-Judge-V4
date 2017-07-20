@@ -6,6 +6,12 @@ public class KalilaandDimnaintheLoggingIndustry {
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    /*
+     * Convex Hull Trick
+     * http://pclub.in/tutorial/algos/2016/08/22/dpconvex.html
+     * wcipeg.com/wiki/Convex_hull_trick
+     * 
+     */
     
     private static void solve() {
         
@@ -13,9 +19,36 @@ public class KalilaandDimnaintheLoggingIndustry {
         int n = nextInt();
         long A[] = nextLongArray(n);
         long B[] = nextLongArray(n);
-        
+
         long DP[] = new long[n];
-        double x[] = new double[n];
+        ArrayList<Double> soln = new ArrayList<>();
+        ArrayList<Integer> pos = new ArrayList<>();
+        ArrayList<Integer> line = new ArrayList<>();
+        line.add(0);
+        for(int i = 1; i < n; i++) {
+            int lo = 0, hi = soln.size() - 1;
+            int floor = 0;
+            while(lo <= hi) {
+                int mid = (lo + hi) >> 1;
+                if(A[i] >= soln.get(mid)) {
+                    floor = mid;
+                    lo = mid + 1;
+                }
+                else
+                    hi = mid - 1;
+            }
+            
+            int p = pos.isEmpty() ? 0 : pos.get(floor);
+            DP[i] = DP[p] + B[p] * A[i];
+            double x = ((double) DP[i - 1] - DP[i]) / ((double) B[i] - B[i - 1]);
+            if(soln.isEmpty() || x > soln.get(soln.size() - 1)) {
+                soln.add(x);
+                pos.add(i);
+            }
+            println("x " + soln + " DP " + Arrays.toString(DP));
+        }
+        
+        println(DP[n - 1]);
         
     }
     
