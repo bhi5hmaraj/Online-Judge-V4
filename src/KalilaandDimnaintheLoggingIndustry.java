@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.function.BiFunction;
 import java.io.*;
 public class KalilaandDimnaintheLoggingIndustry {
     
@@ -13,6 +14,17 @@ public class KalilaandDimnaintheLoggingIndustry {
      * 
      */
     
+    static final double EPS = 1e-8;
+    
+    static int compare(double a , double b) {
+        if(a <= b - EPS)
+            return -1;
+        else if(a >= b + EPS)
+            return 1;
+        else
+            return 0;
+    }
+    
     private static void solve() {
         
         
@@ -21,16 +33,19 @@ public class KalilaandDimnaintheLoggingIndustry {
         long B[] = nextLongArray(n);
 
         long DP[] = new long[n];
+        
         ArrayList<Double> soln = new ArrayList<>();
-        ArrayList<Integer> pos = new ArrayList<>();
         ArrayList<Integer> line = new ArrayList<>();
+        BiFunction<Integer , Integer , Double> x = (i , j) -> ((double) DP[j] - DP[i]) / ((double) B[i] - B[j]);
         line.add(0);
+        
         for(int i = 1; i < n; i++) {
             int lo = 0, hi = soln.size() - 1;
-            int floor = 0;
+            int floor = -1;
+            
             while(lo <= hi) {
                 int mid = (lo + hi) >> 1;
-                if(A[i] >= soln.get(mid)) {
+                if(compare(A[i] , soln.get(mid)) >= 0) {
                     floor = mid;
                     lo = mid + 1;
                 }
@@ -38,18 +53,21 @@ public class KalilaandDimnaintheLoggingIndustry {
                     hi = mid - 1;
             }
             
-            int p = pos.isEmpty() ? 0 : pos.get(floor);
+            int p = line.get(floor + 1);
             DP[i] = DP[p] + B[p] * A[i];
-            double x = ((double) DP[i - 1] - DP[i]) / ((double) B[i] - B[i - 1]);
-            if(soln.isEmpty() || x > soln.get(soln.size() - 1)) {
-                soln.add(x);
-                pos.add(i);
+            int last = line.size() - 1;
+            if(line.size() >= 2 && compare(x.apply(i, line.get(last - 1)), soln.get(soln.size() - 1)) < 0) {
+                soln.remove(soln.size() - 1);
+                line.remove(last);
             }
-            println("x " + soln + " DP " + Arrays.toString(DP));
+            
+            soln.add(x.apply(soln.isEmpty() ? 0 : line.get(line.size() - 1), i));
+            line.add(i);
+            // println("x " + soln + " DP " + Arrays.toString(DP));
         }
         
+        // println(String.format("%.0f", DP[n - 1]));
         println(DP[n - 1]);
-        
     }
     
     
