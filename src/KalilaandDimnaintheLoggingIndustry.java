@@ -13,18 +13,6 @@ public class KalilaandDimnaintheLoggingIndustry {
      * wcipeg.com/wiki/Convex_hull_trick
      * 
      */
-    
-    static final double EPS = 1e-8;
-    
-    static int compare(double a , double b) {
-        if(a <= b - EPS)
-            return -1;
-        else if(a >= b + EPS)
-            return 1;
-        else
-            return 0;
-    }
-    
     private static void solve() {
         
         
@@ -44,7 +32,7 @@ public class KalilaandDimnaintheLoggingIndustry {
             
             while(lo <= hi) {
                 int mid = (lo + hi) >> 1;
-                if(compare(A[i] , soln.get(mid)) >= 0) {
+                if(A[i] >= soln.get(mid)) {
                     floor = mid;
                     lo = mid + 1;
                 }
@@ -55,6 +43,9 @@ public class KalilaandDimnaintheLoggingIndustry {
             int p = line.get(floor + 1);
             DP[i] = DP[p] + B[p] * A[i];
             
+            /*
+             * Each entry is added one and removed once so amortized O(N) overall
+             */
             while(line.size() >= 2 && x.apply(i, line.get(line.size() - 2)) < soln.get(soln.size() - 1)) {
                 soln.remove(soln.size() - 1);
                 line.remove(line.size() - 1);
@@ -62,10 +53,9 @@ public class KalilaandDimnaintheLoggingIndustry {
             
             soln.add(x.apply(soln.isEmpty() ? 0 : line.get(line.size() - 1), i));
             line.add(i);
-            // println("x " + soln + " DP " + Arrays.toString(DP));
         }
         
-        println(DP[n - 1]);
+        println(DP[n - 1]); // O(N log N) overall
         
     }
     
