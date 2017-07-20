@@ -34,9 +34,9 @@ public class KalilaandDimnaintheLoggingIndustry {
 
         long DP[] = new long[n];
         
-        ArrayList<Double> soln = new ArrayList<>();
+        ArrayList<Long> soln = new ArrayList<>();
         ArrayList<Integer> line = new ArrayList<>();
-        BiFunction<Integer , Integer , Double> x = (i , j) -> ((double) DP[j] - DP[i]) / ((double) B[i] - B[j]);
+        BiFunction<Integer , Integer , Long> x = (i , j) ->  (DP[j] - DP[i]) / (B[i] - B[j]);
         line.add(0);
         
         for(int i = 1; i < n; i++) {
@@ -45,7 +45,7 @@ public class KalilaandDimnaintheLoggingIndustry {
             
             while(lo <= hi) {
                 int mid = (lo + hi) >> 1;
-                if(compare(A[i] , soln.get(mid)) >= 0) {
+                if(A[i] > soln.get(mid)) {
                     floor = mid;
                     lo = mid + 1;
                 }
@@ -56,7 +56,7 @@ public class KalilaandDimnaintheLoggingIndustry {
             int p = line.get(floor + 1);
             DP[i] = DP[p] + B[p] * A[i];
             int last = line.size() - 1;
-            if(line.size() >= 2 && compare(x.apply(i, line.get(last - 1)), soln.get(soln.size() - 1)) < 0) {
+            if(line.size() >= 2 && x.apply(i, line.get(last - 1)) < soln.get(soln.size() - 1)) {
                 soln.remove(soln.size() - 1);
                 line.remove(last);
             }
