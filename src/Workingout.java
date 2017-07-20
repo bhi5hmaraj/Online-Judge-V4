@@ -1,71 +1,41 @@
 import java.util.*;
-import java.util.function.BiFunction;
 import java.io.*;
-public class KalilaandDimnaintheLoggingIndustry {
+public class Workingout {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    /*
-     * Convex Hull Trick
-     * http://pclub.in/tutorial/algos/2016/08/22/dpconvex.html
-     * wcipeg.com/wiki/Convex_hull_trick
-     * 
-     */
-    
-    static final double EPS = 1e-8;
-    
-    static int compare(double a , double b) {
-        if(a <= b - EPS)
-            return -1;
-        else if(a >= b + EPS)
-            return 1;
-        else
-            return 0;
-    }
     
     private static void solve() {
         
         
         int n = nextInt();
-        long A[] = nextLongArray(n);
-        long B[] = nextLongArray(n);
-
-        long DP[] = new long[n];
-        ArrayList<Double> soln = new ArrayList<>();
-        ArrayList<Integer> line = new ArrayList<>();
-        BiFunction<Integer , Integer , Double> x = (i , j) -> ((double) DP[j] - DP[i]) / ((double) B[i] - B[j]);
-        line.add(0);
+        int m = nextInt();
         
+        int a[][] = new int[n][];
+        for(int i = 0; i < n; i++)
+            a[i] = nextIntArray(m);
+        
+        int A[][] = new int[n][m];
+        int B[][] = new int[n][m];
+        A[0][0] = a[0][0];
+        B[n - 1][0] = a[n - 1][0];
         for(int i = 1; i < n; i++) {
-            int lo = 0, hi = soln.size() - 1;
-            int floor = -1;
-            
-            while(lo <= hi) {
-                int mid = (lo + hi) >> 1;
-                if(compare(A[i] , soln.get(mid)) >= 0) {
-                    floor = mid;
-                    lo = mid + 1;
-                }
-                else
-                    hi = mid - 1;
+            A[i][0] = A[i - 1][0] + a[i][0];
+            B[n - i - 1][0] = B[n - i][0] + a[n - i][0];
+        }
+        for(int j = 1; j < m; j++) {
+            A[0][j] = A[0][j - 1] + a[0][j];
+            B[n - 1][j] = B[n - 1][j - 1] + a[n - 1][j];
+        }
+        for(int i = 1; i < n; i++) {
+            for(int j = 1; j < m; j++) {
+                A[i][j] = a[i][j] + Math.max(A[i][j - 1] , A[i - 1][j]);
+                B[n - i - 1][j] = a[n - i - 1][j] + Math.max(B[n - i][j] , B[n - i - 1][j - 1]);
             }
-            
-            int p = line.get(floor + 1);
-            DP[i] = DP[p] + B[p] * A[i];
-            
-            while(line.size() >= 2 && x.apply(i, line.get(line.size() - 2)) < soln.get(soln.size() - 1)) {
-                soln.remove(soln.size() - 1);
-                line.remove(line.size() - 1);
-            }
-            
-            soln.add(x.apply(soln.isEmpty() ? 0 : line.get(line.size() - 1), i));
-            line.add(i);
-            // println("x " + soln + " DP " + Arrays.toString(DP));
         }
         
-        println(DP[n - 1]);
         
     }
     
