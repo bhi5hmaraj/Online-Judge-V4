@@ -14,7 +14,6 @@ public class BoundedDifference {
     
     static boolean check(int i , int j ) {
         swap(i, j);
-        // System.out.println("i " + i + " j " + j + " ci " + check(i) + " cj " + check(j));
         boolean b = check(i) && check(j);
         swap(i, j);
         return b;
@@ -42,38 +41,19 @@ public class BoundedDifference {
         for(int i = 0; i < n - 1; i++)
             prefix[i + 1] = prefix[i] + (Math.abs(arr[i] - arr[i + 1]) <= k ? 1 : 0);
         
-        boolean suffix[] = new boolean[n];
-        
-        suffix[n - 1] = true;
-        
-        for(int i = n - 2; i >= 0; i--)
-            suffix[i] = suffix[i + 1] && (Math.abs(arr[i] - arr[i + 1]) <= k);
-        
-         // println(Arrays.toString(suffix));
         
         for(int i = 0; i < n - 1; i++) {
             if(Math.abs(arr[i] - arr[i + 1]) > k) {
-                
-                if(i == n - 2) {
-                    for(int j = 0; j < n - 1; j++)
-                        if(check(n - 1, j)) {
-                            println((i + 2) + " " + (j + 1));
+                int p = i + 1;
+                for(int j = 0; j < n; j++)
+                    if(j != p) {
+                        int min = Math.min(j , p);
+                        int max = Math.max(j , p);
+                        if(check(min , max) && full(min + 1, max - 2) && full(max + 2, n - 2)) {
+                            println((min + 1) + " " + (max + 1));
                             return;
                         }
-                }
-                
-                for(int j = i + 2; j < n; j++) 
-                    if(check(i + 1, j) && (j == n - 1 ? true : suffix[j + 1]) && full(i + 2, j - 2)) {
-                        swap(i + 1, j);
-                        // System.out.println(Arrays.toString(arr));
-                        for(int p = 0; p < n - 1; p++)
-                            if(Math.abs(arr[p] - arr[p + 1]) > k)
-                                throw new RuntimeException("gotcha");
-                        
-                        println((i + 2) + " " + (j + 1));
-                        return;
                     }
-                
                 println(-1);
                 return;
             }
