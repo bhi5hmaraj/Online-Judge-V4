@@ -6,25 +6,20 @@ public class Workingout {
     
     /************************ SOLUTION STARTS HERE ************************/
     // (left , up) , (down , right) , (down , up)
-    static final int tx1[] = {0 , -1 , -1};
-    static final int ty1[] = {-1 , 0 , 0};
-    static final int tx2[] = {1 , 0 , 1};
-    static final int ty2[] = {0 , -1 , 0};
+    static final int tx1[] = {0 , -1};
+    static final int ty1[] = {-1 , 0};
+    static final int tx2[] = {1 , 0 };
+    static final int ty2[] = {0 , -1};
     // (right , up) , (down , up) , (down , right)
-    static final int fx1[] = {0 , 1 , 1};
-    static final int fy1[] = {1 , 0 , 0};
-    static final int fx2[] = {-1 , -1 , 0};
-    static final int fy2[] = {0 , 0 , 1};
+    static final int fx1[] = {0 , 1};
+    static final int fy1[] = {1 , 0};
+    static final int fx2[] = {-1 , 0};
+    static final int fy2[] = {0 , 1};
     
-    static boolean isValid(int i , int j) {
-        return i >= 0 && i < n && j >= 0 && j < m;
-    }
-    
-    static int n , m;
     private static void solve() {
         
-        n = nextInt();
-        m = nextInt();
+        int n = nextInt();
+        int m = nextInt();
         
         int a[][] = new int[n][];
         for(int i = 0; i < n; i++)
@@ -42,7 +37,7 @@ public class Workingout {
         
         for(int i = 1; i < n; i++) {
             toA[i][0] = toA[i - 1][0] + a[i][0];
-            toB[n - i - 1][0] = toB[n - i][0] + a[n - i][0];
+            toB[n - i - 1][0] = toB[n - i][0] + a[n - i - 1][0];
             fromA[n - i - 1][m - 1] = fromA[n - i][m - 1] + a[n - i - 1][m - 1];
             fromB[i][m - 1] = fromB[i - 1][m - 1] + a[i][m - 1];
         }
@@ -62,32 +57,19 @@ public class Workingout {
         }
         
         int maxGain = 0;
-        for(int i = 0; i < n; i++) 
-            for(int j = 0; j < m; j++) 
-                for(int k = 0; k < 3; k++) 
-                    if(isValid(i + tx1[k], j + ty1[k]) && isValid(i + tx2[k], j + ty2[k]))
-                        for(int l = 0; l < 3; l++)
-                            if(isValid(i + fx1[l], j + fy1[l]) && isValid(i + fx2[l], j + fy2[l])) {
-                                int gain = toA[i + tx1[k]][j + ty1[k]] + toB[i + tx2[k]][j + ty2[k]]
-                                        + fromA[i + fx1[l]][j + fy1[l]] + fromB[i + fx2[l]][j + fy2[l]];
-                                System.out.println("i " + i + " j " + j + "gain " + gain);
-                                maxGain = Math.max(maxGain ,gain 
-                                            );
-                            }
-                    
+        for(int i = 1; i < n - 1; i++) 
+            for(int j = 1; j < m - 1; j++) 
+                for(int k = 0; k < 2; k++) 
+                    maxGain = Math.max(maxGain , 
+                            toA[i + tx1[k]][j + ty1[k]] + toB[i + tx2[k]][j + ty2[k]]
+                          + fromA[i + fx1[k]][j + fy1[k]] + fromB[i + fx2[k]][j + fy2[k]]);
+                
                 
         println(maxGain);
         
     }
     
-    /*
-     * 4 5
-87882 40786 3691 85313 46694
-28884 16067 3242 97367 78518
-4250 35501 9780 14435 19004
-64673 65438 56977 64495 27280
-     */
-    
+
     /************************ SOLUTION ENDS HERE ************************/
     
     
