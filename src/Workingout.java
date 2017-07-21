@@ -17,26 +17,43 @@ public class Workingout {
         for(int i = 0; i < n; i++)
             a[i] = nextIntArray(m);
         
-        int A[][] = new int[n][m];
-        int B[][] = new int[n][m];
-        A[0][0] = a[0][0];
-        B[n - 1][0] = a[n - 1][0];
+        int toA[][] = new int[n][m];
+        int toB[][] = new int[n][m];
+        int fromA[][] = new int[n][m];
+        int fromB[][] = new int[n][m];
+        
+        toA[0][0] = a[0][0];
+        toB[n - 1][0] = a[n - 1][0];
+        fromA[n - 1][m - 1] = a[n - 1][m - 1];
+        fromB[0][m - 1] = a[0][m - 1];
+        
         for(int i = 1; i < n; i++) {
-            A[i][0] = A[i - 1][0] + a[i][0];
-            B[n - i - 1][0] = B[n - i][0] + a[n - i][0];
+            toA[i][0] = toA[i - 1][0] + a[i][0];
+            toB[n - i - 1][0] = toB[n - i][0] + a[n - i][0];
+            fromA[n - i - 1][m - 1] = fromA[n - i][m - 1] + a[n - i - 1][m - 1];
+            fromB[i][m - 1] = fromB[i - 1][m - 1] + a[i][m - 1];
         }
         for(int j = 1; j < m; j++) {
-            A[0][j] = A[0][j - 1] + a[0][j];
-            B[n - 1][j] = B[n - 1][j - 1] + a[n - 1][j];
+            toA[0][j] = toA[0][j - 1] + a[0][j];
+            toB[n - 1][j] = toB[n - 1][j - 1] + a[n - 1][j];
+            fromA[n - 1][n - j - 1] = fromA[n - 1][n - j] + a[n - 1][n - j - 1];
+            fromB[0][n - j - 1] = fromB[0][n - j] + a[0][n - j - 1];
         }
         for(int i = 1; i < n; i++) {
             for(int j = 1; j < m; j++) {
-                A[i][j] = a[i][j] + Math.max(A[i][j - 1] , A[i - 1][j]);
-                B[n - i - 1][j] = a[n - i - 1][j] + Math.max(B[n - i][j] , B[n - i - 1][j - 1]);
+                toA[i][j] = a[i][j] + Math.max(toA[i][j - 1] , toA[i - 1][j]);
+                toB[n - i - 1][j] = a[n - i - 1][j] + Math.max(toB[n - i][j] , toB[n - i - 1][j - 1]);
+                fromA[n - i - 1][m - j - 1] = a[n - i - 1][m - j - 1] + Math.max(fromA[n - i][m - j - 1] , fromA[n - i -1][m - j]);
+                fromB[i][m - j - 1] = a[i][m - j - 1] + Math.max(fromB[i - 1][m - j - 1] , fromB[i][m - j]);
             }
         }
         
-        
+        int maxGain = 0;
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < m; j++) {
+                
+            }
+        }
     }
     
     
