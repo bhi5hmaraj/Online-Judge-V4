@@ -6,7 +6,44 @@ public class uva_12047 {
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    static class Edge implements Comparable<Edge> {
+        int v , cost;
+        Edge(int a , int b) {
+            v = a;
+            cost = b;
+        }
+        @Override
+        public int compareTo(Edge o) {
+            return cost - o.cost;
+        }
+    }
+    static final int INF = (int) 1e9 + 1;
     
+    static int[] dijkstra(ArrayList<Edge>[] adj , int start) {
+        PriorityQueue<Edge> pq = new PriorityQueue<>();
+        int V = adj.length - 1;
+        int distTo[] = new int[V + 1];
+        Arrays.fill(distTo, INF);
+
+        pq.add(new Edge(start, 0));
+        distTo[start] = 0;
+        
+        while (!pq.isEmpty()) {
+            Edge min = pq.remove();
+            int u = min.v;
+            if (distTo[u] < min.cost)
+                continue;
+
+            for (Edge e : adj[u])
+                if (distTo[e.v] > distTo[u] + e.cost) {
+                    distTo[e.v] = distTo[u] + e.cost;
+                    pq.add(new Edge(e.v, distTo[e.v]));
+                }
+        }
+        
+        return distTo;
+    }
+
     private static void solve() {
         
         
@@ -14,8 +51,38 @@ public class uva_12047 {
         while(T-->0) {
             int V = nextInt();
             int E = nextInt();
+            int start = nextInt();
+            int dest = nextInt();
+            int P = nextInt();
             
+            ArrayList<Edge>[] adj = new ArrayList[V + 1];
+            ArrayList<Edge>[] adjInv = new ArrayList[V + 1];
+            int edg[][] = new int[E][3];
             
+            for(int i = 1; i <= V; i++) {
+                adj[i] = new ArrayList<>();
+                adjInv[i] = new ArrayList<>();
+            }
+            
+            while(E-->0) {
+                edg[E][0] = nextInt();
+                edg[E][1] = nextInt();
+                edg[E][2] = nextInt();
+                adj[edg[E][0]].add(new Edge(edg[E][1], edg[E][2]));
+                adjInv[edg[E][1]].add(new Edge(edg[E][0], edg[E][2]));
+            }
+            
+            int to[] = dijkstra(adj, start);
+            int from[] = dijkstra(adjInv, dest);
+            
+            int maxToll = -1;
+            for(int edge[] : edg) {
+                long pathCost = to[edge[0]] + edge[2] + from[edge[1]];
+                if(pathCost <= P)
+                    maxToll = Math.max(maxToll , edge[2]);
+            }
+            
+            println(maxToll);
         }
         
         
