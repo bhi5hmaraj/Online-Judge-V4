@@ -1,6 +1,6 @@
 import java.util.*;
 import java.io.*;
-public class poj_2430 {
+public class CountGoodSubstrings {
     
     
     
@@ -8,15 +8,28 @@ public class poj_2430 {
     
     
     private static void solve() {
+        int str[] = nextLine().chars().map(ch -> ch - 'a').toArray(); // a - 0 , b - 1
+        long good[] = new long[2];   // even - 0 , odd - 1
+        long cnt[][] = new long[2][2];  // (a , b) x (even , odd)
+        long curr[] = new long[2];  // running counter
+        int streak = 1;
+        good[1] = 1;
+        curr[0] = 1;
         
-        int N = 1000;
-        int a[][] = new int[N][N];
-        int b[][] = new int[N][N];
-        
-        for(int aa[] : a)
-            Arrays.fill(aa, -1);
-        
-        throw new RuntimeException();
+        for(int i = 1; i < str.length; i++) {
+            if(str[i] != str[i - 1]) {
+                streak = 0;
+                cnt[str[i - 1]][0] += curr[0];
+                cnt[str[i - 1]][1] += curr[1];
+                curr[0] = curr[1] = 0;
+            }
+            streak++;
+            curr[i % 2]++;
+            good[0] += streak / 2;
+            good[1] += streak - (streak / 2);
+            good[0] += cnt[str[i]][1 - (i % 2)];
+            good[1] += cnt[str[i]][i % 2];
+        }
     }
     
     
