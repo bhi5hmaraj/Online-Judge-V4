@@ -30,6 +30,8 @@ public class CountGoodSubstrings {
             good[0] += cnt[str[i]][1 - (i % 2)];
             good[1] += cnt[str[i]][i % 2];
         }
+        
+        println(good[0] + " " + good[1]);
     }
     
     
