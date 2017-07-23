@@ -6,11 +6,27 @@ public class poj_2430 {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static int arr[][];
-    static int costH1[][];
-    static int costH2[][]; 
-    static int costV[][];
     static final int INF = (int) 1e9;
+    
+    static void prettyPrint(int a[][]) {
+        int n = a.length;
+        int m = a[0].length;
+        int temp[][] = new int[n + 1][m + 1];
+        temp[0][0] = -1;
+        for(int i = 1; i <= n; i++) {
+            temp[i][0] = i - 1;
+            System.arraycopy(a[i - 1], 0, temp[i], 1, m);
+        }
+        for(int j = 1; j <= m; j++)
+            temp[0][j] = j - 1;
+        
+        for(int t[] : temp) {
+            for(int tt : t)
+                print(String.format("%3d ", tt));
+            print('\n');
+        }
+        print('\n');
+    }
     
     private static void solve() {
         
@@ -18,9 +34,12 @@ public class poj_2430 {
         int K = nextInt();
         int B = nextInt();
         
-        arr = new int[N][];
+        int arr[][] = new int[N][];
         for(int i = 0; i < N; i++)
             arr[i] = nextIntArray(2);
+        
+        
+        // long st = System.nanoTime();
         
         Arrays.sort(arr , new Comparator<int[]>() {
             @Override
@@ -49,19 +68,19 @@ public class poj_2430 {
             }
         }
         
-        costH1 = new int[sz][sz];
-        costH2 = new int[sz][sz];
-        costV = new int[sz][sz];
+        int[][] costH1 = new int[sz][sz];
+        int[][] costH2 = new int[sz][sz];
+        int[][] costV = new int[sz][sz];
         
         /*        
         for(int i = 0; i < sz; i++)
             print(String.format("%5d ", compress[i][0]));
         print('\n');
-
         for(int i = 0; i < sz; i++)
             print(String.format("%5d ", compress[i][1]));
-        
+        print('\n');
         */
+
         for(int i = 0; i < sz; i++) {
             int firstUp = 0 , firstDown = 0;
             int lastUp = -1 , lastDown = -1;
@@ -84,9 +103,40 @@ public class poj_2430 {
                 if(firstDown == 0 && compress[j][1] != 0)
                     firstDown = lastDown = compress[j][0];
                 
+                lastUp = compress[j][1] != 1 ? compress[j][0] : lastUp;
+                lastDown = compress[j][1] != 0 ? compress[j][0] : lastDown;
+                costH2[i][j] = flag ? INF : (lastUp - firstUp + 1) + (lastDown - firstDown + 1);
+            }
+        }
+        /*
+        println("Vertical");
+        prettyPrint(costV);
+        println("Hori 1");
+        prettyPrint(costH1);
+        println("Hori 2");
+        prettyPrint(costH2);
+        */
+        
+        int DP[][] = new int[K + 1][sz];
+        Arrays.fill(DP[0], INF);
+        for(int i = 0; i < sz; i++)
+            DP[1][i] = Math.min(costV[0][i] , costH1[0][i]);
+        
+        for(int i = 2; i <= K; i++) {
+            for(int j = 0; j < sz; j++) {
+                DP[i][j] = INF;
+                for(int k = -1; k < j; k++) {
+                    int dp1 = k == -1 ? 0 : DP[i - 1][k];
+                    int dp2 = k == -1 ? 0 : DP[i - 2][k];
+                    DP[i][j] = Math.min(DP[i][j] , dp1 + Math.min(costV[k + 1][j] , costH1[k + 1][j]));
+                    DP[i][j] = Math.min(DP[i][j] , dp2 + costH2[k + 1][j]);
+                }
             }
         }
         
+        //prettyPrint(DP);
+        println(DP[K][sz - 1]);
+        // println("Time : " + (System.nanoTime() - st) / 1e9); 
     }
     
     
