@@ -11,16 +11,6 @@ class CHNGSUM {
      * http://codeforces.com/contest/817/submission/27809774
      * 
      */
-    static int[] compress(int arr[]) {
-        TreeSet<Integer> set = new TreeSet<>();
-        Arrays.stream(arr).forEach(set::add);
-        HashMap<Integer , Integer> map = new HashMap<>();
-        set.stream().forEach(a -> map.put(a, map.size() + 1));
-        arr = Arrays.stream(arr).map(map::get).toArray();
-        int inv[] = new int[map.size() + 1];
-        map.forEach((k , v) -> inv[v] = k);
-        return inv;
-    }
     
 
     static class SegmentTree  { 
@@ -69,7 +59,15 @@ class CHNGSUM {
     private static void solve() {
         int n = nextInt();
         int arr[] = nextIntArray(n);
-        int inv[] = compress(arr);
+        // Compress
+        TreeSet<Integer> set = new TreeSet<>();
+        Arrays.stream(arr).forEach(set::add);
+        HashMap<Integer , Integer> map = new HashMap<>();
+        set.stream().forEach(a -> map.put(a, map.size() + 1));
+        arr = Arrays.stream(arr).map(map::get).toArray();
+        int inv[] = new int[map.size() + 1];
+        map.forEach((k , v) -> inv[v] = k);
+        
         
         int MAX = (int) 1e6;
         long DPmin[] = new long[n];
@@ -87,19 +85,20 @@ class CHNGSUM {
             segTree.update(rev[i], i);
         }
         
+        for(int i = 1; i < n; i++) {
+            DPmin[i] = (DPmin[i] + DPmin[i - 1]) % MOD;
+        }
         segTree = new SegmentTree(MAX);
-        for(int i = 0; i < n; i++) {
+        long F = 0;
+        for(int i = 0; i < n - 1; i++) {
             int ceilIdx = segTree.query(arr[i] + 1, MAX);
             DPmax[i] = (((1L * inv[arr[i]] * (i - ceilIdx)) % MOD) + (ceilIdx >= 0 ? DPmax[ceilIdx] : 0)) % MOD;
+            F = (F + ((DPmax[i] * DPmin[n - i - 2]) % MOD)) % MOD;
             segTree.update(arr[i], i);
         }
         
-        for(int i = 0; i < n / 2; i++) {
-            long temp = DPmin[i];
-            DPmin[i] = DPmin[n - i - 1];
-            DPmin[n - i - 1] = temp;
-        }
         
+        println(F);
         
     }
     
