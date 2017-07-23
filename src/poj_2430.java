@@ -7,9 +7,9 @@ public class poj_2430 {
     /************************ SOLUTION STARTS HERE ************************/
     
     static int arr[][];
-    static int costH[][];
+    static int costH1[][];
+    static int costH2[][]; 
     static int costV[][];
-    
     static final int INF = (int) 1e9;
     
     private static void solve() {
@@ -18,10 +18,7 @@ public class poj_2430 {
         int K = nextInt();
         int B = nextInt();
         
-        arr= new int[N][];
-        costH = new int[N][N];
-        costV = new int[N][N];
-        
+        arr = new int[N][];
         for(int i = 0; i < N; i++)
             arr[i] = nextIntArray(2);
         
@@ -51,6 +48,11 @@ public class poj_2430 {
                 i++;
             }
         }
+        
+        costH1 = new int[sz][sz];
+        costH2 = new int[sz][sz];
+        costV = new int[sz][sz];
+        
         /*        
         for(int i = 0; i < sz; i++)
             print(String.format("%5d ", compress[i][0]));
@@ -60,9 +62,27 @@ public class poj_2430 {
             print(String.format("%5d ", compress[i][1]));
         
         */
-        for(int i = 0; i < N; i++) {
+        for(int i = 0; i < sz; i++) {
+            int firstUp = 0 , firstDown = 0;
+            int lastUp = -1 , lastDown = -1;
+            costH1[i][i] = compress[i][1] == 2 ? INF : 1;
+            costH2[i][i] = compress[i][1] == 2 ? 2 : INF;
+            costV[i][i] = 2;
+            int first = compress[i][1];
+            boolean flag = compress[i][1] != 2;
+            if(compress[i][1] != 1) 
+                firstUp = lastUp = compress[i][0];
+            if(compress[i][1] != 0)
+                firstDown = lastDown = compress[i][0];
             
-            for(int j = i + 1; j < N; j++) {
+            for(int j = i + 1; j < sz; j++) {
+                costV[i][j] = 2 * (compress[j][0] - compress[i][0] + 1);
+                flag &= compress[j][1] == first;
+                costH1[i][j] = flag ? compress[j][0] - compress[i][0] + 1 : INF;
+                if(firstUp == 0 && compress[j][1] != 1)
+                    firstUp = lastUp = compress[j][0];
+                if(firstDown == 0 && compress[j][1] != 0)
+                    firstDown = lastDown = compress[j][0];
                 
             }
         }
