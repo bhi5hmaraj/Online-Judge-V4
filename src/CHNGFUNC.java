@@ -15,8 +15,28 @@ class CHNGFUNC  {
         for(long i = 1; i <= A; i++)
             sq.add(i * i);
         while(1L * (sq.size() + 1) * (sq.size() + 1) <= sq.get(A - 1) + B)
-            sq.add(sq.size() + 1L);
+            sq.add(1L * (sq.size() + 1) * (sq.size() + 1));
         
+        long cnt = 0;
+        for(int i = 0; i < A; i++) {
+            int lo = i + 1;
+            int hi = sq.size() - 1;
+            int floor = i;
+            long key = sq.get(i) + B;
+            while(lo <= hi) {
+                int mid = (lo + hi) >> 1;
+                if(sq.get(mid) <= key) {
+                    lo = mid + 1;
+                    floor = mid;
+                }
+                else
+                    hi = mid - 1;
+            }
+            
+            cnt += floor - i;
+        }
+        
+        println(cnt);
     }
     
     
