@@ -6,6 +6,7 @@ public class uva_10759 {
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    static long gcd(long a , long b) { return (b == 0) ? a : gcd(b, a % b); }
     
     private static void solve() {
         int n , m;
@@ -14,10 +15,31 @@ public class uva_10759 {
         long ways[][] = new long[MAX_DICE][MAX_SUM];
         for(int i = 1; i <= 6; i++)
             ways[0][i] = 1;
-        while((n = nextInt()) != 0 && (m = nextInt()) != 0) {
-            
-            
-            
+        
+        for(int i = 1; i < MAX_DICE; i++) 
+            for(int j = 1; j < MAX_SUM; j++)
+                for(int k = 1; k <= Math.min(6 , j); k++)
+                    ways[i][j] += ways[i - 1][j - k];
+        
+        
+        while((n = nextInt()) != 0) {
+            m = nextInt();
+            if(m <= n)
+                println(1);
+            else if(m > 6 * n)
+                println(0);
+            else {
+                long numer = 0;
+                long denom = 1;
+                for(int i = m; i <= 6 * n; i++)
+                    numer += ways[n - 1][i];
+                
+                while(n-->0) denom *= 6;
+                long gcd = gcd(numer, denom);
+                numer /= gcd;
+                denom /= gcd;
+                println(numer + "/" + denom);
+            }
         }
         
     }
