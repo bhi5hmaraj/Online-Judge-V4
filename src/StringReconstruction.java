@@ -1,52 +1,36 @@
 import java.util.*;
 import java.io.*;
-public class BlackSquare {
+public class StringReconstruction  {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static int prefixSum[][];
-    private static int sumOfRegion(int x1,int y1,int x2,int y2) {
-        int entire = prefixSum[x2][y2];
-        int W = y1 > 0 ? prefixSum[x2][y1 - 1] : 0;
-        int N = x1 > 0 ? prefixSum[x1 - 1][y2] : 0;
-        int NW = x1 > 0 && y1 > 0 ? prefixSum[x1 - 1][y1 - 1] : 0;      
-        return entire - N - W + NW;
-    }
-    
     
     private static void solve() {
         
         int n = nextInt();
-        int m = nextInt();
-        int arr[][] = new int[n][];
-        for(int i = 0; i < n; i++)
-            arr[i] = nextLine().chars().map(ch -> ch == 'B' ? 1 : 0).toArray();
+        final int MAX = (int) 2e6; 
+        ArrayList<Integer> toAdd[] = new ArrayList[MAX + 2];
+        ArrayList<Integer> toRemove[] = new ArrayList[MAX + 2];
+        String arr[] = new String[n];
         
-        prefixSum = new int[n][m];
+        for(int i = 0; i < n; i++) {
+            arr[i] = next();
+            int m = arr[i].length();
+            int k = nextInt();
+            while(k-->0) {
+                int L = nextInt();
+                int R = L + m;
+                toAdd[L] = toAdd[L] == null ? new ArrayList<>() : toAdd[L];
+                toRemove[R] = toRemove[R] == null ? new ArrayList<>() : toRemove[R];
+                toAdd[L].add(i);
+                toRemove[R].add(i);
+            }
+        }
         
-        for(int i=0;i<n;i++)
-            prefixSum[i][0] = arr[i][0];
-
-        for(int i=0;i<n;i++)
-            for(int j=1;j<m;j++)
-                prefixSum[i][j] = prefixSum[i][j-1] + arr[i][j];
-
-        for(int i=1;i<n;i++)
-            for(int j=0;j<m;j++)
-                prefixSum[i][j] += prefixSum[i-1][j];   
+        HashSet<Integer> set = new HashSet<>();
         
-        int min = Integer.MAX_VALUE;
-        int total = prefixSum[n - 1][m - 1];
-        for(int i = 0; i < n; i++)
-            for(int j = 0; j < m; j++)
-                for(int k = 0; k < Math.min(n , m) && i + k < n && j + k < m; k++) {
-                    if(sumOfRegion(i, j, i + k, j + k) == total)
-                        min = Math.min(min , ((k + 1) * (k + 1)) - total);
-                }
-        
-        println(min == Integer.MAX_VALUE ? -1 : min);
     }
     
     
