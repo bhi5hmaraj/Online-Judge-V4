@@ -6,17 +6,67 @@ public class poj_2430 {
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    static int arr[][];
+    static int costH[][];
+    static int costV[][];
+    
+    static final int INF = (int) 1e9;
     
     private static void solve() {
         
-        int N = 1000;
-        int a[][] = new int[N][N];
-        int b[][] = new int[N][N];
+        int N = nextInt();
+        int K = nextInt();
+        int B = nextInt();
         
-        for(int aa[] : a)
-            Arrays.fill(aa, -1);
+        arr= new int[N][];
+        costH = new int[N][N];
+        costV = new int[N][N];
         
-        throw new RuntimeException();
+        for(int i = 0; i < N; i++)
+            arr[i] = nextIntArray(2);
+        
+        Arrays.sort(arr , new Comparator<int[]>() {
+            @Override
+            public int compare(int[] o1, int[] o2) {
+                if(o1[1] != o2[1])
+                    return o1[1] - o2[1];
+                else
+                    return o1[0] - o2[0];
+            }
+        });
+        
+        int sz = 1;
+        for(int i = 1; i < N; i++)
+            sz += arr[i][1] != arr[i - 1][1] ? 1 : 0;
+        
+        int compress[][] = new int[sz][2]; // 0 - up , 1 - down , 2 - both
+        int ptr = 0;
+        for(int i = 0; i < N; ) {
+            compress[ptr][0] = arr[i][1];
+            if(i + 1 < N && arr[i][1] == arr[i + 1][1]) {
+                compress[ptr++][1] = 2;
+                i += 2;
+            } else {
+                compress[ptr++][1] = arr[i][0] - 1;
+                i++;
+            }
+        }
+        /*        
+        for(int i = 0; i < sz; i++)
+            print(String.format("%5d ", compress[i][0]));
+        print('\n');
+
+        for(int i = 0; i < sz; i++)
+            print(String.format("%5d ", compress[i][1]));
+        
+        */
+        for(int i = 0; i < N; i++) {
+            
+            for(int j = i + 1; j < N; j++) {
+                
+            }
+        }
+        
     }
     
     
