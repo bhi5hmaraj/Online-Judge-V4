@@ -68,9 +68,9 @@ public class poj_2430 {
             }
         }
         
-        int[][] costH1 = new int[sz][sz];
-        int[][] costH2 = new int[sz][sz];
-        int[][] costV = new int[sz][sz];
+        int[][] costH1 = new int[sz][sz];   // one horizontal rect ----
+        int[][] costH2 = new int[sz][sz];   // two horizontal rect ====
+        int[][] costV = new int[sz][sz];    // one vertical   rect |   |
         
         /*        
         for(int i = 0; i < sz; i++)
@@ -117,6 +117,7 @@ public class poj_2430 {
         prettyPrint(costH2);
         */
         
+        // println("Time : " + (System.nanoTime() - st) / 1e9); 
         int DP[][] = new int[K + 1][sz];
         Arrays.fill(DP[0], INF);
         for(int i = 0; i < sz; i++)
@@ -136,7 +137,6 @@ public class poj_2430 {
         
         //prettyPrint(DP);
         println(DP[K][sz - 1]);
-        // println("Time : " + (System.nanoTime() - st) / 1e9); 
     }
     
     
