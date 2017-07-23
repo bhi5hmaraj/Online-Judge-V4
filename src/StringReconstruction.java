@@ -11,26 +11,63 @@ public class StringReconstruction  {
         
         int n = nextInt();
         final int MAX = (int) 2e6; 
-        ArrayList<Integer> toAdd[] = new ArrayList[MAX + 2];
+        ArrayList<Integer> toAdd[]    = new ArrayList[MAX + 2];
         ArrayList<Integer> toRemove[] = new ArrayList[MAX + 2];
         String arr[] = new String[n];
         
+        int startPos[][] = new int[n][];
+        int maxLen = 0;
         for(int i = 0; i < n; i++) {
             arr[i] = next();
             int m = arr[i].length();
             int k = nextInt();
-            while(k-->0) {
+            startPos[i] = new int[k];
+            for(int j = 0; j < k; j++) {
                 int L = nextInt();
                 int R = L + m;
+                maxLen = Math.max(maxLen , R - 1);
+                startPos[i][j] = L;
                 toAdd[L] = toAdd[L] == null ? new ArrayList<>() : toAdd[L];
                 toRemove[R] = toRemove[R] == null ? new ArrayList<>() : toRemove[R];
                 toAdd[L].add(i);
                 toRemove[R].add(i);
             }
         }
-        
+        char ans[] = new char[maxLen];
         HashSet<Integer> set = new HashSet<>();
+        for(int i = 1; i <= maxLen; i++) {
+            if(toRemove[i] != null)
+                for(int a : toRemove[i])
+                    set.remove(a);
+            if(toAdd[i] != null)
+                for(int a : toAdd[i])
+                    set.add(a);
+            
+            if(set.isEmpty())
+                ans[i - 1] = 'a';
+            else {
+                int elem = 0;
+                for(int a : set) {
+                    elem = a;
+                    break;
+                }
+                int lo = 0 , hi = startPos[elem].length - 1;
+                int floor = -1;
+                while(lo <= hi) {
+                    int mid = (lo + hi) >> 1;
+                    if(startPos[elem][mid] <= i) {
+                        floor = startPos[elem][mid];
+                        lo = mid + 1;
+                    }
+                    else
+                        hi = mid - 1;
+                }
+                
+                ans[i - 1] = arr[elem].charAt(i - floor);
+            }
+        }
         
+        println(new String(ans));
     }
     
     
