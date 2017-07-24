@@ -34,21 +34,30 @@ public class StringReconstruction  {
             }
         }
         char ans[] = new char[maxLen];
-        HashSet<Integer> set = new HashSet<>();
+        HashMap<Integer , Integer> multiSet = new HashMap<>();
         for(int i = 1; i <= maxLen; i++) {
+            
+            //println("i " + i + " toAdd " + toAdd[i] + " toRemove " + toRemove[i]);
+            
             if(toRemove[i] != null)
-                for(int a : toRemove[i])
-                    set.remove(a);
+                for(int a : toRemove[i]){
+                    int f = multiSet.get(a);
+                    if(f > 1)
+                        multiSet.put(a, f - 1);
+                    else
+                        multiSet.remove(a);
+                }
+                    
             if(toAdd[i] != null)
                 for(int a : toAdd[i])
-                    set.add(a);
+                    multiSet.merge(a, 1, Integer::sum);
             
-            if(set.isEmpty())
+            if(multiSet.isEmpty())
                 ans[i - 1] = 'a';
             else {
                 int elem = 0;
-                for(int a : set) {
-                    elem = a;
+                for(Map.Entry<Integer, Integer> e : multiSet.entrySet()) {
+                    elem = e.getKey();
                     break;
                 }
                 int lo = 0 , hi = startPos[elem].length - 1;
