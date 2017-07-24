@@ -66,11 +66,12 @@ public class MishaGrishaandUnderground {
         if(lca1 == lca2) 
             cnt += Math.abs(level[lca] - level[lca1]);
         cnt++;  // reached lca
-        cnt += Math.abs(level[lca1] - level[dest]);    
-        println(String.format("s1 = %d s2 = %d dest = %d lca1 = %d lca2 = %d lca = %d cnt = %d", s1,s2,dest,lca1,lca2,lca,cnt));
+        cnt += Math.abs(Math.max(level[lca1] , level[lca2]) - level[dest]);    
+        // println(String.format("s1 = %d s2 = %d dest = %d lca1 = %d lca2 = %d lca = %d cnt = %d", s1,s2,dest,lca1,lca2,lca,cnt));
         return cnt;
     }
     
+    @SuppressWarnings("unchecked")
     private static void solve() {
         
         V = nextInt();

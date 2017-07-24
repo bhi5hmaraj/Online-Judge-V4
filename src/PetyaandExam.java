@@ -7,7 +7,7 @@ public class PetyaandExam {
     /************************ SOLUTION STARTS HERE ************************/
     
     static boolean match(String pat , String text) {
-        // println("pat " + pat + " text " + text);
+        // System.out.println("pat " + pat + " text " + text);
         for(int i = 0; i < text.length(); i++)
                 if(!(text.charAt(i) == pat.charAt(i) || (pat.charAt(i) == '?' && g[text.charAt(i) - 'a']))) 
                     return false;
@@ -41,7 +41,7 @@ public class PetyaandExam {
                 for(int i = pos; i < text.length() - suffix.length(); i++)
                     flag &= !g[text.charAt(i) - 'a'];
             }
-            else if(text.length() == pat.length() - 1)
+            else if(pos >= 0 && text.length() == pat.length() - 1)
                 flag = match(without, text);
             println(flag ? "YES" : "NO");
         }
