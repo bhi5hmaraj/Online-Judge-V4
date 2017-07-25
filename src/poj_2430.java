@@ -151,15 +151,25 @@ public class poj_2430 {
         */
         
          
-        DP = new int[K + 1][sz];
-        Arrays.fill(DP[0], INF);
-        for(int i = 0; i < sz; i++)
+        minPos = new int[sz];
+        DP = new int[K + 1][sz];    // K = 0
+        Arrays.fill(DP[0], INF);    
+        for(int i = 0; i < sz; i++) // K = 1
             DP[1][i] = Math.min(costV[0][i] , costH1[0][i]);
         
+        for(int j = 0; j < sz; j++) {   // K = 2
+            DP[2][j] = INF;
+            for(int k = -1; k < j; k++) {
+                int comp = compute(2, j, k);
+                if(comp < DP[2][j]) {
+                    minPos[j] = k;
+                    DP[2][j] = comp;
+                }
+            }
+        }
         
-        minPos = new int[sz];
 
-        for(int i = 2; i <= K; i++) {
+        for(int i = 3; i <= K; i++) {
             Arrays.fill(minPos, INF);
             minPos[0] = -1;
             DP[i][0] = compute(i, 0, -1);
@@ -190,7 +200,8 @@ public class poj_2430 {
                     // DP[i][j] = Math.min(DP[i][j] , dp2 + costH2[k + 1][j]);
                 }
             }
-            println("i " + i + " " + Arrays.toString(minPos));
+            if(i == 3)
+                println("i " + i + " " + Arrays.toString(minPos));
         }
         
 //        prettyPrint(DP);
