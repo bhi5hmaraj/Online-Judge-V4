@@ -28,6 +28,37 @@ public class poj_2430 {
         print('\n');
     }
     
+    static int[][] costV , costH1 , costH2 , DP;
+    static int compute(int i , int j , int k) {
+        int dp1 = k == -1 ? 0 : DP[i - 1][k];
+        int dp2 = k == -1 ? 0 : DP[i - 2][k];
+        return Math.min(dp1 + Math.min(costV[k + 1][j] , costH1[k + 1][j]) , 
+                                dp2 + costH2[k + 1][j]);
+        
+    }
+    static int relax(int i , int j, int kL , int kR) {
+        int min = INF;
+        int minPos = -1;
+        for(int k = kL; k <= kR; k++) {
+            int dp1 = k == -1 ? 0 : DP[i - 1][k];
+            int dp2 = k == -1 ? 0 : DP[i - 2][k];
+            int possible = compute(i, j, k);
+            if(possible < min) {
+                min = possible;
+                minPos = k;
+            }
+        }
+        return minPos;
+    }
+    static void divideAndConquer(int i , int L , int R , int kL , int kR) {
+        if(L <= R) {
+            int j = (L + R) >> 1;
+            int k = relax(i, j, kL, kR);
+            DP[i][j] = compute(i, j, k);
+            divideAndConquer(i, L, j - 1, kL, k);
+            divideAndConquer(i, j + 1, R, k, kR);
+        }
+    }
     private static void solve() {
         
         int N = nextInt();
@@ -68,9 +99,9 @@ public class poj_2430 {
             }
         }
         
-        int[][] costH1 = new int[sz][sz];   // one horizontal rect ----
-        int[][] costH2 = new int[sz][sz];   // two horizontal rect ====
-        int[][] costV = new int[sz][sz];    // one vertical   rect |   |
+        costH1 = new int[sz][sz];   // one horizontal rect ----
+        costH2 = new int[sz][sz];   // two horizontal rect ====
+        costV = new int[sz][sz];    // one vertical   rect |   |
         
         /*        
         for(int i = 0; i < sz; i++)
@@ -118,7 +149,7 @@ public class poj_2430 {
         */
         
         // println("Time : " + (System.nanoTime() - st) / 1e9); 
-        int DP[][] = new int[K + 1][sz];
+        DP = new int[K + 1][sz];
         Arrays.fill(DP[0], INF);
         for(int i = 0; i < sz; i++)
             DP[1][i] = Math.min(costV[0][i] , costH1[0][i]);
