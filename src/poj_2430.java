@@ -22,7 +22,7 @@ public class poj_2430 {
         
         for(int t[] : temp) {
             for(int tt : t)
-                print(String.format("%3d ", tt));
+                print(String.format("%10d ", tt));
             print('\n');
         }
         print('\n');
@@ -30,18 +30,18 @@ public class poj_2430 {
     
     static int[][] costV , costH1 , costH2 , DP;
     static int compute(int i , int j , int k) {
+        if(k >= j)
+            throw new RuntimeException();
         int dp1 = k == -1 ? 0 : DP[i - 1][k];
         int dp2 = k == -1 ? 0 : DP[i - 2][k];
-        return Math.min(dp1 + Math.min(costV[k + 1][j] , costH1[k + 1][j]) , 
-                                dp2 + costH2[k + 1][j]);
+        return Math.min(INF , Math.min(dp1 + Math.min(costV[k + 1][j] , costH1[k + 1][j]) , 
+                                       dp2 + costH2[k + 1][j]));
         
     }
     static int relax(int i , int j, int kL , int kR) {
         int min = INF;
         int minPos = -1;
-        for(int k = kL; k <= kR; k++) {
-            int dp1 = k == -1 ? 0 : DP[i - 1][k];
-            int dp2 = k == -1 ? 0 : DP[i - 2][k];
+        for(int k = kL; k <= Math.min(kR , j - 1); k++) {
             int possible = compute(i, j, k);
             if(possible < min) {
                 min = possible;
@@ -54,11 +54,13 @@ public class poj_2430 {
         if(L <= R) {
             int j = (L + R) >> 1;
             int k = relax(i, j, kL, kR);
+            minPos[j] = k;
             DP[i][j] = compute(i, j, k);
             divideAndConquer(i, L, j - 1, kL, k);
             divideAndConquer(i, j + 1, R, k, kR);
         }
     }
+    static int minPos[];
     private static void solve() {
         
         int N = nextInt();
@@ -70,7 +72,7 @@ public class poj_2430 {
             arr[i] = nextIntArray(2);
         
         
-        // long st = System.nanoTime();
+        long st = System.nanoTime();
         
         Arrays.sort(arr , new Comparator<int[]>() {
             @Override
@@ -148,32 +150,53 @@ public class poj_2430 {
         prettyPrint(costH2);
         */
         
-        // println("Time : " + (System.nanoTime() - st) / 1e9); 
+         
         DP = new int[K + 1][sz];
         Arrays.fill(DP[0], INF);
         for(int i = 0; i < sz; i++)
             DP[1][i] = Math.min(costV[0][i] , costH1[0][i]);
         
+        
+        minPos = new int[sz];
+
         for(int i = 2; i <= K; i++) {
-            int minPos[] = new int[sz];
-            for(int j = 0; j < sz; j++) {
-                DP[i][j] = INF;
-                for(int k = -1; k < j; k++) {
-                    int dp1 = k == -1 ? 0 : DP[i - 1][k];
-                    int dp2 = k == -1 ? 0 : DP[i - 2][k];
-                    int min = Math.min(dp1 + Math.min(costV[k + 1][j] , costH1[k + 1][j]) , 
-                                       dp2 + costH2[k + 1][j]);
-                    if(min < DP[i][j]) {
-                        minPos[j] = k;
-                        DP[i][j] = min;
-                    }
-                }
-            }
+            Arrays.fill(minPos, INF);
+            minPos[0] = -1;
+            DP[i][0] = compute(i, 0, -1);
+            int kR = relax(i, sz - 1, -1, sz - 2);
+            minPos[sz - 1] = kR;
+            DP[i][sz - 1] = compute(i, sz - 1, kR);
+            divideAndConquer(i, 1, sz - 2, -1, kR);
             println("i " + i + " " + Arrays.toString(minPos));
         }
         
         //prettyPrint(DP);
         println(DP[K][sz - 1]);
+        
+        for(int i = 2; i <= K; i++) {
+            Arrays.fill(minPos, INF);
+            for(int j = 0; j < sz; j++) {
+                DP[i][j] = INF;
+                for(int k = -1; k < j; k++) {
+                    // int dp1 = k == -1 ? 0 : DP[i - 1][k];
+                    // int dp2 = k == -1 ? 0 : DP[i - 2][k];
+                    int comp = compute(i, j, k);
+                    if(comp < DP[i][j]) {
+                        minPos[j] = k;
+                        DP[i][j] = comp;
+                    }
+                    
+                    // DP[i][j] = Math.min(DP[i][j] , dp1 + Math.min(costV[k + 1][j] , costH1[k + 1][j]));
+                    // DP[i][j] = Math.min(DP[i][j] , dp2 + costH2[k + 1][j]);
+                }
+            }
+            println("i " + i + " " + Arrays.toString(minPos));
+        }
+        
+//        prettyPrint(DP);
+        println(DP[K][sz - 1]);
+        
+        println("Time : " + (System.nanoTime() - st) / 1e9);
     }
     
     
@@ -187,6 +210,12 @@ public class poj_2430 {
     /************************ TEMPLATE STARTS HERE **********************/
     
     public static void main(String[] args) throws IOException {
+        try {
+            System.setOut(new PrintStream("dump.txt"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        
         reader = new BufferedReader(new InputStreamReader(System.in));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
