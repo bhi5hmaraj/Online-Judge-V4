@@ -124,15 +124,21 @@ public class poj_2430 {
             DP[1][i] = Math.min(costV[0][i] , costH1[0][i]);
         
         for(int i = 2; i <= K; i++) {
+            int minPos[] = new int[sz];
             for(int j = 0; j < sz; j++) {
                 DP[i][j] = INF;
                 for(int k = -1; k < j; k++) {
                     int dp1 = k == -1 ? 0 : DP[i - 1][k];
                     int dp2 = k == -1 ? 0 : DP[i - 2][k];
-                    DP[i][j] = Math.min(DP[i][j] , dp1 + Math.min(costV[k + 1][j] , costH1[k + 1][j]));
-                    DP[i][j] = Math.min(DP[i][j] , dp2 + costH2[k + 1][j]);
+                    int min = Math.min(dp1 + Math.min(costV[k + 1][j] , costH1[k + 1][j]) , 
+                                       dp2 + costH2[k + 1][j]);
+                    if(min < DP[i][j]) {
+                        minPos[j] = k;
+                        DP[i][j] = min;
+                    }
                 }
             }
+            println("i " + i + " " + Arrays.toString(minPos));
         }
         
         //prettyPrint(DP);
