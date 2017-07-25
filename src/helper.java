@@ -1827,29 +1827,28 @@ class helper {
 	}
 
 	static int LCA(int u , int v){
-
-		if(level[v] < level[u]){
-			int temp = u;
-			u = v;
-			v = temp;
-		}
-		int diff = level[v] - level[u];
-		while(diff > 0){        // Bring v to the same level as u
-			int log = log(diff);
-			v = DP[log][v];
-			diff -= (1 << log);
-		}
-		while(u != v){
-			int i = log(level[u]);
-			for(;i > 0 && DP[i][u] == DP[i][v];)
-				i--;
-
-			u = DP[i][u];
-			v = DP[i][v];
-		}
-
-		return u;
-	}
+        if(level[v] < level[u]){
+            int temp = u;
+            u = v;
+            v = temp;
+        }
+        int diff = level[v] - level[u];
+        while(diff > 0){        // Bring v to the same level as u
+            int log = log(diff);
+            v = DP[log][v];
+            diff -= (1 << log);
+        }
+        if(u == v)
+            return u;
+        for(int i = log(level[u]); i >= 0; i--) {    
+            if(DP[i][u] != DP[i][v]) { 
+                u = DP[i][u];
+                v = DP[i][v];
+            }
+        }
+        return DP[0][u];
+    }
+    
 
 	static class SegmentTree  { // Implemented to store min in a range , point update and range query
 		int tree[];

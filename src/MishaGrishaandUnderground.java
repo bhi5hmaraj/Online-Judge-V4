@@ -7,7 +7,7 @@ public class MishaGrishaandUnderground {
     /************************ SOLUTION STARTS HERE ************************/
     
     static ArrayList<Integer> adj[];
-    /* LCA <NlogN , logN> dependency : level , log , V , DP = new int[log(V) + 1][V + 1];, parent (for the first level of DP) */
+    /* LCA <NlogN , logN> */
     static int DP[][]; // One based vertices
     static int level[];
     static int parent[];
@@ -27,7 +27,6 @@ public class MishaGrishaandUnderground {
     }
 
     static int LCA(int u , int v){
-
         if(level[v] < level[u]){
             int temp = u;
             u = v;
@@ -39,18 +38,15 @@ public class MishaGrishaandUnderground {
             v = DP[log][v];
             diff -= (1 << log);
         }
-        
-        if(u != v) {
-            for(int i = log(level[u]); i >= 0; i--) {    
-                if(DP[i][u] != DP[i][v]) {  // changed here
-                    u = DP[i][u];
-                    v = DP[i][v];
-                }
-            }
-        return DP[0][u];
-        }
-        else 
+        if(u == v)
             return u;
+        for(int i = log(level[u]); i >= 0; i--) {    
+            if(DP[i][u] != DP[i][v]) {  // changed here
+                u = DP[i][u];
+                v = DP[i][v];
+            }
+        }
+        return DP[0][u];
     }
     
     static void dfs(int u , int lev) {
@@ -69,7 +65,6 @@ public class MishaGrishaandUnderground {
             cnt += Math.abs(level[lca] - level[lca1]);
         cnt++;  // reached lca
         cnt += Math.abs(Math.max(level[lca1] , level[lca2]) - level[dest]);    
-        // println(String.format("s1 = %d s2 = %d dest = %d lca1 = %d lca2 = %d lca = %d cnt = %d", s1,s2,dest,lca1,lca2,lca,cnt));
         return cnt;
     }
     
@@ -93,9 +88,10 @@ public class MishaGrishaandUnderground {
             parent[i] = u;
             adj[u].add(v);
         }
+        
         binaryLift();
         dfs(1, 1);
-        // println(Arrays.toString(level));
+        
         while(q-->0) {
             int opt[] = nextIntArray(3);
             int max = 0;
