@@ -50,7 +50,30 @@ public class WeirdChess {
                         if(valid(i + m[0], j + m[1]))
                             check[i + m[0]][j + m[1]] = '#';
         
-        //possible.stream().forEach(a -> println(Arrays.toString(a)));
+        boolean flag = true;
+        for(int i = 0; i < n; i++)
+            for(int j = 0; j < n; j++)
+                flag &= !(grid[i][j] == 'x') || check[i][j] == '#';
+        
+        // possible.stream().forEach(a -> println(Arrays.toString(a)));
+        if(flag) {
+            println("YES");
+            int m = 2 * n - 1;
+            grid = new char[m][m];
+            for(char a[] : grid)
+                Arrays.fill(a, '.');
+            grid[n - 1][n - 1] = 'o';
+            int t = m;
+            m = n;
+            n = t;
+            for(int move[] : possible)
+                if(valid(m - 1 + move[0], m - 1 + move[1]))
+                    grid[m - 1 + move[0]][m - 1 + move[1]] = 'x';
+            for(char a[] : grid)
+                println(new String(a));
+        }
+        else
+            println("NO");
     }
     
     
