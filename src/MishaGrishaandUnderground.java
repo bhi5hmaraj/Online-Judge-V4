@@ -39,16 +39,18 @@ public class MishaGrishaandUnderground {
             v = DP[log][v];
             diff -= (1 << log);
         }
-        while(u != v){
-            int i = log(level[u]);
-            for(;i > 0 && DP[i][u] == DP[i][v];)
-                i--;
-
-            u = DP[i][u];
-            v = DP[i][v];
+        
+        if(u != v) {
+            for(int i = log(level[u]); i >= 0; i--) {    
+                if(DP[i][u] != DP[i][v]) {  // changed here
+                    u = DP[i][u];
+                    v = DP[i][v];
+                }
+            }
+        return DP[0][u];
         }
-
-        return u;
+        else 
+            return u;
     }
     
     static void dfs(int u , int lev) {
@@ -91,10 +93,9 @@ public class MishaGrishaandUnderground {
             parent[i] = u;
             adj[u].add(v);
         }
-        
         binaryLift();
         dfs(1, 1);
-        //println(Arrays.toString(level));
+        // println(Arrays.toString(level));
         while(q-->0) {
             int opt[] = nextIntArray(3);
             int max = 0;
