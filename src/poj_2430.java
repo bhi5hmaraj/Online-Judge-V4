@@ -142,18 +142,22 @@ public class poj_2430 {
     
     static int compress[][];
     static int sz;
-    
+    static int memo[][][];
     /*
      * Thanks http://codeforces.com/blog/entry/53438?#comment-375091
      */
     
     static int rec(int idx , int rem , int hUp , int hDown , int v) {
+        int mask = (hUp << 2) | (hDown << 1) | v;
         if(rem < 0)
             return INF;
         else if(idx == sz - 1)
             return 0;
+        else if(memo[idx][rem][mask] != -1)
+            return memo[idx][rem][mask];
         else {
             int min = INF;
+            // Create new rectangle
             if(compress[idx + 1][1] == 0) 
                 min = Math.min(min , 1 + rec(idx + 1, rem - 1, 1, 0, 0));
             if(compress[idx + 1][1] == 1)
@@ -162,14 +166,40 @@ public class poj_2430 {
                 min = Math.min(min , 2 + rec(idx + 1, rem - 2, 1, 1, 0));
             
             min = Math.min(min , 2 + rec(idx + 1, rem - 1, 0, 0, 1));
+            
+            // Extend
             if(v == 1)
                 min = Math.min(min , 2 * (compress[idx + 1][0] - compress[idx][0]) + 
-                                 rec(idx + 1, rem, 0, 0, 1));
+                                         rec(idx + 1, rem, 0, 0, 1));
             else if(hUp == 1 && hDown == 0) {
                 if(compress[idx + 1][1] == 0)
                     min = Math.min(min , (compress[idx + 1][0] - compress[idx][0])
                                         + rec(idx + 1, rem, 1, 0, 0));
+                else
+                    min = Math.min(min , (compress[idx + 1][0] - compress[idx][0]) + 1
+                                        + rec(idx + 1, rem - 1, 1, 1, 0));
             }
+            else if(hUp == 0 && hDown == 1) {
+                if(compress[idx + 1][1] == 1)
+                    min = Math.min(min , (compress[idx + 1][0] - compress[idx][0])
+                                        + rec(idx + 1, rem, 0, 1, 0));
+                else
+                    min = Math.min(min , (compress[idx + 1][0] - compress[idx][0]) + 1
+                                        + rec(idx + 1, rem - 1, 1, 1, 0));
+            }
+            else {
+                if(compress[idx + 1][1] == 0)
+                    min = Math.min(min , (compress[idx + 1][0] - compress[idx][0])
+                                        + rec(idx + 1, rem, 1, 0, 0));
+                else if(compress[idx + 1][1] == 1)
+                    min = Math.min(min , (compress[idx + 1][0] - compress[idx][0])
+                                        + rec(idx + 1, rem, 0, 1, 0));
+                
+                min = Math.min(min , 2 * (compress[idx + 1][0] - compress[idx][0]) 
+                                        + rec(idx + 1, rem, 1, 1, 0));
+            }
+            
+            return memo[idx][rem][mask] = min;
         }
     }
     
@@ -212,6 +242,23 @@ public class poj_2430 {
                 i++;
             }
         }
+        
+        memo = new int[sz][K][8];
+        for(int a[][] : memo)
+            for(int b[] : a)
+                Arrays.fill(b, -1);
+        
+        int min = INF;
+        if(compress[0][1] == 0)
+            min = Math.min(min , 1 + rec(0, K - 1, 1, 0, 0));
+        else if(compress[0][1] == 1)
+            min = Math.min(min , 1 + rec(0, K - 1, 0, 1, 0));
+        else
+            min = Math.min(min , 2 + rec(0, K - 2, 1, 1, 0));
+        
+        min = Math.min(min , 2 + rec(0, K - 1, 0, 0, 1));
+        
+        println(min);
  }
     
     
@@ -227,7 +274,7 @@ public class poj_2430 {
         reader = new BufferedReader(new InputStreamReader(System.in));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
-        solve();
+        solve2();
         reader.close();
         writer.close();
     }
