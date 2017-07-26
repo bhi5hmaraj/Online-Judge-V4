@@ -1,6 +1,6 @@
 import java.util.*;
 import java.io.*;
-public class Main {
+public class poj_2430 {
     
     
     
@@ -147,7 +147,31 @@ public class Main {
      * Thanks http://codeforces.com/blog/entry/53438?#comment-375091
      */
     
-    
+    static int rec(int idx , int rem , int hUp , int hDown , int v) {
+        if(rem < 0)
+            return INF;
+        else if(idx == sz - 1)
+            return 0;
+        else {
+            int min = INF;
+            if(compress[idx + 1][1] == 0) 
+                min = Math.min(min , 1 + rec(idx + 1, rem - 1, 1, 0, 0));
+            if(compress[idx + 1][1] == 1)
+                min = Math.min(min , 1 + rec(idx + 1, rem - 1, 0, 1, 0));
+            if(compress[idx + 1][1] == 2)
+                min = Math.min(min , 2 + rec(idx + 1, rem - 2, 1, 1, 0));
+            
+            min = Math.min(min , 2 + rec(idx + 1, rem - 1, 0, 0, 1));
+            if(v == 1)
+                min = Math.min(min , 2 * (compress[idx + 1][0] - compress[idx][0]) + 
+                                 rec(idx + 1, rem, 0, 0, 1));
+            else if(hUp == 1 && hDown == 0) {
+                if(compress[idx + 1][1] == 0)
+                    min = Math.min(min , (compress[idx + 1][0] - compress[idx][0])
+                                        + rec(idx + 1, rem, 1, 0, 0));
+            }
+        }
+    }
     
     private static void solve2() {
         
