@@ -1,6 +1,6 @@
 import java.util.*;
 import java.io.*;
-public class poj_2430 {
+public class Main {
     
     
     
@@ -22,45 +22,13 @@ public class poj_2430 {
         
         for(int t[] : temp) {
             for(int tt : t)
-                print(String.format("%10d ", tt));
+                print(String.format("%3d ", tt));
             print('\n');
         }
         print('\n');
     }
     
-    static int[][] costV , costH1 , costH2 , DP;
-    static int compute(int i , int j , int k) {
-        if(k >= j)
-            throw new RuntimeException();
-        int dp1 = k == -1 ? 0 : DP[i - 1][k];
-        int dp2 = k == -1 ? 0 : DP[i - 2][k];
-        return Math.min(INF , Math.min(dp1 + Math.min(costV[k + 1][j] , costH1[k + 1][j]) , 
-                                       dp2 + costH2[k + 1][j]));
-        
-    }
-    static int relax(int i , int j, int kL , int kR) {
-        int min = INF;
-        int minPos = -1;
-        for(int k = kL; k <= Math.min(kR , j - 1); k++) {
-            int possible = compute(i, j, k);
-            if(possible < min) {
-                min = possible;
-                minPos = k;
-            }
-        }
-        return minPos;
-    }
-    static void divideAndConquer(int i , int L , int R , int kL , int kR) {
-        if(L <= R) {
-            int j = (L + R) >> 1;
-            int k = relax(i, j, kL, kR);
-            minPos[j] = k;
-            DP[i][j] = compute(i, j, k);
-            divideAndConquer(i, L, j - 1, kL, k);
-            divideAndConquer(i, j + 1, R, k, kR);
-        }
-    }
-    static int minPos[];
+    
     private static void solve() {
         
         int N = nextInt();
@@ -72,7 +40,7 @@ public class poj_2430 {
             arr[i] = nextIntArray(2);
         
         
-        long st = System.nanoTime();
+        // long st = System.nanoTime();
         
         Arrays.sort(arr , new Comparator<int[]>() {
             @Override
@@ -101,9 +69,9 @@ public class poj_2430 {
             }
         }
         
-        costH1 = new int[sz][sz];   // one horizontal rect ----
-        costH2 = new int[sz][sz];   // two horizontal rect ====
-        costV = new int[sz][sz];    // one vertical   rect |   |
+        int[][] costH1 = new int[sz][sz];
+        int[][] costH2 = new int[sz][sz];
+        int[][] costV = new int[sz][sz];
         
         /*        
         for(int i = 0; i < sz; i++)
@@ -150,66 +118,77 @@ public class poj_2430 {
         prettyPrint(costH2);
         */
         
-         
-        minPos = new int[sz];
-        DP = new int[K + 1][sz];    // K = 0
-        Arrays.fill(DP[0], INF);    
-        for(int i = 0; i < sz; i++) // K = 1
+        int DP[][] = new int[K + 1][sz];
+        Arrays.fill(DP[0], INF);
+        for(int i = 0; i < sz; i++)
             DP[1][i] = Math.min(costV[0][i] , costH1[0][i]);
         
-        for(int j = 0; j < sz; j++) {   // K = 2
-            DP[2][j] = INF;
-            for(int k = -1; k < j; k++) {
-                int comp = compute(2, j, k);
-                if(comp < DP[2][j]) {
-                    minPos[j] = k;
-                    DP[2][j] = comp;
+        for(int i = 2; i <= K; i++) {
+            for(int j = 0; j < sz; j++) {
+                DP[i][j] = INF;
+                for(int k = -1; k < j; k++) {
+                    int dp1 = k == -1 ? 0 : DP[i - 1][k];
+                    int dp2 = k == -1 ? 0 : DP[i - 2][k];
+                    DP[i][j] = Math.min(DP[i][j] , dp1 + Math.min(costV[k + 1][j] , costH1[k + 1][j]));
+                    DP[i][j] = Math.min(DP[i][j] , dp2 + costH2[k + 1][j]);
                 }
             }
-        }
-        
-
-        for(int i = 3; i <= K; i++) {
-            Arrays.fill(minPos, INF);
-            minPos[0] = -1;
-            DP[i][0] = compute(i, 0, -1);
-            int kR = relax(i, sz - 1, -1, sz - 2);
-            minPos[sz - 1] = kR;
-            DP[i][sz - 1] = compute(i, sz - 1, kR);
-            divideAndConquer(i, 1, sz - 2, -1, kR);
-            println("i " + i + " " + Arrays.toString(minPos));
         }
         
         //prettyPrint(DP);
         println(DP[K][sz - 1]);
-        
-        for(int i = 2; i <= K; i++) {
-            Arrays.fill(minPos, INF);
-            for(int j = 0; j < sz; j++) {
-                DP[i][j] = INF;
-                for(int k = -1; k < j; k++) {
-                    // int dp1 = k == -1 ? 0 : DP[i - 1][k];
-                    // int dp2 = k == -1 ? 0 : DP[i - 2][k];
-                    int comp = compute(i, j, k);
-                    if(comp < DP[i][j]) {
-                        minPos[j] = k;
-                        DP[i][j] = comp;
-                    }
-                    
-                    // DP[i][j] = Math.min(DP[i][j] , dp1 + Math.min(costV[k + 1][j] , costH1[k + 1][j]));
-                    // DP[i][j] = Math.min(DP[i][j] , dp2 + costH2[k + 1][j]);
-                }
-            }
-            if(i == 3)
-                println("i " + i + " " + Arrays.toString(minPos));
-        }
-        
-//        prettyPrint(DP);
-        println(DP[K][sz - 1]);
-        
-        println("Time : " + (System.nanoTime() - st) / 1e9);
+        // println("Time : " + (System.nanoTime() - st) / 1e9); 
     }
     
+    static int compress[][];
+    static int sz;
+    
+    /*
+     * Thanks http://codeforces.com/blog/entry/53438?#comment-375091
+     */
+    
+    
+    
+    private static void solve2() {
+        
+        int N = nextInt();
+        int K = nextInt();
+        int B = nextInt();
+        
+        int arr[][] = new int[N][];
+        for(int i = 0; i < N; i++)
+            arr[i] = nextIntArray(2);
+        
+        
+        // long st = System.nanoTime();
+        
+        Arrays.sort(arr , new Comparator<int[]>() {
+            @Override
+            public int compare(int[] o1, int[] o2) {
+                if(o1[1] != o2[1])
+                    return o1[1] - o2[1];
+                else
+                    return o1[0] - o2[0];
+            }
+        });
+        
+        sz = 1;
+        for(int i = 1; i < N; i++)
+            sz += arr[i][1] != arr[i - 1][1] ? 1 : 0;
+        
+        compress = new int[sz][2]; // 0 - up , 1 - down , 2 - both
+        int ptr = 0;
+        for(int i = 0; i < N; ) {
+            compress[ptr][0] = arr[i][1];
+            if(i + 1 < N && arr[i][1] == arr[i + 1][1]) {
+                compress[ptr++][1] = 2;
+                i += 2;
+            } else {
+                compress[ptr++][1] = arr[i][0] - 1;
+                i++;
+            }
+        }
+ }
     
     
     /************************ SOLUTION ENDS HERE ************************/
@@ -221,12 +200,6 @@ public class poj_2430 {
     /************************ TEMPLATE STARTS HERE **********************/
     
     public static void main(String[] args) throws IOException {
-        try {
-            System.setOut(new PrintStream("dump.txt"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        
         reader = new BufferedReader(new InputStreamReader(System.in));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
