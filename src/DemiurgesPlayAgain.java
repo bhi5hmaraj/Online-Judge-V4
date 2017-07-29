@@ -14,10 +14,11 @@ public class DemiurgesPlayAgain {
         for(int v : adj[u])
             if(v != par) {
                 child++;
-                leaves[u] += leaves[v];
+                leaves[u] += dfs(v, u);
             }
         isLeaf[u] = child == 0;
-        return isLeaf[u] ? 1 : leaves[u];
+        leaves[u] = isLeaf[u] ? 1 : leaves[u];
+        return leaves[u];
     }
     
     // turn T - maximize , F - minimize
@@ -50,8 +51,24 @@ public class DemiurgesPlayAgain {
     static int dec(int u , int par , boolean turn) {
         if(isLeaf[u])
             return 1;
+        if(turn) {
+            // we need to minimize the maximum , we can use a similar strategy as above
+            // for each subtree we will fill 1...dec[v] , (l[u] - (l[v]-dec[v])) + 1 ... l[u]
+            int sum = leaves[u];
+            for(int v : adj[u])
+                if(v != par)
+                    sum -= (leaves[v] - dec(v, u, !turn));
+            return sum;
+        } else {
+            int min = Integer.MAX_VALUE;
+            for(int v : adj[u])
+                if(v != par)
+                    min = Math.min(min , dec(v, u, !turn));
+            return min;
+        }
     }
     
+    @SuppressWarnings("unchecked")
     private static void solve() {
         
         int n = nextInt();
@@ -67,8 +84,11 @@ public class DemiurgesPlayAgain {
             adj[v].add(u);
         }
         
+        isLeaf = new boolean[n + 1];
+        leaves = new int[n + 1];
         dfs(1, 0);
-        
+
+        println(inc(1, 0, true) + " " + dec(1, 0, true));
         
     }
     
