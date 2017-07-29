@@ -6,12 +6,68 @@ public class DemiurgesPlayAgain {
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    static ArrayList<Integer>[] adj;
+    static int leaves[];
+    static boolean isLeaf[];
+    static int dfs(int u , int par) {
+        int child = 0;
+        for(int v : adj[u])
+            if(v != par) {
+                child++;
+                leaves[u] += leaves[v];
+            }
+        isLeaf[u] = child == 0;
+        return isLeaf[u] ? 1 : leaves[u];
+    }
+    
+    // turn T - maximize , F - minimize
+    
+    static int inc(int u , int par , boolean turn) {
+        if(isLeaf[u])
+            return 1;
+        if(turn) {
+            // we can fill each of the subtree with the leaves(v) largest elements 
+            int max = 0;
+            for(int v : adj[u])
+                if(v != par)
+                    max = Math.max(max , leaves[u] - leaves[v] + inc(v, u, !turn));
+            return max;
+        } else {
+            // We need to maximize the minimum , so we need to couple smaller numbers with larger ones
+            // so that the minimum is maximized . we get sum(inc(v) - 1) + 1    --- (1)
+            // We can construct this in the following way
+            // for v1 -- 1,2...inc[v1] - 1, l[u]-(l[v1]-inc[v1]+1)..l[u]        --- (2)
+            // If we expand (2) for all subtree vertices we can get relation (1)
+            // as l[u] = sum(l[vi])
+            int sum = 1;
+            for(int v : adj[u])
+                if(v != par)
+                    sum += inc(v, u, !turn) - 1;
+            return sum;
+        }
+    }
+    
+    static int dec(int u , int par , boolean turn) {
+        if(isLeaf[u])
+            return 1;
+    }
     
     private static void solve() {
         
+        int n = nextInt();
+        adj = new ArrayList[n + 1];
+        for(int i = 1; i <= n; i++)
+            adj[i] = new ArrayList<>();
         
+        int E = n - 1;
+        while(E-->0) {
+            int u = nextInt();
+            int v = nextInt();
+            adj[u].add(v);
+            adj[v].add(u);
+        }
         
-        
+        dfs(1, 0);
         
         
     }
