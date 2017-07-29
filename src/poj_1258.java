@@ -1,6 +1,6 @@
 import java.util.*;
 import java.io.*;
-public class poj_1308 {
+public class poj_1258 {
     
     
     
@@ -54,40 +54,54 @@ public class poj_1308 {
         }
     }
 
+
+    static class Edge_MST implements Comparable<Edge_MST> // For kruskal MST
+    {
+        int u, v;
+        int cost;
+
+        Edge_MST(int u, int v, int cost) {
+            this.u = u;
+            this.v = v;
+            this.cost = cost;
+        }
+
+        @Override
+        public int compareTo(Edge_MST o) {
+            return cost - o.cost;
+        }
+    }
+
+    private static long KruskalMST(ArrayList<Edge_MST> arr, int V) {
+        Collections.sort(arr);
+        DSU dsu = new DSU(V);
+        long minCost = 0;
+        for (int i = 0; i < arr.size() && dsu.components() != 1; i++) {
+            if (!dsu.connected(arr.get(i).u, arr.get(i).v)) {
+                dsu.union(arr.get(i).u, arr.get(i).v);
+                minCost += arr.get(i).cost;
+            }
+        }
+        return minCost;
+    }
+
+
     
     private static void solve() {
-        int from , to;
-        int tc = 1;
-        while((from = nextInt()) >= 0 && (to = nextInt()) >= 0) {
-            HashMap<Integer , Integer> map = new HashMap<Integer , Integer>();
-            HashSet<Integer> in = new HashSet<Integer>();
-            ArrayList<int[]> edges = new ArrayList<int[]>();
-            while(true) {
-                if(from == 0 && to == 0)
-                    break;
-                if(!map.containsKey(from))
-                    map.put(from, map.size());
-                if(!map.containsKey(to))
-                    map.put(to, map.size());
-
-                edges.add(new int[]{from , to});
-                from = nextInt();
-                to = nextInt();
-            }
-            boolean flag = true;
-            DSU dsu = new DSU(map.size());
-            for(int[] e : edges) {
-                if(in.contains(e[1]) || dsu.connected(map.get(e[0]), map.get(e[1]))) {
-                    flag = false;
-                    break;
-                }
-                in.add(e[1]);
-                dsu.union(map.get(e[0]), map.get(e[1]));
-            }
-            flag &= dsu.components() <= 1;
-            println("Case " + (tc++) + " is" + (flag ? "" : " not") + " a tree.");
-        }
         
+        String line;
+        while((line = nextLine()) != null) {
+            int V = Integer.parseInt(line);
+            ArrayList<Edge_MST> edges = new ArrayList<Edge_MST>();
+            
+            for(int i = 0; i < V; i++) {
+                int cost[] = nextIntArray(V);
+                for(int j = 0; j < V; j++)
+                    if(cost[j] > 0)
+                        edges.add(new Edge_MST(i, j, cost[j]));
+            }
+            println(KruskalMST(edges, V));
+        }
     }
     
     
