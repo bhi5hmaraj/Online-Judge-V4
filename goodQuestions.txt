@@ -1,0 +1,38 @@
+Zeroes (hackerearth)
+Meteorite (hacerearth)
+Colliders (CF)
+Cut the tree (Hackerrank)
+Bishops (CF ~ #341)
+Archery (https://www.hackerrank.com/contests/quora-haqathon/challenges/archery)
+HackerEarth april circuits (AVL tree problem)
+Paint the fence (dp approach) http://codeforces.com/contest/349/problem/B
+Vanya and label (Number of ways for bitwise and) (http://codeforces.com/contest/677/problem/C)
+Lexicographically smallest sub sequence of length k (Codechef lunchtime problem) (https://www.codechef.com/problems/ASTRING)
+Largest sub-array sum after removing at most 1 element (Snackdown qualifier) (https://www.codechef.com/problems/MMSUM)
+Good application of LCM http://codeforces.com/contest/678/problem/C
+SegTree,Robin-Karp,Mod Inverse https://www.hackerearth.com/IITK-WPC-Summer16/algorithm/lizzys-queries/
+Good application of disjoint set union https://www.hackerearth.com/problem/algorithm/chandu-and-his-gurudevs-1/
+Good application of offline query and BIT http://codeforces.com/problemset/problem/703/D
+Basic application of number theory (every number can be written as product of power of primes) http://codeforces.com/problemset/problem/576/A
+Best edge cases ever http://codeforces.com/contest/711/problem/B
+Good Greedy problem https://www.hackerrank.com/contests/101hack41/challenges/washing-plates
+Good problem to enumerate path using DP needs to be taken proper care https://www.hackerrank.com/contests/university-codesprint/challenges/array-construction
+Sum of set bits in binary format from 1 to N
+Good ad-hoc greedy problem http://codeforces.com/contest/746/problem/E (Number Exchange)
+Nice problem on palindromes (http://codeforces.com/contest/159/problem/D)
+Nice problem on combinatorics (http://codeforces.com/problemset/problem/294/C)
+Nice problem on bitmask DP (http://codeforces.com/problemset/problem/453/B)
+Nice problem on counting (http://codeforces.com/contest/758/problem/C)
+DSU on tree (Merging trick) (https://www.hackerearth.com/practice/algorithms/graphs/depth-first-search/practice-problems/algorithm/the-grass-type/)
+Nice problem on trees http://codeforces.com/contest/375/problem/D ( Lot of approaches available , used a treap approach)
+Nice Binary Search problem http://codeforces.com/problemset/problem/448/D
+Classic array problem http://codeforces.com/problemset/problem/819/B
+Various Approaches (NT) http://codeforces.com/contest/484/problem/B
+   
+
+My Ideas:
+	Farthest distance between any 2 nodes in a tree (diameter) (with negative weights) ( O(N) expected (not yet proved) ) Idea : Start from a leaf node with prefixSum 0 and dfs the tree , now answer is max(prefixSum) - min(prefixSum)
+	|
+	|---> Can't be done without LCA !!
+	|---> Start from any arbitary vertex and find the distance to all other nodes . Now start from the farthest node and repeat it again.
+	      We will get the 2 end points of the diameter.
