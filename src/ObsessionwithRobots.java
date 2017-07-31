@@ -14,13 +14,14 @@ public class ObsessionwithRobots {
         return ar[0] == ar[2] && ar[1] == ar[3];
     }
     
-    static int x[] = {-1 , 0 , 1 , 0};
-    static int y[] = {0 , 1 , 0 , -1};
+    static int xx[] = {-1 , 0 , 1 , 0};
+    static int yy[] = {0 , 1 , 0 , -1};
     
     
     private static void solve() {
-        int x = 100 , y = 100;
-        boolean marked[][] = new boolean[201][201];
+        final int MAX = 100;
+        int x = MAX , y = MAX;
+        boolean marked[][] = new boolean[2 * MAX + 1][2 * MAX + 1];
         boolean flag = true;
         char move[] = nextLine().toCharArray();
         for(char ch : move) {
@@ -41,32 +42,72 @@ public class ObsessionwithRobots {
             }
             flag &= !marked[x][y];
         }
-        
+        marked[x][y] = true;
+        /*
+        for(boolean b[] : marked){
+            for(boolean t : b)
+                print(t ? "X" : "O");
+            print('\n');
+        }
+        */
         if(!flag) {
             println("BUG");
             return;
         }
         
-        int cx = 100 , cy = 100;
-        for(char ch = move[0] , i = 0; i < move.length - 1; ch = move[++i]) {
-            if(Math.abs(cx - x) + Math.abs(cy - y) <= 1) {
+        int cx = MAX , cy = MAX;
+        int px = MAX , py = MAX;
+        switch(move[0]) {
+        case 'L':
+            cy--;
+            break;
+        case 'R':
+            cy++;
+            break;
+        case 'U':
+            cx--;
+            break;
+        case 'D':
+            cx++;
+            break;
+        }
+        for(int j = 0; j < 4; j++) {
+            int dx = px + xx[j];
+            int dy = py + yy[j];
+            if(isValid(dx, dy) && !eq(dx , dy , cx , cy ) && marked[dx][dy]) {
                 println("BUG");
                 return;
             }
-            switch(ch) {
+        }
+        for(int i = 1; i < move.length; i++) {
+            int nx = cx , ny = cy;
+            switch(move[i]) {
             case 'L':
-                cy--;
+                ny--;
                 break;
             case 'R':
-                cy++;
+                ny++;
                 break;
             case 'U':
-                cx--;
+                nx--;
                 break;
             case 'D':
-                cx++;
+                nx++;
                 break;
             }
+            for(int j = 0; j < 4; j++) {
+                int dx = cx + xx[j];
+                int dy = cy + yy[j];
+                if(isValid(dx, dy) && !eq(dx , dy , px , py) && !eq(dx , dy , nx , ny ) && marked[dx][dy]) {
+                    println("BUG");
+                    return;
+                }
+            }
+            
+            px = cx;
+            py = cy;
+            cx = nx;
+            cy = ny;
         }
         
         println("OK");
