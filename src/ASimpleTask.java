@@ -9,11 +9,11 @@ public class ASimpleTask
 	static long memo[][];
 	static int graph[];
 	static long hamiltonianPath(int mask , int u) {
-		if(memo[mask][u] != -1)
+	    if(memo[mask][u] != -1)
 			return memo[mask][u];
-		else if(u == Integer.numberOfTrailingZeros(mask)) // according to our convention A simple path is not allowed to end at the lowest vertex
-			return 0;
-		else {
+	    else if(u == Integer.numberOfTrailingZeros(mask)) // according to our convention A simple path is not allowed to end at the lowest vertex
+            return 0;
+	    else {
 			long sum = 0;
 			for(int fromSet = mask ^ (1 << u);fromSet > 0; fromSet ^= Integer.lowestOneBit(fromSet)) {
 				int v = Integer.numberOfTrailingZeros(fromSet);
