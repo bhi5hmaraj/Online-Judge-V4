@@ -2448,4 +2448,67 @@ class helper {
             return "[" + num + " / " + den + "]";
         }
     }
+    
+    static class StringHashUtils {
+        
+        static final int p1 = 100151 , m1 = (int) 1e9 + 7;  // Twin Primes
+        static final int p2 = p1 + 2 , m2 = m1 + 2;
+        static final int MAX = (int) 6e3 + 10;
+        static final int pow1[] = new int[MAX + 1];
+        static final int pow2[] = new int[MAX + 1];
+        static int modPow(long a , long b , long mod) {
+            long pow = 1;
+            while(b > 0) {
+                if((b & 1L) == 1)
+                    pow = ((pow * a) % mod);
+
+                a = ((a * a) % (mod));
+                b >>= 1;
+            }
+            return (int) pow;
+        }
+        static int modInverse(long n , long mod)  {return modPow(n, mod - 2 , mod);} // Fermat's little theorem
+        static {
+            pow1[0] = pow2[0] = 1;
+            for(int i = 1; i <= MAX; i++) {
+                pow1[i] = (int) ((1L * pow1[i - 1] * p1) % (long)(m1));
+                pow2[i] = (int) ((1L * pow2[i - 1] * p2) % (long)(m2));
+            }
+        }
+        static int hash1[] , hash2[];
+        static int cache1[] , cache2[];
+        static int[] subHash(int l , int r) {
+            l++;
+            r++;
+            if(l > r)
+                return new int[] { 0 , 0 };
+            return new int[] {
+                    (int) ((1L * cache1[l - 1] * ((hash1[r] - hash1[l - 1] + m1) % m1)) % (long)(m1)),
+                    (int) ((1L * cache2[l - 1] * ((hash2[r] - hash2[l - 1] + m2) % m2)) % (long)(m2))
+            };
+        }
+        
+        public StringHashUtils(String s) {
+         
+            char str[] = s.toCharArray();
+            int n = str.length;
+
+            hash1 = new int[n + 1];
+            hash2 = new int[n + 1];
+            cache1 = new int[n + 1];
+            cache2 = new int[n + 1];
+            
+            hash1[1] = hash2[1] = str[0];
+            for(int i = 2; i <= n; i++) {
+                hash1[i] = (hash1[i - 1] + ((int) ((1L * pow1[i - 1] * str[i - 1]) % (long)(m1)))) % m1;
+                hash2[i] = (hash2[i - 1] + ((int) ((1L * pow2[i - 1] * str[i - 1]) % (long)(m2)))) % m2;
+            }
+            
+            for(int i = 0; i < n; i++) {
+                cache1[i] = modInverse(pow1[i], m1);
+                cache2[i] = modInverse(pow2[i], m2);
+            }
+            
+        }
+    }
 }

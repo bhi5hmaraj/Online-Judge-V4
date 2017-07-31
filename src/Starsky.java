@@ -56,7 +56,7 @@ public class Starsky {
         int n = nextInt();
         int q = nextInt();
         int MAX_C = nextInt() + 1;
-        long bright[][][] = new long[MAX_C][MAX][MAX];
+        long[][][] bright = new long[MAX_C][MAX][MAX];
         long cnt[][][] = new long[MAX][MAX][MAX_C];
         while(n-->0) {
             int x = nextInt() - 1;

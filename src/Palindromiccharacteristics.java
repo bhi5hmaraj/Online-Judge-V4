@@ -31,63 +31,79 @@ public class Palindromiccharacteristics  {
     }
     
     static int hash1[] , hash2[];
-    static int[] subHash(int l , int r) {
+    static int cache1[] , cache2[];
+    static int hold[][];
+    static void subHash(int l , int r , int idx) {
         l++;
         r++;
-        if(l > r)
-            return new int[] { 0 , 0 };
-        return new int[] {
-                (int) ((1L * modInverse(pow1[l - 1], m1) * ((hash1[r] - hash1[l - 1] + m1) % m1)) % (long)(m1)),
-                (int) ((1L * modInverse(pow2[l - 1], m2) * ((hash2[r] - hash2[l - 1] + m2) % m2)) % (long)(m2))
-        };
+        hold[idx][0] = (int) ((1L * cache1[l - 1] * ((hash1[r] - hash1[l - 1] + m1) % m1)) % (long)(m1));
+        hold[idx][1] = (int) ((1L * cache2[l - 1] * ((hash2[r] - hash2[l - 1] + m2) % m2)) % (long)(m2));
     }
     
     
     private static void solve() {
         
         char str[] = nextLine().toCharArray();
-        int n = nextInt();
+        long st = System.nanoTime();
+        int n = str.length;
         int log = 32 - Integer.numberOfLeadingZeros(n);
         
-        boolean DP[][][] = new boolean[log][n][n];
-        boolean isPain[][] = new boolean[n][n];
+        boolean DP[][] = new boolean[n][n];
+        boolean isPalin[][] = new boolean[n][n];
         
         for(int i = 0; i < n; i++)
-            isPain[i][i] = true;
+            isPalin[i][i] = true;
         for(int i = 0; i < n - 1; i++)
-            isPain[i][i + 1] = str[i] == str[i + 1];
+            isPalin[i][i + 1] = str[i] == str[i + 1];
         for(int len = 3; len <= n; len++)
             for(int i = 0; i + len - 1 < n; i++)
-                isPain[i][i + len - 1] = isPain[i + 1][i + len -2] && str[i] == str[i + len - 1];
-        
+                isPalin[i][i + len - 1] = isPalin[i + 1][i + len -2] && str[i] == str[i + len - 1];
+        hold = new int[2][2];
         hash1 = new int[n + 1];
         hash2 = new int[n + 1];
-        
+        cache1 = new int[n + 1];
+        cache2 = new int[n + 1];
         hash1[1] = hash2[1] = str[0];
+
         for(int i = 2; i <= n; i++) {
             hash1[i] = (hash1[i - 1] + ((int) ((1L * pow1[i - 1] * str[i - 1]) % (long)(m1)))) % m1;
             hash2[i] = (hash2[i - 1] + ((int) ((1L * pow2[i - 1] * str[i - 1]) % (long)(m2)))) % m2;
         }
         
+        for(int i = 0; i < n; i++) {
+            cache1[i] = modInverse(pow1[i], m1);
+            cache2[i] = modInverse(pow2[i], m2);
+        }
         
         int cnt[] = new int[n];
         for(int len = 1; len <= n; len++)
             for(int i = 0; i + len - 1 < n; i++) {
-                cnt[0] += isPain[i][i + len - 1] ? 1 : 0;
-                DP[0][i][i + len - 1] = isPain[i][i + len - 1];
+                cnt[0] += isPalin[i][i + len - 1] ? 1 : 0;
+                DP[i][i + len - 1] = isPalin[i][i + len - 1];
             }
         for(int k = 1; k < log; k++) {
+            boolean t[][] = new boolean[n][n];
             for(int len = 2; len <= n; len++)
                 for(int i = 0; i + len - 1 < n; i++) {
                     int L = i;
                     int R = i + len - 1;
-                    int hL[] = subHash(L, L + (len / 2) - 1);
-                    int hR[] = subHash(R - (len / 2) + 1, R);
-                    if(hL[0] == hR[0] && hL[1] == hR[1])
+                    subHash(L, L + (len / 2) - 1 , 0);
+                    subHash(R - (len / 2) + 1, R , 1);
+                    if(hold[0][0] == hold[1][0] && hold[0][1] == hold[1][1] && DP[L][L + (len / 2) - 1] && 
+                                                           DP[R - (len / 2) + 1][R]) {
+                        t[L][R] = true;
+                        cnt[k]++;
+                    }
                 }
                     
+            DP = t;
         }
         
+        for(int a : cnt)
+            print(a + " ");
+
+        println("\nTime : " + (System.nanoTime() - st) / 1e9);
+
     }
     
     
@@ -104,6 +120,7 @@ public class Palindromiccharacteristics  {
         reader = new BufferedReader(new InputStreamReader(System.in));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
+        
         solve();
         reader.close();
         writer.close();
