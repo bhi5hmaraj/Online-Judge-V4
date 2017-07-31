@@ -6,13 +6,25 @@ public class ObsessionwithRobots {
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    static boolean isValid(int x , int y) {
+        return x >= 0 && x <= 200 && y >= 0 && y <= 200;
+    }
+    
+    static boolean eq(int... ar) {
+        return ar[0] == ar[2] && ar[1] == ar[3];
+    }
+    
+    static int x[] = {-1 , 0 , 1 , 0};
+    static int y[] = {0 , 1 , 0 , -1};
+    
     
     private static void solve() {
-        int len = 0;
         int x = 100 , y = 100;
         boolean marked[][] = new boolean[201][201];
-        for(char ch : nextLine().toCharArray()) {
-            len++;
+        boolean flag = true;
+        char move[] = nextLine().toCharArray();
+        for(char ch : move) {
+            marked[x][y] = true;
             switch(ch) {
             case 'L':
                 y--;
@@ -27,13 +39,38 @@ public class ObsessionwithRobots {
                 x++;
                 break;
             }
+            flag &= !marked[x][y];
         }
-        if((x == 100 && y == 100))
+        
+        if(!flag) {
             println("BUG");
-        else if(Math.abs(x - 100) + Math.abs(y - 100) == 1)
-            println(len == 1 ? "OK" : "BUG");
-        else
-            println("OK");
+            return;
+        }
+        
+        int cx = 100 , cy = 100;
+        for(char ch = move[0] , i = 0; i < move.length - 1; ch = move[++i]) {
+            if(Math.abs(cx - x) + Math.abs(cy - y) <= 1) {
+                println("BUG");
+                return;
+            }
+            switch(ch) {
+            case 'L':
+                cy--;
+                break;
+            case 'R':
+                cy++;
+                break;
+            case 'U':
+                cx--;
+                break;
+            case 'D':
+                cx++;
+                break;
+            }
+        }
+        
+        println("OK");
+        
     }
     
     
