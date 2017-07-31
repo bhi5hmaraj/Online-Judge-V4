@@ -27,6 +27,8 @@ public class QueriesforNumberofPalindromes
 			for(int j=i+1;j<N;j++)
 				prefixSum[i][j] += prefixSum[i][j - 1];
 		
+		
+		
 		/*		
 		for(int i=0;i<N;i++) {
 			for(int j=0;j<N;j++)
