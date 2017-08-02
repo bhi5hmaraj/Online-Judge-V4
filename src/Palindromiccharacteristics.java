@@ -100,7 +100,6 @@ public class Palindromiccharacteristics  {
     // Using 2^64 as modulus runs in ~900ms
     // Using 2 integer modulus runs in ~1900ms
     private static void solve2() {
-        
         char str[] = nextLine().toCharArray();
         int n = str.length;
         
