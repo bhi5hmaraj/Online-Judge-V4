@@ -2449,7 +2449,7 @@ class helper {
         }
     }
     
-    static class StringHashUtils {
+    static class StringHashUtilsInt {
         
         static final int p1 = 100151 , m1 = (int) 1e9 + 7;  // Twin Primes
         static final int p2 = p1 + 2 , m2 = m1 + 2;
@@ -2478,6 +2478,7 @@ class helper {
         static int hash1[] , hash2[];
         static int cache1[] , cache2[];
         static int[] subHash(int l , int r) {
+            // l , r are 0 indexed
             l++;
             r++;
             if(l > r)
@@ -2488,11 +2489,11 @@ class helper {
             };
         }
         
-        public StringHashUtils(String s) {
+        public StringHashUtilsInt(String s) {
          
             char str[] = s.toCharArray();
             int n = str.length;
-
+            
             hash1 = new int[n + 1];
             hash2 = new int[n + 1];
             cache1 = new int[n + 1];
@@ -2509,6 +2510,35 @@ class helper {
                 cache2[i] = modInverse(pow2[i], m2);
             }
             
+        }
+    }
+    
+    static class StringHashUtilsLong {
+        static final long p = 100151;
+        static final int MAX = (int) 5e3 + 10;
+        static final long pow[] = new long[MAX + 1];
+        // implicit mod (2^63)
+        static {
+            pow[0] = 1;
+            for(int i = 1; i <= MAX; i++) 
+                pow[i] = pow[i - 1] * p;
+        }
+        
+        static long hash[];
+        
+        static long subHash(int l , int r) {
+            // l , r are 0 indexed
+            l++;
+            r++;
+            return hash[r] - hash[l - 1] * pow[r - l + 1];
+        }
+        
+        public StringHashUtilsLong(char str[]) {
+            int n = str.length;
+            hash = new long[n + 1];
+            hash[1] = str[0];
+            for(int i = 2; i <= n; i++) 
+                hash[i] = hash[i - 1] * p + str[i - 1];
         }
     }
 }

@@ -5,29 +5,49 @@ public class Palindromiccharacteristics  {
     
     
     /************************ SOLUTION STARTS HERE ************************/
-    static final long p = 100151;
-    static final int MAX = (int) 5e3 + 10;
-    static final long pow[] = new long[MAX + 1];
-    // implicit mod (2^63)
-    static {
-        pow[0] = 1;
-        for(int i = 1; i <= MAX; i++) 
-            pow[i] = pow[i - 1] * p;
+
+    static final int p1 = 100151 , m1 = (int) 1e9 + 7;  // Twin Primes
+    static final int p2 = p1 + 2 , m2 = m1 + 2;
+    static final int MAX = (int) 6e3 + 10;
+    static final int pow1[] = new int[MAX + 1];
+    static final int pow2[] = new int[MAX + 1];
+    static int modPow(long a , long b , long mod) {
+        long pow = 1;
+        while(b > 0) {
+            if((b & 1L) == 1)
+                pow = ((pow * a) % mod);
+
+            a = ((a * a) % (mod));
+            b >>= 1;
+        }
+        return (int) pow;
     }
-    
-    static long hash[];
-    
-    static long subHash(int l , int r) {
+    static int modInverse(long n , long mod)  {return modPow(n, mod - 2 , mod);} // Fermat's little theorem
+    static {
+        pow1[0] = pow2[0] = 1;
+        for(int i = 1; i <= MAX; i++) {
+            pow1[i] = (int) ((1L * pow1[i - 1] * p1) % (long)(m1));
+            pow2[i] = (int) ((1L * pow2[i - 1] * p2) % (long)(m2));
+        }
+    }
+    static int hash1[] , hash2[];
+    static int cache1[] , cache2[];
+    static int[] subHash(int l , int r) {
         l++;
         r++;
-        return hash[r] - hash[l - 1] * pow[r - l + 1];
+        if(l > r)
+            return new int[] { 0 , 0 };
+        return new int[] {
+                (int) ((1L * cache1[l - 1] * ((hash1[r] - hash1[l - 1] + m1) % m1)) % (long)(m1)),
+                (int) ((1L * cache2[l - 1] * ((hash2[r] - hash2[l - 1] + m2) % m2)) % (long)(m2))
+        };
     }
-    
-
+/*
+    // This is a slow approach which TLEs O(x N^2 log(N))
+    // x is some very large constant
     private static void solve() {
         
         char str[] = nextLine().toCharArray();
-//         long st = System.nanoTime();
         int n = str.length;
         int log = 32 - Integer.numberOfLeadingZeros(n);
         
@@ -74,29 +94,11 @@ public class Palindromiccharacteristics  {
         for(int a : cnt)
             print(a + " ");
 
-//        println("\nTime : " + (System.nanoTime() - st) / 1e9);
-         
 
     }
-    static void prettyPrint(int a[][]) {
-        int n = a.length;
-        int m = a[0].length;
-        int temp[][] = new int[n + 1][m + 1];
-        temp[0][0] = -1;
-        for(int i = 1; i <= n; i++) {
-            temp[i][0] = i - 1;
-            System.arraycopy(a[i - 1], 0, temp[i], 1, m);
-        }
-        for(int j = 1; j <= m; j++)
-            temp[0][j] = j - 1;
-        
-        for(int t[] : temp) {
-            for(int tt : t)
-                print(String.format("%3d ", tt));
-            print('\n');
-        }
-        print('\n');
-    }
+*/   
+    // Using 2^64 as modulus runs in ~900ms
+    // Using 2 integer modulus runs in ~1900ms
     private static void solve2() {
         
         char str[] = nextLine().toCharArray();
@@ -112,13 +114,25 @@ public class Palindromiccharacteristics  {
             for(int i = 0; i + len - 1 < n; i++)
                 isPalin[i][i + len - 1] = isPalin[i + 1][i + len -2] && str[i] == str[i + len - 1];
         
-        hash = new long[n + 1];
-        hash[1] = str[0];
-        for(int i = 2; i <= n; i++) 
-            hash[i] = hash[i - 1] * p + str[i - 1];
+        hash1 = new int[n + 1];
+        hash2 = new int[n + 1];
+        cache1 = new int[n + 1];
+        cache2 = new int[n + 1];
+        
+        hash1[1] = hash2[1] = str[0];
+        for(int i = 2; i <= n; i++) {
+            hash1[i] = (hash1[i - 1] + ((int) ((1L * pow1[i - 1] * str[i - 1]) % (long)(m1)))) % m1;
+            hash2[i] = (hash2[i - 1] + ((int) ((1L * pow2[i - 1] * str[i - 1]) % (long)(m2)))) % m2;
+        }
+        
+        for(int i = 0; i < n; i++) {
+            cache1[i] = modInverse(pow1[i], m1);
+            cache2[i] = modInverse(pow2[i], m2);
+        }
         
         int DP[][] = new int[n][n];
         int cnt[] = new int[n];
+        cnt[0] += n;
         for(int i = 0; i < n; i++)
             DP[i][i] = 1;
 
@@ -126,16 +140,20 @@ public class Palindromiccharacteristics  {
             for(int i = 0; i + len - 1 < n; i++) {
                 int L = i;
                 int R = i + len - 1;
-                long lH = subHash(L, L + (len / 2) - 1 );
-                long rH = subHash(R - (len / 2) + 1, R );
-                if(lH == rH && isPalin[L][L + (len / 2) - 1]) { 
+                int lH[] = subHash(L, L + (len / 2) - 1 );
+                int rH[] = subHash(R - (len / 2) + 1, R );
+                if(lH[0] == rH[0] && lH[1] == rH[1]  && isPalin[L][L + (len / 2) - 1]) { 
+                    // All k palindromes are k-1 , k-2 ... 1 palindromes
                     DP[L][R] = DP[L][L + (len / 2) - 1] + 1;
-                    if(DP[L][R] > 1)
-                        cnt[DP[L][R] - 1]++;
+                    cnt[DP[L][R] - 1]++;
+                } else if(isPalin[L][R]) {      
+                    // Only 1 palindrome
+                    DP[L][R] = 1;
+                    cnt[DP[L][R] - 1]++;
                 }
             }
         
-        for(int i = n - 2; i >= 1; i--)
+        for(int i = n - 2; i >= 0; i--)
             cnt[i] += cnt[i + 1];
         
         for(int a : cnt)
@@ -155,14 +173,10 @@ public class Palindromiccharacteristics  {
         reader = new BufferedReader(new InputStreamReader(System.in));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
-        
-        solve();
+        solve2();
         reader.close();
         writer.close();
     }
-//    ejuhslwffrikiikikeqqeyeqqeeqqeyeqqeqjqjjqjj
-//    84 25 4 0 - correct
-//    87 22 3   - wrong
     static BufferedReader reader;
     static PrintWriter    writer;
     static StringTokenizer st;
