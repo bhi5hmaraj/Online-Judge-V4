@@ -100,7 +100,6 @@ public class Palindromiccharacteristics  {
     private static void solve2() {
         
         char str[] = nextLine().toCharArray();
-//         long st = System.nanoTime();
         int n = str.length;
         
         boolean isPalin[][] = new boolean[n][n];
@@ -120,14 +119,9 @@ public class Palindromiccharacteristics  {
         
         int DP[][] = new int[n][n];
         int cnt[] = new int[n];
-        for(int len = 1; len <= n; len++)
-            for(int i = 0; i + len - 1 < n; i++) {
-                int L = i;
-                int R = i + len - 1;
-                cnt[0] += isPalin[L][R] ? 1 : 0;
-            }
         for(int i = 0; i < n; i++)
             DP[i][i] = 1;
+
         for(int len = 2; len <= n; len++)
             for(int i = 0; i + len - 1 < n; i++) {
                 int L = i;
@@ -136,15 +130,12 @@ public class Palindromiccharacteristics  {
                 long rH = subHash(R - (len / 2) + 1, R );
                 if(lH == rH && isPalin[L][L + (len / 2) - 1]) { 
                     DP[L][R] = DP[L][L + (len / 2) - 1] + 1;
-                    cnt[DP[L][R] - 1]++;
+                    if(DP[L][R] > 1)
+                        cnt[DP[L][R] - 1]++;
                 }
             }
         
-        prettyPrint(DP);
-        
-        println(Arrays.toString(cnt));
-        
-        for(int i = n - 2; i >= 0; i--)
+        for(int i = n - 2; i >= 1; i--)
             cnt[i] += cnt[i + 1];
         
         for(int a : cnt)
@@ -165,11 +156,13 @@ public class Palindromiccharacteristics  {
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
         
-        solve2();
+        solve();
         reader.close();
         writer.close();
     }
-    
+//    ejuhslwffrikiikikeqqeyeqqeeqqeyeqqeqjqjjqjj
+//    84 25 4 0 - correct
+//    87 22 3   - wrong
     static BufferedReader reader;
     static PrintWriter    writer;
     static StringTokenizer st;
