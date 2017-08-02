@@ -78,7 +78,78 @@ public class Palindromiccharacteristics  {
          
 
     }
-    
+    static void prettyPrint(int a[][]) {
+        int n = a.length;
+        int m = a[0].length;
+        int temp[][] = new int[n + 1][m + 1];
+        temp[0][0] = -1;
+        for(int i = 1; i <= n; i++) {
+            temp[i][0] = i - 1;
+            System.arraycopy(a[i - 1], 0, temp[i], 1, m);
+        }
+        for(int j = 1; j <= m; j++)
+            temp[0][j] = j - 1;
+        
+        for(int t[] : temp) {
+            for(int tt : t)
+                print(String.format("%3d ", tt));
+            print('\n');
+        }
+        print('\n');
+    }
+    private static void solve2() {
+        
+        char str[] = nextLine().toCharArray();
+//         long st = System.nanoTime();
+        int n = str.length;
+        
+        boolean isPalin[][] = new boolean[n][n];
+        
+        for(int i = 0; i < n; i++)
+            isPalin[i][i] = true;
+        for(int i = 0; i < n - 1; i++)
+            isPalin[i][i + 1] = str[i] == str[i + 1];
+        for(int len = 3; len <= n; len++)
+            for(int i = 0; i + len - 1 < n; i++)
+                isPalin[i][i + len - 1] = isPalin[i + 1][i + len -2] && str[i] == str[i + len - 1];
+        
+        hash = new long[n + 1];
+        hash[1] = str[0];
+        for(int i = 2; i <= n; i++) 
+            hash[i] = hash[i - 1] * p + str[i - 1];
+        
+        int DP[][] = new int[n][n];
+        int cnt[] = new int[n];
+        for(int len = 1; len <= n; len++)
+            for(int i = 0; i + len - 1 < n; i++) {
+                int L = i;
+                int R = i + len - 1;
+                cnt[0] += isPalin[L][R] ? 1 : 0;
+            }
+        for(int i = 0; i < n; i++)
+            DP[i][i] = 1;
+        for(int len = 2; len <= n; len++)
+            for(int i = 0; i + len - 1 < n; i++) {
+                int L = i;
+                int R = i + len - 1;
+                long lH = subHash(L, L + (len / 2) - 1 );
+                long rH = subHash(R - (len / 2) + 1, R );
+                if(lH == rH && isPalin[L][L + (len / 2) - 1]) { 
+                    DP[L][R] = DP[L][L + (len / 2) - 1] + 1;
+                    cnt[DP[L][R] - 1]++;
+                }
+            }
+        
+        prettyPrint(DP);
+        
+        println(Arrays.toString(cnt));
+        
+        for(int i = n - 2; i >= 0; i--)
+            cnt[i] += cnt[i + 1];
+        
+        for(int a : cnt)
+            print(a + " ");
+    }
     
     
     /************************ SOLUTION ENDS HERE ************************/
@@ -94,7 +165,7 @@ public class Palindromiccharacteristics  {
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
         
-        solve();
+        solve2();
         reader.close();
         writer.close();
     }
