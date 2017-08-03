@@ -5,6 +5,7 @@
  * */
 
 import java.util.*;
+import java.util.stream.IntStream;
 import java.io.*;
 
 class helper {
@@ -2541,4 +2542,15 @@ class helper {
                 hash[i] = hash[i - 1] * p + str[i - 1];
         }
     }
+    
+    /*
+     // Debug Array
+    static void pa(int a[]) {
+        Arrays.stream(a).forEach(i -> print(String.format("%3d ", i)));
+        print('\n');
+        IntStream.range(0, a.length).forEach(i -> print(String.format("%3d ", i)));
+        print('\n');
+    }
+    */
+    
 }
