@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.stream.IntStream;
 import java.io.*;
 public class LongestRegularBracketSequence {
     
@@ -10,9 +11,40 @@ public class LongestRegularBracketSequence {
     private static void solve() {
         
         char str[] = nextLine().toCharArray();
-        int n = 
+        new String(str).chars().forEach(ch -> print(String.format("%3s ", (char) ch)));
+        int n = str.length;
+        print('\n');
+        IntStream.range(0, n).forEach(i -> print(String.format("%3d ", i)));
+        print('\n');
+        ArrayDeque<Integer> opening = new ArrayDeque<>();
+        int DP[] = new int[n];
         
+        for(int i = 0; i < n; i++) {
+            if(str[i] == '(')
+                opening.push(i);
+            else if(!opening.isEmpty()) {
+                int pos = opening.pop();
+                DP[i] = (i - pos + 1) + (i > 0 ? DP[i - 1] : 0);
+            }
+            println(i + " " + opening);
+        }
+        new String(str).chars().forEach(ch -> print(String.format("%3s ", (char) ch)));
+        print('\n');
+        IntStream.range(0, n).forEach(i -> print(String.format("%3d ", i)));
+        print('\n');
         
+        println(Arrays.toString(DP));
+        int max = 0 , cnt = 1;
+        for(int dp : DP) {
+            if(dp == max)
+                cnt++;
+            else if(dp > max) {
+                max = dp;
+                cnt = 1;
+            }
+        }
+        
+        println(max + " " + cnt);    
     }
     
     
