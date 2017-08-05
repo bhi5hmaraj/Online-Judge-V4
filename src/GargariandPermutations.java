@@ -6,7 +6,6 @@ public class GargariandPermutations {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static ArrayList<Integer>[] adj;
     
     @SuppressWarnings("unchecked")
     private static void solve() {
@@ -23,7 +22,7 @@ public class GargariandPermutations {
             for(int j = 0; j < n; j++)
                 inv[i][arr[i][j]] = j;
         
-        adj = new ArrayList[n];
+        ArrayList<Integer>[] adj = new ArrayList[n];
         for(int i = 0; i < n; i++)
             adj[i] = new ArrayList<>();
         
@@ -31,12 +30,11 @@ public class GargariandPermutations {
             for(int j = i + 1; j < n; j++) {
                 boolean flag = true;
                 for(int x = 1; x < k; x++)
-                    flag &= inv[x][arr[x][j]] > inv[x][arr[x][i]];
+                    flag &= inv[x][arr[0][j]] > inv[x][arr[0][i]];
                 if(flag)
                     adj[j].add(i);
             }
         }
-        
         int DP[] = new int[n];
         DP[0] = 1;
         for(int i = 1; i < n; i++) {
@@ -44,7 +42,7 @@ public class GargariandPermutations {
                 DP[i] = Math.max(DP[i] , DP[v]);
             DP[i]++;
         }
-        
+
         println(Arrays.stream(DP).max().getAsInt());
             
     }
