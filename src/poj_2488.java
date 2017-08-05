@@ -64,7 +64,6 @@ public class poj_2488 {
         }
         
         
-        
     }
     
     
