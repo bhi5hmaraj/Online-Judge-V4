@@ -9,3 +9,4 @@
 9. In Uva judge if the number of lines of input is not specified then use scanner and check hasNext in while loop and then parse the input.
 10. There are no easy and hard problems , there are only problems which I can do and I can't 
 11. Always be skeptical about greedy , if you can't prove it's optimality . 
+12. When you encounter a DP state where the number of parameters is high , try to make one of the parameters into the returned value of the DP state , for more details look at http://codeforces.com/contest/837/problem/D
