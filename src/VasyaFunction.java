@@ -1,0 +1,100 @@
+import java.util.*;
+import java.io.*;
+public class VasyaFunction {
+    
+    
+    
+    /************************ SOLUTION STARTS HERE ************************/
+    
+    
+    private static void solve() {
+        
+        
+        long x = nextLong();
+        long y = nextLong();
+        
+        ArrayList<Long> div = new ArrayList<>();
+        for(long i = 1; i * i <= x; i++) {
+            if(x % i == 0) {
+                div.add(i);
+                if(x / i != i)
+                    div.add(x / i);
+            }
+        }
+        
+        int sz = div.size();
+        Collections.sort(div);
+        int ptr = -1;
+        long gcd = 0, ans = 0;
+        for(ptr = sz - 1; ptr >= 0 ; ptr--)
+            if(y % div.get(ptr) == 0) {
+                gcd = div.get(ptr);
+                break;
+            }
+        // println(div);
+        while(y > 0) {
+            if(gcd == x) {
+                ans += y / x;
+                break;
+            }
+            // println("y " + y + " gcd " + gcd + " ptr " + ptr);
+            long min = Long.MAX_VALUE;
+            int pos = ptr;
+            for(int i = ptr + 1; i < sz; i++) {
+                long rem = y % div.get(i);
+                if(rem <= min && rem % gcd == 0) {
+                    min = rem;
+                    pos = i;
+                }
+            }
+            // println("min " + min + " new gcd " + gcd);
+            ans += min/gcd;
+            gcd = div.get(pos);
+            y -= min;    
+            ptr = pos;
+        }
+        
+        println(ans);
+    }
+    
+    
+    
+    /************************ SOLUTION ENDS HERE ************************/
+    
+    
+    
+    
+    
+    /************************ TEMPLATE STARTS HERE **********************/
+    
+    public static void main(String[] args) throws IOException {
+        reader = new BufferedReader(new InputStreamReader(System.in));
+        writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
+        st     = null;
+        solve();
+        reader.close();
+        writer.close();
+    }
+    
+    static BufferedReader reader;
+    static PrintWriter    writer;
+    static StringTokenizer st;
+    
+    static String next()
+    {while(st == null || !st.hasMoreTokens()){try{String line = reader.readLine();if(line == null){return null;}            
+    st = new StringTokenizer(line);}catch (Exception e){throw new RuntimeException();}}return st.nextToken();}
+    static String nextLine()  {String s=null;try{s=reader.readLine();}catch(IOException e){e.printStackTrace();}return s;}             
+    static int    nextInt()   {return Integer.parseInt(next());}
+    static long   nextLong()  {return Long.parseLong(next());}     
+    static double nextDouble(){return Double.parseDouble(next());}
+    static char   nextChar()  {return next().charAt(0);}
+    static int[]  nextIntArray(int n)         {int[] a= new int[n];   int i=0;while(i<n){a[i++]=nextInt();}  return a;}
+    static long[] nextLongArray(int n)        {long[]a= new long[n];  int i=0;while(i<n){a[i++]=nextLong();} return a;}    
+    static int[]  nextIntArrayOneBased(int n) {int[] a= new int[n+1]; int i=1;while(i<=n){a[i++]=nextInt();} return a;}            
+    static long[] nextLongArrayOneBased(int n){long[]a= new long[n+1];int i=1;while(i<=n){a[i++]=nextLong();}return a;}            
+    static void   print(Object o)  { writer.print(o);  }
+    static void   println(Object o){ writer.println(o);}
+    
+    /************************ TEMPLATE ENDS HERE ************************/
+    
+}
