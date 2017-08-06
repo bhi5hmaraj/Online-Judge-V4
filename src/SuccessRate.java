@@ -6,65 +6,20 @@ public class SuccessRate {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static long gcd(long a , long b) { return (b == 0) ? a : gcd(b, a % b); }
-    
-    /*
-     * Solving Diophantine Equations
-     * source : http://new.math.uiuc.edu/public348/python/diophantus.html
-     * 
-     */
-    
-    static long[] solveDiophantineEquation(long A, long B , long C) {
-        long q = A / B;
-        long r = A % B;
-        if(r == 0)
-            return new long[]{0 , C / B};
-        else {
-            long sol[] = solveDiophantineEquation(B, r, C);
-            return new long[]{sol[1] , sol[0] - q*sol[1]};
-        }
+    static long[] extendedEuclid(long c , long d) {
+        long a = Math.max(c , d);
+        long b = Math.min(c , d);
     }
     
     private static void solve() {
         
-        int T = nextInt();
-        while(T-->0) {
-            long f1 = nextLong();
-            long f2 = nextLong();
-//            long g1 = gcd(f1, f2);
-//            f1 /= g1;
-//            f2 /= g1;
-            long t1 = nextLong();
-            long t2 = nextLong();
-//            long g2 = gcd(t1, t2);
-//            t1 /= g2;
-//            t2 /= g2;
-
-//            if(C % gcd == 0) {
-//                if(B == 0)
-//                    println(-1);
-//                else {
-                    long min = Integer.MAX_VALUE;
-                    for(int k = 1;k <= 100000;k++) {
-                        long A = k * (t2 - t1);
-                        long B = k * t1;
-                        long C = k * (t1*f2 - t2*f1);
-                        long gcd = gcd(A, B);
-//                        println("A = " + A + " B = " + B + " C = " + C);
-                        long sol[] = solveDiophantineEquation(A , -B , gcd);
-                        long ans = (sol[0] + sol[1]) * (C / gcd);
-//                        println(Arrays.toString(sol));
-                        min = Math.min(min,ans);
-                    }
-                    println(min);
-                }
-//            }
-//            else {
-//                println(-1);
-//            }
-//        }
+        
+        
+        
+        
         
     }
+    
     
     
     /************************ SOLUTION ENDS HERE ************************/
