@@ -22,8 +22,34 @@ public class VasyaFunction {
             }
         }
         
+        Collections.sort(div);
+        long gcd = 0;
+        long ans = 0;
+        int ptr;
+        for(ptr = div.size() - 1; ptr >= 0; ptr--)
+            if(y % div.get(ptr) == 0) {
+                gcd = div.get(ptr);
+                break;
+            }
         
+        while(y > 0) {
+            long minRemainder = y;
+            int pos = div.size() - 1;
+            for(int i = ptr + 1; i < div.size(); i++) {
+                long rem = y % div.get(i);
+                if(rem % gcd == 0 && rem <= minRemainder) {
+                    minRemainder = rem;
+                    pos = i;
+                }
+            }
+            
+            y -= minRemainder;
+            ptr = pos;
+            ans += minRemainder / gcd;
+            gcd = div.get(ptr);
+        }
         
+        println(ans);
     }
     
     
