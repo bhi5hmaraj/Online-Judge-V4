@@ -17,44 +17,13 @@ public class VasyaFunction {
         for(long i = 1; i * i <= x; i++) {
             if(x % i == 0) {
                 div.add(i);
-                if(x / i != i)
+                if(i * i != x)
                     div.add(x / i);
             }
         }
         
-        int sz = div.size();
-        Collections.sort(div);
-        int ptr = -1;
-        long gcd = 0, ans = 0;
-        for(ptr = sz - 1; ptr >= 0 ; ptr--)
-            if(y % div.get(ptr) == 0) {
-                gcd = div.get(ptr);
-                break;
-            }
-        // println(div);
-        while(y > 0) {
-            if(gcd == x) {
-                ans += y / x;
-                break;
-            }
-            // println("y " + y + " gcd " + gcd + " ptr " + ptr);
-            long min = Long.MAX_VALUE;
-            int pos = ptr;
-            for(int i = ptr + 1; i < sz; i++) {
-                long rem = y % div.get(i);
-                if(rem <= min && rem % gcd == 0) {
-                    min = rem;
-                    pos = i;
-                }
-            }
-            // println("min " + min + " new gcd " + gcd);
-            ans += min/gcd;
-            gcd = div.get(pos);
-            y -= min;    
-            ptr = pos;
-        }
         
-        println(ans);
+        
     }
     
     
