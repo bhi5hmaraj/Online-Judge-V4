@@ -9,13 +9,44 @@ public class SuccessRate {
     static long[] extendedEuclid(long c , long d) {
         long a = Math.max(c , d);
         long b = Math.min(c , d);
+        long rnm2[] = new long[]{0 , 1};    // r_n-2
+        long rnm1[] = new long[]{1 , 0};    // r_n-1
+        long r = a % b;
+        while(a % b > 0) {
+            /*
+            println(String.format("a %d b %d r %d", a , b , r));
+            println("before");
+            println("rnm2 " + Arrays.toString(rnm2));
+            println("rnm1 " + Arrays.toString(rnm1));
+            */
+            long coeffA = rnm2[0] - (a / b) * rnm1[0];
+            long coeffB = rnm2[1] - (a / b) * rnm1[1];
+            a = b;
+            b = r;
+            r = a % b;
+            rnm2[0] = rnm1[0];
+            rnm2[1] = rnm1[1];
+            rnm1[0] = coeffA;
+            rnm1[1] = coeffB;
+            /*
+            println("after");
+            println("rnm2 " + Arrays.toString(rnm2));
+            println("rnm1 " + Arrays.toString(rnm1));   
+            */
+        }
+        return rnm1;
     }
     
     private static void solve() {
         
-        
-        
-        
+        int T = nextInt();
+        while(T-->0) {
+            long x = nextLong();
+            long y = nextLong();
+            long p = nextLong();
+            long q = nextLong();
+            
+        }
         
         
     }
