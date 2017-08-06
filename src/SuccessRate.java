@@ -37,6 +37,14 @@ public class SuccessRate {
         return rnm1;
     }
     
+    static long gcd(long a , long b) { return (b == 0) ? a : gcd(b, a % b); }
+    
+    static long grt(long a , long b) {
+        return (a / b) + (a < 0 && -a % b != 0 ? 0 : 1);
+    }
+    static long less(long a , long b) {
+        return (a / b) + (a > 0 && a % b != 0 ? 0 : -1);
+    }
     private static void solve() {
         
         int T = nextInt();
@@ -45,7 +53,23 @@ public class SuccessRate {
             long y = nextLong();
             long p = nextLong();
             long q = nextLong();
-            
+            long a = q;
+            long b = -p;
+            long c = p * y - q * x;
+            long gcd = gcd(a, b);
+            if(c % gcd != 0)
+                println(-1);
+            else {
+                long soln[] = extendedEuclid(a, b);
+                println("a " + a + " b " + b +  " c " + c);
+                println("soln " + Arrays.toString(soln));
+                soln[0] *= c / gcd;
+                soln[1] *= c / gcd;
+                long lo = Math.max(grt(-gcd * soln[1], b) , grt(soln[0] - soln[1] - ((a + b) / gcd), (a + b) / gcd));
+                long hi = less(soln[0] * gcd + a , a);
+                println("lo " + lo + " hi " + hi);
+                println("ans " + soln[0] + lo * b / gcd);
+            }
         }
         
         
