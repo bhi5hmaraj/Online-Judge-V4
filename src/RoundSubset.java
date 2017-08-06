@@ -1,67 +1,34 @@
 import java.util.*;
 import java.io.*;
-public class FlagofBerland {
+public class RoundSubset {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
-    static int n , m ;
-    static char grid[][];
-    static int[] find(char ch) {
-        int sx = -1, sy = -1 , ex = -1 , ey = -1;
-        o1:
-        for(int i = 0; i < n; i++)
-            for(int j = 0; j < m; j++) {
-                if(grid[i][j] == ch) {
-                    sx = i;
-                    sy = j;
-                    break o1;
-                }
-            }
-        o2:
-        for(int i = n - 1; i >= 0; i--)
-            for(int j = m - 1; j >= 0; j--) {
-                if(grid[i][j] == ch) {
-                    ex = i;
-                    ey = j;
-                    break o2;
-                }
-            }
-            
-            if(sx >= 0 && sy >= 0 && ex >= 0 && ey >= 0) {
-                // println((char)ch + String.format("start (%d , %d) end (%d , %d)", sx , sy , ex , ey)); 
-                boolean flag = true;
-                for(int i = sx; i <= ex; i++)
-                    for(int j = sy; j <= ey; j++)
-                        flag &= grid[i][j] == ch;
-                for(int i = 0; i < n; i++)
-                    for(int j = 0; j < m; j++)
-                        if(!(i >= sx && i <= ex && j >= sy && j <= ey))
-                            flag &= grid[i][j] != ch;
-                if(flag) 
-                    return new int[]{ex - sx , ey - sy};
-            }
-            
-            return null;
+    
+    static int pair[][];    // 0 - 2^ , 1 - 5^
+    static int INF = (int) 1e6;
+    static int rec(int idx , int remain) {
+        
     }
     
     private static void solve() {
         
         
-        n = nextInt();
-        m = nextInt();
-        grid = new char[n][];
-        for(int i = 0; i < n; i++)
-            grid[i] = nextLine().toCharArray();
+        int n = nextInt();
+        int k = nextInt();
+        long arr[] = nextLongArray(n);
+        for(int i = 0; i < n; i++) {
+            while(arr[i] % 2 == 0) {
+                pair[i][0]++;
+                arr[i] /= 2;
+            }
+            while(arr[i] % 5 == 0) {
+                pair[i][1]++;
+                arr[i] /= 5;
+            }
+        }
         
-        int R[] = find('R');
-        int G[] = find('G');
-        int B[] = find('B');
-        
-        if(R != null && G != null && B != null)
-            println(R[0] == G[0] && G[0] == B[0] && R[1] == G[1] && G[1] == B[1] ? "YES" : "NO");
-        else
-            println("NO");
         
     }
     
