@@ -6,57 +6,52 @@ public class RoundSubset {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    
-    /*
-     3 2
-     200 6250 16
-     */
-    
-    static int pair[][];    // 0 - 2^ , 1 - 5^
-    static final int INF = (int) 1e7;
-    static int memo[][][];
-    static int[] rec(int idx , int remain) {
-        if(remain == 0)
-            return new int[]{0 , 0};
-        else if(idx < 0)
-            return new int[]{-INF , -INF};
-        else if(memo[idx][remain] != null)
-            return memo[idx][remain];
-        else {
-            int op1[] = Arrays.copyOf(rec(idx - 1, remain) , 2);
-            int op2[] = Arrays.copyOf(rec(idx - 1, remain - 1), 2);
-            op2[0] += pair[idx][0];
-            op2[1] += pair[idx][1];
-            int m1 = Math.min(op1[0] , op1[1]);
-            int m2 = Math.min(op2[0] , op2[1]);
-            m1 = m1 < 0 ? -INF : m1;
-            m2 = m2 < 0 ? -INF : m2;
-            return memo[idx][remain] = m1 > m2 ? op1 : op2;
-        }
-    }
-    
+    static final int INF = (int) 1e6;
     private static void solve() {
-        
         
         int n = nextInt();
         int k = nextInt();
         long arr[] = nextLongArray(n);
-        pair = new int[n][2];
+        int[][] pow = new int[n][2];
+        int sum = 0;
         for(int i = 0; i < n; i++) {
             while(arr[i] % 2 == 0) {
-                pair[i][0]++;
+                pow[i][0]++;
                 arr[i] /= 2;
             }
             while(arr[i] % 5 == 0) {
-                pair[i][1]++;
+                pow[i][1]++;
+                sum++;
                 arr[i] /= 5;
             }
         }
         
-        memo = new int[n][k + 1][];
-        int ans[] = rec(n - 1, k);
-        println(Math.min(ans[0] , ans[1]));
+        int DP[][] = new int[k + 1][sum + 1];
+        for(int a[] : DP)
+            Arrays.fill(a, -INF);
+        DP[0][0] = 0;
         
+        for(int i = 0; i < n; i++) {    // index
+            int t[][] = new int[k + 1][sum + 1];
+            for(int a[] : t)
+                Arrays.fill(a, -INF);
+            t[0][0] = 0;
+            
+            for(int j = 1; j <= Math.min(k , i + 1); j++) { // remain
+                for(int pow5 = 0; pow5 <= sum; pow5++) {   // sum of power of 5
+                    t[j][pow5] = DP[j][pow5];
+                    if(pow5 - pow[i][1] >= 0)
+                        t[j][pow5] = Math.max(t[j][pow5] , pow[i][0] + DP[j - 1][pow5 - pow[i][1]]);
+                    t[j][pow5] = t[j][pow5] < 0 ? -INF : t[j][pow5];
+                }
+            }
+            DP = t;
+        }
+        
+        int max = 0;
+        for(int i = 0; i <= sum; i++)
+            max = Math.max(max , Math.min(i , DP[k][i]));
+        println(max);
     }
     
     
