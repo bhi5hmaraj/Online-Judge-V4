@@ -9,10 +9,10 @@ public class SuccessRate {
     static long[] extendedEuclid(long c , long d) {
         long a = Math.max(c , d);
         long b = Math.min(c , d);
-        long rnm2[] = new long[]{0 , 1};    // r_n-2
-        long rnm1[] = new long[]{1 , 0};    // r_n-1
+        long rnm2[] = new long[]{Long.signum(a) , 0};    // r_n-2
+        long rnm1[] = new long[]{0 , Long.signum(b)};    // r_n-1
         long r = a % b;
-        while(a % b > 0) {
+        while(a % b != 0) {
             /*
             println(String.format("a %d b %d r %d", a , b , r));
             println("before");
@@ -34,16 +34,19 @@ public class SuccessRate {
             println("rnm1 " + Arrays.toString(rnm1));   
             */
         }
-        return rnm1;
+        return c >= d ? rnm1 : new long[]{rnm1[1] , rnm1[0]};
     }
     
     static long gcd(long a , long b) { return (b == 0) ? a : gcd(b, a % b); }
     
     static long grt(long a , long b) {
-        return (a / b) + (a < 0 && -a % b != 0 ? 0 : 1);
+        
+        long ans = (a / b) + (a * b < 0 && Math.abs(a) % Math.abs(b) != 0 ? 0 : 1);
+        println("grt a  " + a + " b " + b + " ans " + ans);
+        return ans;
     }
     static long less(long a , long b) {
-        return (a / b) + (a > 0 && a % b != 0 ? 0 : -1);
+        return (a / b) + (a * b > 0 && a % b != 0 ? 0 : -1);
     }
     private static void solve() {
         
@@ -53,26 +56,24 @@ public class SuccessRate {
             long y = nextLong();
             long p = nextLong();
             long q = nextLong();
-            long a = q;
-            long b = -p;
             long c = p * y - q * x;
-            long gcd = gcd(a, b);
+            long a = q * Long.signum(c);
+            long b = -p * Long.signum(c);
+            long gcd = gcd(Math.abs(a), Math.abs(b));
             if(c % gcd != 0)
                 println(-1);
             else {
                 long soln[] = extendedEuclid(a, b);
                 println("a " + a + " b " + b +  " c " + c);
                 println("soln " + Arrays.toString(soln));
-                soln[0] *= c / gcd;
-                soln[1] *= c / gcd;
-                long lo = Math.max(grt(-gcd * soln[1], b) , grt(soln[0] - soln[1] - ((a + b) / gcd), (a + b) / gcd));
+                long lo = Math.max(grt(-gcd * soln[1] - b, b) , grt(soln[0] - soln[1] - ((a + b) / gcd), (a + b) / gcd));
                 long hi = less(soln[0] * gcd + a , a);
                 println("lo " + lo + " hi " + hi);
-                println("ans " + soln[0] + lo * b / gcd);
+                println("ans " + (c / gcd) * (soln[0] + lo * b / gcd));
             }
         }
         
-        
+//        println(Arrays.toString(extendedEuclid(20 , 40)));
     }
     
     
