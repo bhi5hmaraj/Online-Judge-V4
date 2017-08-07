@@ -9,11 +9,11 @@ public class SuccessRate {
     static long[] extendedEuclid(long c , long d) {
         long a = Math.max(c , d);
         long b = Math.min(c , d);
-        long rnm2[] = new long[]{Long.signum(a) , 0};    // r_n-2
-        long rnm1[] = new long[]{0 , Long.signum(b)};    // r_n-1
-        long r = a % b;
-        while(a % b != 0) {
+        long rnm2[] = new long[]{0 , 1};    // r_n-2
+        long rnm1[] = new long[]{1 , 0};    // r_n-1
+        while(b != 0) {
             
+            long r = a % b;
             println(String.format("a %d b %d r %d", a , b , r));
             println("before");
             println("rnm2 " + Arrays.toString(rnm2));
@@ -23,7 +23,6 @@ public class SuccessRate {
             long coeffB = rnm2[1] - (a / b) * rnm1[1];
             a = b;
             b = r;
-            r = a % b;
             rnm2[0] = rnm1[0];
             rnm2[1] = rnm1[1];
             rnm1[0] = coeffA;
@@ -34,7 +33,7 @@ public class SuccessRate {
             println("rnm1 " + Arrays.toString(rnm1));   
             
         }
-        return c >= d ? rnm1 : new long[]{rnm1[1] , rnm1[0]};
+        return rnm2;
     }
     
     static long gcd(long a , long b) { return (b == 0) ? a : gcd(b, a % b); }
@@ -73,7 +72,7 @@ public class SuccessRate {
             }
         }
         */
-        println(Arrays.toString(extendedEuclid(258 , 147)));
+        println(Arrays.toString(extendedEuclid(2 , -1)));
     }
     
     
