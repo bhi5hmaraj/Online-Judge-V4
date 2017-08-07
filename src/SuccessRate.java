@@ -41,12 +41,12 @@ public class SuccessRate {
     static long gcd(long a , long b) { return (b == 0) ? a : gcd(b, a % b); }
     
     static long grt(long a , long b) {
-        long ans = (a / b) + (a * b < 0 && Math.abs(a) % Math.abs(b) != 0 ? 0 : 1);
+        long ans = (a / b) + (a * b > 0 && Math.abs(a) % Math.abs(b) != 0 ? 1 : 0);
         println("grt a  " + a + " b " + b + " ans " + ans);
         return ans;
     }
     static long less(long a , long b) {
-        long ans = (a / b) + (a * b > 0 && a % b != 0 ? 0 : -1);
+        long ans = (a / b) + (a * b < 0 && a % b != 0 ? -1 : 0);
         println("less a  " + a + " b " + b + " ans " + ans);
         return ans;
     }
@@ -74,21 +74,21 @@ public class SuccessRate {
                 long lo = -(long) 1e9;
                 long hi =  (long) 1e9;
                 if(Long.signum(floorDiv(a, gcd)) < 0)
-                    lo = Math.max(lo , grt(soln[0] * gcd - a , a));
+                    lo = Math.max(lo , grt(soln[0] * gcd , a));
                 else
-                    hi = Math.min(hi , less(soln[0] * gcd + a , a));
+                    hi = Math.min(hi , less(soln[0] * gcd , a));
                 if(Long.signum(floorDiv(b, gcd)) < 0)
-                    hi = Math.min(hi , less(-gcd * soln[1] + b, b));
+                    hi = Math.min(hi , less(-gcd * soln[1], b));
                 else
-                    lo = Math.max(lo , grt(-gcd * soln[1] - b, b));
+                    lo = Math.max(lo , grt(-gcd * soln[1], b));
                 if(Long.signum(floorDiv(a + b , gcd)) < 0)
-                    hi = Math.min(hi , less(soln[0] - soln[1] + ((a + b) / gcd), (a + b) / gcd));
+                    hi = Math.min(hi , less(soln[0] - soln[1], (a + b) / gcd));
                 else
-                    lo = Math.max(lo , grt(soln[0] - soln[1] - ((a + b) / gcd), (a + b) / gcd));
+                    lo = Math.max(lo , grt(soln[0] - soln[1], (a + b) / gcd));
                 
                 println("lo " + lo + " hi " + hi);
                 long ans = Math.min((soln[1] + lo * b / gcd) , (soln[1] + hi * b / gcd));
-                println("ans " + ans);
+                println("ans " + ans * (c / soln[2]));
             }
         }
         
