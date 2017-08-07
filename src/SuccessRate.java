@@ -6,15 +6,12 @@ public class SuccessRate {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static long floorDiv(long a , long b) { // computes b/a
-        return Long.signum(a) * Long.signum(b) < 0 && b % a != 0 ? b / a - 1 : b / a;
-    }
     static long[] extendedEuclid(long a , long b) {
         long rnm2[] = new long[]{0 , 1};    // r_n-2 , x , y
         long rnm1[] = new long[]{1 , 0};    // r_n-1 , u , v
         while(a != 0) {
             long r = ((b % a) + a) % a;
-            long q = floorDiv(a, b);
+            long q = Long.signum(a) * Long.signum(b) < 0 && b % a != 0 ? b / a - 1 : b / a;
             /*
             println(String.format("a %d b %d r %d", a , b , r));
             println("before");
@@ -63,12 +60,8 @@ public class SuccessRate {
             if(p == q)
                 println(x >= y ? x - y : -1);
             else {
-                long lo = Math.max(grtEq(x, p) , grtEq(y, q));
-                long hi = (long) 1e9;
-                if(p > q)
-                    hi = Math.min(hi , lessEq(x - y, p - q));
-                else
-                    lo = Math.max(lo , grtEq(x - y, p - q));
+                long opti = Math.max(grtEq(x - y, p - q) , Math.max(grtEq(x, p) , grtEq(y, q)));
+                println(opti * q - y);
             }
         }
         

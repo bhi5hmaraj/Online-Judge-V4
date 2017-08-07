@@ -2553,5 +2553,34 @@ class helper {
         print('\n');
     }
     */
+
+    static long[] extendedEuclid(long a , long b) {
+        long rnm2[] = new long[]{0 , 1};    // r_n-2 , x , y
+        long rnm1[] = new long[]{1 , 0};    // r_n-1 , u , v
+        while(a != 0) {
+            long r = ((b % a) + a) % a;
+            long q = Long.signum(a) * Long.signum(b) < 0 && b % a != 0 ? b / a - 1 : b / a;
+            /*
+            println(String.format("a %d b %d r %d", a , b , r));
+            println("before");
+            println("rnm2 " + Arrays.toString(rnm2));
+            println("rnm1 " + Arrays.toString(rnm1));
+            */
+            long coeffA = rnm2[0] - q * rnm1[0];
+            long coeffB = rnm2[1] - q * rnm1[1];
+            b = a;
+            a = r;
+            rnm2[0] = rnm1[0];
+            rnm2[1] = rnm1[1];
+            rnm1[0] = coeffA;
+            rnm1[1] = coeffB;
+            /*
+            println("after");
+            println("rnm2 " + Arrays.toString(rnm2));
+            println("rnm1 " + Arrays.toString(rnm1));   
+            */
+        }
+        return new long[]{rnm2[0], rnm2[1] , b};
+    }
     
 }
