@@ -17,7 +17,7 @@ public class testing {
         System.out.println("Time : " + ((System.nanoTime() - s) / 1e9));
         Long.bitCount(2141231232L);
         */
-        HashMap<Integer , ArrayList<String>> map = new HashMap<>();
+        println(5/-7);
         
     }
     
