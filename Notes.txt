@@ -10,3 +10,6 @@
 10. There are no easy and hard problems , there are only problems which I can do and I can't 
 11. Always be skeptical about greedy , if you can't prove it's optimality . 
 12. When you encounter a DP state where the number of parameters is high , try to make one of the parameters into the returned value of the DP state , for more details look at http://codeforces.com/contest/837/problem/D
+13. Be careful with linear inequalities , when you have a inequality like ax + b > c , then the inequality x > (c - b) / a need not be true
+    for example when a = -1 , b = 3 , c = 5 the correct inequality is x < 2 but x > (5 - 3) / -1 is wrong.
+14. Java divison for negative numbers act weird , -5/2 yields -2 but if the convention of rounding down is followed it should have been -3 

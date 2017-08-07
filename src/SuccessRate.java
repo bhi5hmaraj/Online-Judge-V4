@@ -6,47 +6,17 @@ public class SuccessRate {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static long[] extendedEuclid(long a , long b) {
-        long rnm2[] = new long[]{0 , 1};    // r_n-2 , x , y
-        long rnm1[] = new long[]{1 , 0};    // r_n-1 , u , v
-        while(a != 0) {
-            long r = ((b % a) + a) % a;
-            long q = Long.signum(a) * Long.signum(b) < 0 && b % a != 0 ? b / a - 1 : b / a;
-            /*
-            println(String.format("a %d b %d r %d", a , b , r));
-            println("before");
-            println("rnm2 " + Arrays.toString(rnm2));
-            println("rnm1 " + Arrays.toString(rnm1));
-            */
-            long coeffA = rnm2[0] - q * rnm1[0];
-            long coeffB = rnm2[1] - q * rnm1[1];
-            b = a;
-            a = r;
-            rnm2[0] = rnm1[0];
-            rnm2[1] = rnm1[1];
-            rnm1[0] = coeffA;
-            rnm1[1] = coeffB;
-            /*
-            println("after");
-            println("rnm2 " + Arrays.toString(rnm2));
-            println("rnm1 " + Arrays.toString(rnm1));   
-            */
-        }
-        return new long[]{rnm2[0], rnm2[1] , b};
-    }
-    
-    static long gcd(long a , long b) { return (b == 0) ? a : gcd(b, a % b); }
     
     // greater than equal to a / b
     static long grtEq(long a , long b) {
         long ans = (a / b) + (Long.signum(a) * Long.signum(b) > 0 && Math.abs(a) % Math.abs(b) != 0 ? 1 : 0);
-        println("grt a  " + a + " b " + b + " ans " + ans);
+        // println("grt a  " + a + " b " + b + " ans " + ans);
         return ans;
     }
     // less than or equal to a / b
     static long lessEq(long a , long b) {
         long ans = (a / b) + (Long.signum(a) * Long.signum(b) < 0 && a % b != 0 ? -1 : 0);
-        println("less a  " + a + " b " + b + " ans " + ans);
+        // println("less a  " + a + " b " + b + " ans " + ans);
         return ans;
     }
     private static void solve() {
@@ -57,7 +27,9 @@ public class SuccessRate {
             long y = nextLong();
             long p = nextLong();
             long q = nextLong();
-            if(p == q)
+            if(p == 0)
+                println(x == 0 ? 0 : -1);
+            else if(p == q)
                 println(x >= y ? x - y : -1);
             else {
                 long opti = Math.max(grtEq(x - y, p - q) , Math.max(grtEq(x, p) , grtEq(y, q)));
@@ -65,7 +37,6 @@ public class SuccessRate {
             }
         }
         
-//        println(Arrays.toString(extendedEuclid(2 , -1 , -1)));
     }
     
     
