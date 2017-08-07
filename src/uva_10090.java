@@ -35,15 +35,15 @@ public class uva_10090 {
         }
         return new long[]{rnm2[0], rnm2[1] , b};
     }
-    // greater than equal to a / b
-    static long grtEq(long a , long b) {
-        long ans = (a / b) + (Long.signum(a) * Long.signum(b) > 0 && Math.abs(a) % Math.abs(b) != 0 ? 1 : 0);
+    // greater than a / b
+    static long grt(long a , long b) {
+        long ans = (a / b) + (Long.signum(a) * Long.signum(b) < 0 && Math.abs(a) % Math.abs(b) != 0 ? 0 : 1);
         // println("grt a  " + a + " b " + b + " ans " + ans);
         return ans;
     }
-    // less than or equal to a / b
-    static long lessEq(long a , long b) {
-        long ans = (a / b) + (Long.signum(a) * Long.signum(b) < 0 && a % b != 0 ? -1 : 0);
+    // less than a / b
+    static long less(long a , long b) {
+        long ans = (a / b) + (Long.signum(a) * Long.signum(b) > 0 && a % b != 0 ? 0 : -1);
         // println("less a  " + a + " b " + b + " ans " + ans);
         return ans;
     }
@@ -63,20 +63,25 @@ public class uva_10090 {
                 println("failed");
             else {
                 long soln[] = extendedEuclid(n1, n2);
-                println(Arrays.toString(soln));
-                long lo = grtEq(-soln[1] * d, n2) + 1;
-                long hi = lessEq(soln[0] * d, n1) - 1;
-                println("lo " + lo + " hi " + hi);
+                // println(Arrays.toString(soln));
+                long lo = grt(-soln[0] * n, n2);
+                long hi = less(soln[1] * n, n1);
+                // println("lo " + lo + " hi " + hi);
                 if(lo > hi)
                     println("failed");
                 else {
-                    long opt1 = c1 * soln[0] + c2 * soln[1] + (lo * ((c2 * n2 - c1 * n1) / d));
-                    long opt2 = c1 * soln[0] + c2 * soln[1] + (hi * ((c2 * n2 - c1 * n1) / d));
-                    println(Math.min(opt1 , opt2) * (n / d));
+                    long opt1 = (c1 * (soln[0] * n + lo * n2) + c2 * (soln[1] * n - lo * n1)) / d;
+                    long opt2 = (c1 * (soln[0] * n + hi * n2) + c2 * (soln[1] * n - hi * n1)) / d;
+                    if(opt1 < opt2)
+                        println((soln[0] * n + lo * n2) / d + " " + (soln[1] * n - lo * n1) / d);
+                    else
+                        println((soln[0] * n + hi * n2) / d + " " + (soln[1] * n - hi * n1) / d);
                 }
             }
         }
-        
+        /*long soln[] = extendedEuclid(141, 34);
+        println(Arrays.toString(soln));
+        */
     }
     
     
