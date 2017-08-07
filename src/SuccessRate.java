@@ -40,13 +40,15 @@ public class SuccessRate {
     
     static long gcd(long a , long b) { return (b == 0) ? a : gcd(b, a % b); }
     
-    static long grt(long a , long b) {
-        long ans = (a / b) + (a * b > 0 && Math.abs(a) % Math.abs(b) != 0 ? 1 : 0);
+    // greater than equal to a / b
+    static long grtEq(long a , long b) {
+        long ans = (a / b) + (Long.signum(a) * Long.signum(b) > 0 && Math.abs(a) % Math.abs(b) != 0 ? 1 : 0);
         println("grt a  " + a + " b " + b + " ans " + ans);
         return ans;
     }
-    static long less(long a , long b) {
-        long ans = (a / b) + (a * b < 0 && a % b != 0 ? -1 : 0);
+    // less than or equal to a / b
+    static long lessEq(long a , long b) {
+        long ans = (a / b) + (Long.signum(a) * Long.signum(b) < 0 && a % b != 0 ? -1 : 0);
         println("less a  " + a + " b " + b + " ans " + ans);
         return ans;
     }
@@ -58,37 +60,15 @@ public class SuccessRate {
             long y = nextLong();
             long p = nextLong();
             long q = nextLong();
-            long c = p * y - q * x;
-            long a = q;
-            long b = -p;
-            long gcd = gcd(Math.abs(a), Math.abs(b));
-            if(c % gcd != 0)
-                println(-1);
+            if(p == q)
+                println(x >= y ? x - y : -1);
             else {
-                long soln[] = extendedEuclid(a, b);
-                println("a " + a + " b " + b +  " c " + c);
-                println("soln " + Arrays.toString(soln));
-                println("general ");
-                println("x` = " + soln[0] + " - " + (a / gcd) + "n");
-                println("y` = " + soln[1] + " + " + (b / gcd) + "n");
-                long lo = -(long) 1e9;
-                long hi =  (long) 1e9;
-                if(Long.signum(floorDiv(a, gcd)) < 0)
-                    lo = Math.max(lo , grt(soln[0] * gcd , a));
+                long lo = Math.max(grtEq(x, p) , grtEq(y, q));
+                long hi = (long) 1e9;
+                if(p > q)
+                    hi = Math.min(hi , lessEq(x - y, p - q));
                 else
-                    hi = Math.min(hi , less(soln[0] * gcd , a));
-                if(Long.signum(floorDiv(b, gcd)) < 0)
-                    hi = Math.min(hi , less(-gcd * soln[1], b));
-                else
-                    lo = Math.max(lo , grt(-gcd * soln[1], b));
-                if(Long.signum(floorDiv(a + b , gcd)) < 0)
-                    hi = Math.min(hi , less(soln[0] - soln[1], (a + b) / gcd));
-                else
-                    lo = Math.max(lo , grt(soln[0] - soln[1], (a + b) / gcd));
-                
-                println("lo " + lo + " hi " + hi);
-                long ans = Math.min((soln[1] + lo * b / gcd) , (soln[1] + hi * b / gcd));
-                println("ans " + ans * (c / soln[2]));
+                    lo = Math.max(lo , grtEq(x - y, p - q));
             }
         }
         
