@@ -1,0 +1,122 @@
+import java.util.*;
+import java.io.*;
+public class uva_10090 {
+    
+    
+    
+    /************************ SOLUTION STARTS HERE ************************/
+    
+    static long gcd(long a , long b) { return (b == 0) ? a : gcd(b, a % b); }
+    static long[] extendedEuclid(long a , long b) {
+        long rnm2[] = new long[]{0 , 1};    // r_n-2 , x , y
+        long rnm1[] = new long[]{1 , 0};    // r_n-1 , u , v
+        while(a != 0) {
+            long r = ((b % a) + a) % a;
+            long q = Long.signum(a) * Long.signum(b) < 0 && b % a != 0 ? b / a - 1 : b / a;
+            /*
+            println(String.format("a %d b %d r %d", a , b , r));
+            println("before");
+            println("rnm2 " + Arrays.toString(rnm2));
+            println("rnm1 " + Arrays.toString(rnm1));
+            */
+            long coeffA = rnm2[0] - q * rnm1[0];
+            long coeffB = rnm2[1] - q * rnm1[1];
+            b = a;
+            a = r;
+            rnm2[0] = rnm1[0];
+            rnm2[1] = rnm1[1];
+            rnm1[0] = coeffA;
+            rnm1[1] = coeffB;
+            /*
+            println("after");
+            println("rnm2 " + Arrays.toString(rnm2));
+            println("rnm1 " + Arrays.toString(rnm1));   
+            */
+        }
+        return new long[]{rnm2[0], rnm2[1] , b};
+    }
+    // greater than equal to a / b
+    static long grtEq(long a , long b) {
+        long ans = (a / b) + (Long.signum(a) * Long.signum(b) > 0 && Math.abs(a) % Math.abs(b) != 0 ? 1 : 0);
+        // println("grt a  " + a + " b " + b + " ans " + ans);
+        return ans;
+    }
+    // less than or equal to a / b
+    static long lessEq(long a , long b) {
+        long ans = (a / b) + (Long.signum(a) * Long.signum(b) < 0 && a % b != 0 ? -1 : 0);
+        // println("less a  " + a + " b " + b + " ans " + ans);
+        return ans;
+    }
+    private static void solve() {
+        
+        
+        long n;
+        while((n = nextLong()) != 0) {
+            
+            long c1 = nextLong();
+            long n1 = nextLong();
+            long c2 = nextLong();
+            long n2 = nextLong();
+            
+            long d = gcd(n1, n2);
+            if(n % d != 0)
+                println("failed");
+            else {
+                long soln[] = extendedEuclid(n1, n2);
+                println(Arrays.toString(soln));
+                long lo = grtEq(-soln[1] * d, n2) + 1;
+                long hi = lessEq(soln[0] * d, n1) - 1;
+                println("lo " + lo + " hi " + hi);
+                if(lo > hi)
+                    println("failed");
+                else {
+                    long opt1 = c1 * soln[0] + c2 * soln[1] + (lo * ((c2 * n2 - c1 * n1) / d));
+                    long opt2 = c1 * soln[0] + c2 * soln[1] + (hi * ((c2 * n2 - c1 * n1) / d));
+                    println(Math.min(opt1 , opt2) * (n / d));
+                }
+            }
+        }
+        
+    }
+    
+    
+    
+    /************************ SOLUTION ENDS HERE ************************/
+    
+    
+    
+    
+    
+    /************************ TEMPLATE STARTS HERE **********************/
+    
+    public static void main(String[] args) throws IOException {
+        reader = new BufferedReader(new InputStreamReader(System.in));
+        writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
+        st     = null;
+        solve();
+        reader.close();
+        writer.close();
+    }
+    
+    static BufferedReader reader;
+    static PrintWriter    writer;
+    static StringTokenizer st;
+    
+    static String next()
+    {while(st == null || !st.hasMoreTokens()){try{String line = reader.readLine();if(line == null){return null;}            
+    st = new StringTokenizer(line);}catch (Exception e){throw new RuntimeException();}}return st.nextToken();}
+    static String nextLine()  {String s=null;try{s=reader.readLine();}catch(IOException e){e.printStackTrace();}return s;}             
+    static int    nextInt()   {return Integer.parseInt(next());}
+    static long   nextLong()  {return Long.parseLong(next());}     
+    static double nextDouble(){return Double.parseDouble(next());}
+    static char   nextChar()  {return next().charAt(0);}
+    static int[]  nextIntArray(int n)         {int[] a= new int[n];   int i=0;while(i<n){a[i++]=nextInt();}  return a;}
+    static long[] nextLongArray(int n)        {long[]a= new long[n];  int i=0;while(i<n){a[i++]=nextLong();} return a;}    
+    static int[]  nextIntArrayOneBased(int n) {int[] a= new int[n+1]; int i=1;while(i<=n){a[i++]=nextInt();} return a;}            
+    static long[] nextLongArrayOneBased(int n){long[]a= new long[n+1];int i=1;while(i<=n){a[i++]=nextLong();}return a;}            
+    static void   print(Object o)  { writer.print(o);  }
+    static void   println(Object o){ writer.println(o);}
+    
+    /************************ TEMPLATE ENDS HERE ************************/
+    
+}
