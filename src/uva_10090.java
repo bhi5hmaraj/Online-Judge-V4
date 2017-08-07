@@ -47,6 +47,18 @@ public class uva_10090 {
         // println("less a  " + a + " b " + b + " ans " + ans);
         return ans;
     }
+    // greater than equal to a / b
+    static long grtEq(long a , long b) {
+        long ans = (a / b) + (Long.signum(a) * Long.signum(b) > 0 && Math.abs(a) % Math.abs(b) != 0 ? 1 : 0);
+        // println("grt a  " + a + " b " + b + " ans " + ans);
+        return ans;
+    }
+    // less than or equal to a / b
+    static long lessEq(long a , long b) {
+        long ans = (a / b) + (Long.signum(a) * Long.signum(b) < 0 && a % b != 0 ? -1 : 0);
+        // println("less a  " + a + " b " + b + " ans " + ans);
+        return ans;
+    }
     private static void solve() {
         
         
@@ -64,8 +76,8 @@ public class uva_10090 {
             else {
                 long soln[] = extendedEuclid(n1, n2);
                 // println(Arrays.toString(soln));
-                long lo = grt(-soln[0] * n, n2);
-                long hi = less(soln[1] * n, n1);
+                long lo = grtEq(-soln[0] * n, n2);
+                long hi = lessEq(soln[1] * n, n1);
                 // println("lo " + lo + " hi " + hi);
                 if(lo > hi)
                     println("failed");
@@ -74,14 +86,11 @@ public class uva_10090 {
                     long opt2 = (c1 * (soln[0] * n + hi * n2) + c2 * (soln[1] * n - hi * n1)) / d;
                     if(opt1 < opt2)
                         println((soln[0] * n + lo * n2) / d + " " + (soln[1] * n - lo * n1) / d);
-                    else
+                    else 
                         println((soln[0] * n + hi * n2) / d + " " + (soln[1] * n - hi * n1) / d);
                 }
             }
         }
-        /*long soln[] = extendedEuclid(141, 34);
-        println(Arrays.toString(soln));
-        */
     }
     
     
