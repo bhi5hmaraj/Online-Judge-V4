@@ -2588,7 +2588,7 @@ class helper {
         }
         // greater than a / b
         static long grt(long a , long b) {
-            return  (a / b) + (Long.signum(a) * Long.signum(b) < 0 && Math.abs(a) % Math.abs(b) != 0 ? 0 : 1);
+            return  (a / b) + (Long.signum(a) * Long.signum(b) < 0 && a % b != 0 ? 0 : 1);
         }
         // less than a / b
         static long less(long a , long b) {
@@ -2596,7 +2596,7 @@ class helper {
         }
         // greater than equal to a / b
         static long grtEq(long a , long b) {
-            return (a / b) + (Long.signum(a) * Long.signum(b) > 0 && Math.abs(a) % Math.abs(b) != 0 ? 1 : 0);
+            return (a / b) + (Long.signum(a) * Long.signum(b) > 0 && a % b != 0 ? 1 : 0);
         }
         // less than or equal to a / b
         static long lessEq(long a , long b) {

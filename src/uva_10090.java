@@ -35,30 +35,24 @@ public class uva_10090 {
         }
         return new long[]{rnm2[0], rnm2[1] , b};
     }
+
     // greater than a / b
     static long grt(long a , long b) {
-        long ans = (a / b) + (Long.signum(a) * Long.signum(b) < 0 && Math.abs(a) % Math.abs(b) != 0 ? 0 : 1);
-        // println("grt a  " + a + " b " + b + " ans " + ans);
-        return ans;
+        return  (a / b) + (Long.signum(a) * Long.signum(b) < 0 && a % b != 0 ? 0 : 1);
     }
     // less than a / b
     static long less(long a , long b) {
-        long ans = (a / b) + (Long.signum(a) * Long.signum(b) > 0 && a % b != 0 ? 0 : -1);
-        // println("less a  " + a + " b " + b + " ans " + ans);
-        return ans;
+        return (a / b) + (Long.signum(a) * Long.signum(b) > 0 && a % b != 0 ? 0 : -1);
     }
     // greater than equal to a / b
     static long grtEq(long a , long b) {
-        long ans = (a / b) + (Long.signum(a) * Long.signum(b) > 0 && Math.abs(a) % Math.abs(b) != 0 ? 1 : 0);
-        // println("grt a  " + a + " b " + b + " ans " + ans);
-        return ans;
+        return (a / b) + (Long.signum(a) * Long.signum(b) > 0 && a % b != 0 ? 1 : 0);
     }
     // less than or equal to a / b
     static long lessEq(long a , long b) {
-        long ans = (a / b) + (Long.signum(a) * Long.signum(b) < 0 && a % b != 0 ? -1 : 0);
-        // println("less a  " + a + " b " + b + " ans " + ans);
-        return ans;
+        return (a / b) + (Long.signum(a) * Long.signum(b) < 0 && a % b != 0 ? -1 : 0);
     }
+    
     private static void solve() {
         
         
