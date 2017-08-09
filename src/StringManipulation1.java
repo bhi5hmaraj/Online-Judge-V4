@@ -22,6 +22,7 @@ public class StringManipulation1 {
         }
 
         void update(int idx, int val) {
+            idx++;
             if (idx == 0)
                 throw new IndexOutOfBoundsException("BIT IS NOT ZERO INDEXED");
             for (; idx <= len; idx += (idx & -idx))
@@ -29,6 +30,7 @@ public class StringManipulation1 {
         }
 
         int query(int idx) {
+            idx++;
             int sum = 0;
             for (; idx > 0; idx -= (idx & -idx))
                 sum += tree[idx];
@@ -40,17 +42,66 @@ public class StringManipulation1 {
             return query(R) - query(L - 1);
         }
     }
-
+    
+    static final int DELETE = (int) 1e8;
     
     private static void solve() {
         
         
         int k = nextInt();
         char str[] = nextLine().toCharArray();
+        int freq[] = new int[26];
+        for(char ch : str)
+            freq[ch - 'a']++;
+
+        int positions[][] = new int[26][];
+        for(int i = 0; i < 26; i++) {
+            positions[i] = new int[freq[i] * k];
+            int ptr = 0;
+            for(int p = 0; p < str.length; p++)
+                if(str[p] == 'a' + i) {
+                    for(int q = 0; q < k; q++)
+                        positions[i][q * freq[i] + ptr] = q * str.length + p;
+                    ptr++;
+                }
+        }
+         
+        FenwickTree BIT[] = new FenwickTree[26];
+        for(int i = 0; i < 26; i++)
+            if(freq[i] > 0)
+                BIT[i] = new FenwickTree(freq[i] * k);
         
+        int Q = nextInt();
+        while(Q-->0) {
+            int p = nextInt() - 1;
+            int c = nextChar() - 'a';
+            FenwickTree curr = BIT[c];
+            int lo = 0 , hi = freq[c] * k - 1;
+            int toDelete = -1;
+            while(lo <= hi) {
+                int mid = (lo + hi) >> 1;
+                int val = mid - curr.query(mid);
+                if(p <= val) {
+                    toDelete = mid;
+                    hi = mid - 1;
+                }
+                else
+                    lo = mid + 1;
+            }
+            positions[c][toDelete] = DELETE;
+            curr.update(toDelete, 1);
+        }
         
+        ArrayList<int[]> remaining = new ArrayList<>();
+        for(int i = 0; i < 26; i++)
+            for(int p : positions[i])
+                if(p != DELETE)
+                    remaining.add(new int[]{p , i});
         
+        Collections.sort(remaining , (p1 , p2) -> p1[0] - p2[0]);
         
+        for(int p[] : remaining)
+            print((char) ('a' + p[1]));
     }
     
     
