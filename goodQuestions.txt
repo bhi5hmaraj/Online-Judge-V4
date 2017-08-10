@@ -28,7 +28,7 @@ Nice problem on trees http://codeforces.com/contest/375/problem/D ( Lot of appro
 Nice Binary Search problem http://codeforces.com/problemset/problem/448/D
 Classic array problem http://codeforces.com/problemset/problem/819/B
 Various Approaches (NT) http://codeforces.com/contest/484/problem/B
-   
+Good problem on tree construction and greedy  http://codeforces.com/problemset/problem/828/D
 
 My Ideas:
 	Farthest distance between any 2 nodes in a tree (diameter) (with negative weights) ( O(N) expected (not yet proved) ) Idea : Start from a leaf node with prefixSum 0 and dfs the tree , now answer is max(prefixSum) - min(prefixSum)

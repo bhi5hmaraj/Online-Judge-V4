@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.stream.IntStream;
 import java.io.*;
 public class HighLoad {
     
@@ -13,12 +14,46 @@ public class HighLoad {
         int n = nextInt();
         int k = nextInt();
         
+        int edges[][] = new int[n - 1][2];
+        int sz = 0;
+        
         if(k >= n - k) {    // leaves are greater 
+            // Create a star graph of n - k nodes
+            for(int i = 2; i <= n - k; i++ , sz++) {
+                edges[sz][0] = 1;
+                edges[sz][1] = i;
+            }
+            // Make the current leaves as internal 
+            for(int i = n - k + 1; i <= 2 * (n - k) - 1; i++ ,sz++) {
+                edges[sz][0] = i - (n - k - 1);
+                edges[sz][1] = i;
+            }
+            // Add remaining leaves to the center
+            for(int i = 2 * (n - k); i <= n; i++ , sz++) {
+                edges[sz][0] = i;
+                edges[sz][1] = 1;
+            }
             
+            println(Math.min(n - k + 1 , 4));
+        }
+        else {            // internal nodes are greater 
+            int last[] = new int[k];
+            IntStream.range(1, k + 1).forEach(i -> last[i - 1] = i);
+            for(int i = k + 1; i <= n - 1; i++ , sz++) {
+                edges[sz][0] = i;
+                edges[sz][1] = last[(i - 1) % k];
+                last[(i - 1) % k] = i;
+            }
+            for(int i : last) {
+                edges[sz][0] = n;
+                edges[sz][1] = i;
+                sz++;
+            }
+            int internal = n - k - 1;
+            println(2 * (internal / k) + Math.min(internal % k, 2) + 2);
         }
         
-        
-        
+        Arrays.stream(edges).forEach(e -> println(e[0] + " " + e[1]));
     }
     
     
