@@ -21,7 +21,6 @@ public class StronglyConnectedCity2 {
     
     private static void solve() {
         
-        
         V = nextInt();
         int E = nextInt();
         int edges[][] = new int[E][2];
@@ -51,6 +50,7 @@ public class StronglyConnectedCity2 {
         }
         
         println(maxCnt);
+         
         for(int i = 1; i <= V; i++)
             for(int j = 1; j <= V; j++)
                 if(maxMat[i][j])
@@ -58,7 +58,57 @@ public class StronglyConnectedCity2 {
         
     }
     
+    static ArrayList<Integer>[] adj;
+    static int prev[];
+    static int time[];
+    static int cycleNodes[];
+    static int globalMax;
+    static void maxCycleLen(int u , int par , int t) {
+        time[u] = t;
+        marked[u] = true;
+        prev[u] = par;
+        for(int v : adj[u])
+            if(v != par) {
+                if(marked[v]) {
+                    int len = t - time[v] + 1;
+                    if(len > globalMax) {
+                        globalMax = len;
+                        cycleNodes[0] = u;
+                        cycleNodes[1] = v;
+                    }
+                }
+                else
+                    maxCycleLen(v, u, t + 1);
+            }
+        
+    }
     
+    
+    private static void solve2() {
+        
+        V = nextInt();
+        int E = nextInt();
+        adj = new ArrayList[V + 1];
+        for(int i = 1; i <= V; i++)
+            adj[i] = new ArrayList<>();
+        
+        while(E-->0) {
+            int u = nextInt();
+            int v = nextInt();
+            adj[u].add(v);
+            adj[v].add(u);
+        }
+        time = new int[V + 1];
+        marked = new boolean[V + 1];
+        prev = new int[V + 1];
+        cycleNodes = new int[2];
+        globalMax = 0;
+        maxCycleLen(1, 0, 0);
+        println(globalMax);
+        for(int i = cycleNodes[0]; i != cycleNodes[1]; i = prev[i])
+            print(i + " <== ");
+        println(cycleNodes[1]);
+    }
     
     /************************ SOLUTION ENDS HERE ************************/
     
@@ -72,7 +122,7 @@ public class StronglyConnectedCity2 {
         reader = new BufferedReader(new InputStreamReader(System.in));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
-        solve();
+        solve2();
         reader.close();
         writer.close();
     }
