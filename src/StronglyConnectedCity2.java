@@ -85,7 +85,41 @@ public class StronglyConnectedCity2 {
     static int joiner;
     static Pair p1 , p2;
     
-    static void findLargestCycle(int u , )
+    static void relax(int u , Pair pp1 , Pair pp2) {
+        int len = level[pp1.vertex] + level[pp2.vertex] - 2 * level[u] + 
+                  Math.abs(level[pp1.backVertex] - level[pp2.backVertex]) + 2;
+        if(len > globalMax) {
+            globalMax = len;
+            joiner = u;
+            p1 = pp1;
+            p2 = pp2;
+        }
+    }
+    
+    static ArrayList<Pair> findLargestCycle(int u , int par) {
+        marked[u] = true;
+        ArrayList<Pair> collect = new ArrayList<>();
+        ArrayList<Pair> curr = new ArrayList<>();
+        for(int v : adj[u]) {
+            if(!marked[v]) {
+                ArrayList<Pair> child = findLargestCycle(v , u);
+                child.stream().forEach(pp1 -> collect.forEach(pp2 -> relax(u, pp1, pp2)));
+                collect.addAll(child);
+            }
+            else if(v != par) {
+                Pair p = new Pair(u, v);
+                curr.add(p);
+                if(level[u] - level[v] + 1 > globalMax) {
+                    globalMax = level[u] - level[v] + 1;
+                    joiner = -1;
+                    p1 = p;
+                    p2 = null;
+                }
+            }
+        }
+        collect.addAll(curr);
+        return collect;
+    }
     
     private static void solve2() {
         
