@@ -157,6 +157,11 @@ public class StronglyConnectedCity2 {
         return ans;
     }
     
+    /*
+     * Good try at a NP complete problem !!  ;)
+     * http://suraj.lums.edu.pk/~cs511s02/Assignment_2.htm
+     */
+    
     private static void solve2() {
         
         V = nextInt();
