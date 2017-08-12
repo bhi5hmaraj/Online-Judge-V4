@@ -60,11 +60,32 @@ public class StronglyConnectedCity2 {
     
     static ArrayList<Integer>[] adj;
     static int prev[];
-    static int time[];
-    static int cycleNodes[];
+    static int level[];
     static int globalMax;
     
+    static class Pair {
+        int vertex , backVertex;
+        Pair(int v , int d) {
+            vertex = v;
+            backVertex = d;
+        }
+    }
     
+    static void rec(int u , int par , int lev) {
+        prev[u] = par;
+        level[u] = lev;
+        marked[u] = true;
+        for(int v : adj[u])
+            if(v != par)
+                rec(v, u, lev + 1);
+        marked[u] = false;
+    }
+    
+    static ArrayList<Pair>[] child;
+    static int joiner;
+    static Pair p1 , p2;
+    
+    static void findLargestCycle(int u , )
     
     private static void solve2() {
         
@@ -80,10 +101,8 @@ public class StronglyConnectedCity2 {
             adj[u].add(v);
             adj[v].add(u);
         }
-        time = new int[V + 1];
         marked = new boolean[V + 1];
         prev = new int[V + 1];
-        cycleNodes = new int[2];
         globalMax = 0;
         
     }
