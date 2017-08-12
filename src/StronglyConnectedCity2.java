@@ -63,25 +63,7 @@ public class StronglyConnectedCity2 {
     static int time[];
     static int cycleNodes[];
     static int globalMax;
-    static void maxCycleLen(int u , int par , int t) {
-        time[u] = t;
-        marked[u] = true;
-        prev[u] = par;
-        for(int v : adj[u])
-            if(v != par) {
-                if(marked[v]) {
-                    int len = t - time[v] + 1;
-                    if(len > globalMax) {
-                        globalMax = len;
-                        cycleNodes[0] = u;
-                        cycleNodes[1] = v;
-                    }
-                }
-                else
-                    maxCycleLen(v, u, t + 1);
-            }
-        
-    }
+    
     
     
     private static void solve2() {
@@ -103,11 +85,7 @@ public class StronglyConnectedCity2 {
         prev = new int[V + 1];
         cycleNodes = new int[2];
         globalMax = 0;
-        maxCycleLen(1, 0, 0);
-        println(globalMax);
-        for(int i = cycleNodes[0]; i != cycleNodes[1]; i = prev[i])
-            print(i + " <== ");
-        println(cycleNodes[1]);
+        
     }
     
     /************************ SOLUTION ENDS HERE ************************/
