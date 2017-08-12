@@ -114,7 +114,7 @@ public class StronglyConnectedCity  {
             for(int j = 0; j < m; j++){
                 int nx = i , ny = j;
                 ny += row[i] == '>' ? 1 : -1;
-                nx += col[i] == 'v' ? 1 : -1;
+                nx += col[j] == 'v' ? 1 : -1;
                 if(isValid(i, ny))
                     adj[i * m + j].add(i * m + ny);
                 if(isValid(nx, j))
