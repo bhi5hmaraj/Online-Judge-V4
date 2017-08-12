@@ -105,8 +105,11 @@ public class StronglyConnectedCity2 {
         for(int v : adj[u]) {
             if(!marked[v]) {
                 ArrayList<Pair> child = findLargestCycle(v , u);
-                println("u " + u + "v " + child);
-                child.stream().forEach(pp1 -> collect.forEach(pp2 -> relax(u, pp1, pp2)));
+                System.out.println("u " + u + "v " + child);
+                child.stream().forEach(pp1 -> collect.forEach(pp2 -> {
+                    if(level[pp1.backVertex] < level[u] && level[pp2.backVertex] < level[u])
+                        relax(u, pp1, pp2);   
+                }));
                 collect.addAll(child);
             }
             else if(v != par && level[v] < level[u]) {
@@ -121,8 +124,8 @@ public class StronglyConnectedCity2 {
             }
         }
         collect.addAll(curr);
-        println(u);
-        println(collect);
+        System.out.println(u);
+        System.out.println(collect);
         return collect;
     }
     
@@ -136,6 +139,7 @@ public class StronglyConnectedCity2 {
             ans.add(p1.backVertex);
         }
         else {
+            System.out.println("join " + joiner + " p1 " + p1 + " p2 " + p2);
             for(int i = p1.vertex; i != joiner; i = prev[i])
                 ans.add(i);
             ans.add(joiner);
@@ -146,9 +150,9 @@ public class StronglyConnectedCity2 {
                 p1 = p2;
                 p2 = temp;
             }
-            for(int i = p1.backVertex; i != p2.backVertex; i = prev[i])
+            for(int i = p2.backVertex; i != p1.backVertex; i = prev[i])
                 ans.add(i);
-            ans.add(p2.backVertex);
+            ans.add(p1.backVertex);
         }
         return ans;
     }
@@ -174,7 +178,7 @@ public class StronglyConnectedCity2 {
         marked = new boolean[V + 1];
         globalMax = 0;
         findLargestCycle(1, 0);
-        println(enumerateMaxCycle());
+        System.out.println(enumerateMaxCycle());
         
     }
     
