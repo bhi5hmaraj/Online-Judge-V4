@@ -7,7 +7,7 @@ public class DexterandGangs  {
     /************************ SOLUTION STARTS HERE ************************/
     
     static int freq[];
-    static SegmentTree segTreeFreq;
+/*    static SegmentTree segTreeFreq;
     static class SegmentTree  { // Implemented to store min in a range , point update and range query
         int tree[];
         int len;
@@ -34,8 +34,8 @@ public class DexterandGangs  {
             freq[idx] += val;
             update(1, idx, 0, len - 1);
         }
-        int query(int L , int R){
-            return query(1, L, R, 0, len - 1);
+        int query(){
+            return tree[1];
         }
         int query(int node , int L , int R, int nl, int nr) {
             int mid = (nl + nr) >> 1;
@@ -53,7 +53,7 @@ public class DexterandGangs  {
         }
     }
     
-    
+    */
     /* LCA <NlogN , logN> dependency : level , log , V , DP = new int[log(V) + 1][V + 1];, parent (for the first level of DP) */
     static int DP[][]; // One based vertices
     static int level[];
@@ -63,7 +63,7 @@ public class DexterandGangs  {
         HashMap<Integer , Integer> map = new HashMap<>();
         for(int i = 1; i < arr.length; i++)
             map.putIfAbsent(arr[i], map.size());
-        System.out.println(map);
+        // System.out.println(map);
         int inv[] = new int[map.size()];
         for(int i = 1; i < arr.length; i++) {
             inv[map.get(arr[i])] = arr[i];
@@ -155,14 +155,14 @@ public class DexterandGangs  {
     static int G[];
     static ArrayList<Integer>[] adj;
     static int V;
-    static final int MAX = (int) 1e5;
+    // Inspired By DISTNUM3
     private static void solve() {  
         
         V = nextInt();
         int Q = nextInt();
         G = nextIntArrayOneBased(V);
         int inv[] = compress(G);
-        System.out.println(Arrays.toString(G));
+        // System.out.println(Arrays.toString(G));
         adj = new ArrayList[V + 1];
         for(int i = 1; i <= V; i++)
             adj[i] = new ArrayList<>();
@@ -176,20 +176,20 @@ public class DexterandGangs  {
         DP = new int[log(V) + 1][V + 1];
         level = new int[V + 1];
         parent = new int[V + 1];
-        eulerTour = new int[2 * (V + 1)];
-        start = new int[2 * (V + 1)];
-        end = new int[2 * (V + 1)];
+        eulerTour = new int[2 * V];
+        start = new int[(V + 1)];
+        end = new int[(V + 1)];
         marked = new boolean[V + 1];
         freq = new int[inv.length];
         segTreeFreq = new SegmentTree(inv.length);
         clock = 0;
         dfs(1, 0, 0);
         binaryLift();
-        
+        /*
         System.out.println("start " + Arrays.toString(start));
         System.out.println("end " + Arrays.toString(end));
         System.out.println("eulerTour " + Arrays.toString(eulerTour));
-        
+        */
         int ans[] = new int[Q];
         Query queries[] = new Query[Q];
         for(int i = 0; i < Q; i++) {
@@ -211,7 +211,7 @@ public class DexterandGangs  {
             blockCache[i] = i / BLOCK_SIZE;
         
         Arrays.sort(queries, new MoComparator());
-        println(Arrays.toString(queries));
+        // println(Arrays.toString(queries));
         int moLeft = -1 , moRight = -1;
         for(Query q : queries) {
             while(moLeft < q.L - 1) {
@@ -233,7 +233,7 @@ public class DexterandGangs  {
 
             if(q.LCA != -1) visit(q.LCA);
             
-            int x = segTreeFreq.query(0, freq.length - 1);
+            int x = segTreeFreq.query();
             int lca = q.LCA == -1 ? LCA(eulerTour[q.L], eulerTour[q.R]) : q.LCA;
             int n = level[eulerTour[q.L]] + level[eulerTour[q.R]] - 2 * level[lca] + 1;
             ans[q.id] = freq[x] > n / 2 ? inv[x] : -1;
