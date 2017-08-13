@@ -57,7 +57,7 @@ public class DexterandGangs  {
     
     static ArrayList<Integer>[] adj;
     static int V;
-    private static void solve() {
+    private static void solve() {   // Let the (Brute) force be with you
         
         V = nextInt();
         int Q = nextInt();
@@ -73,6 +73,35 @@ public class DexterandGangs  {
             int u = nextInt();
             int v = nextInt();
             int lca = LCA(u, v);
+            int x = lca;
+            int cnt = 1;
+            int n = 1;
+            println(u + " " + v + " " + lca);
+            for(int i = u; i != lca; i = parent[i]) {
+                print(i + " => ");
+                cnt += i == x ? 1 : -1;
+                if(cnt < 0) {
+                    cnt = 0;
+                    x = i;
+                }
+                n++;
+            }
+            for(int i = v; i != lca; i = parent[i]) {
+                print(i + " => ");
+                cnt += i == x ? 1 : -1;
+                if(cnt < 0) {
+                    cnt = 0;
+                    x = i;
+                }
+                n++;
+            }
+            int freq = x == lca ? 1 : 0;
+            for(int i = u; i != lca; i = parent[i]) 
+                freq += i == x ? 1 : 0;
+            for(int i = v; i != lca; i = parent[i])
+                freq += i == x ? 1 : 0;
+            
+            println(freq > n / 2 ? "D " + x : "S");
         }
     }
     
