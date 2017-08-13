@@ -26,7 +26,7 @@ public class AnagramSearch {
             }
             boolean flag = true;
             int delta = 0;
-            for(int i = 0; i < 128; i++) {
+            for(int i = 'a'; i <= 'z'; i++) {
                 flag &= f1[i] <= f2[i];
                 delta += f2[i] - f1[i];
             }
@@ -36,7 +36,7 @@ public class AnagramSearch {
                 f1[s[i - m]]--;
                 flag = true;
                 delta = 0;
-                for(int j = 0; j < 128; j++) {
+                for(int j = 'a'; j <= 'z'; j++) {
                     flag &= f1[j] <= f2[j];
                     delta += f2[j] - f1[j];
                 }
