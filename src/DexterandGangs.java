@@ -1,52 +1,79 @@
 import java.util.*;
 import java.io.*;
-public class MikeandMatrixGame {
+public class DexterandGangs  {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static final int MAX = 1234;
-    static double logFact[];
-    static {
-        logFact = new double[MAX];
-        for(int i = 2; i < MAX; i++)
-            logFact[i] = Math.log(i) + logFact[i - 1];
+    /* LCA <NlogN , logN> dependency : level , log , V , DP = new int[log(V) + 1][V + 1];, parent (for the first level of DP) */
+    static int DP[][]; // One based vertices
+    static int level[];
+    static int parent[];
+    static int log(int N){
+        return 31 - Integer.numberOfLeadingZeros(N);
+    }
+    static void binaryLift() {
+        
+        for(int i=1;i<=V;i++)
+            DP[0][i] = parent[i];
+        
+        for (int i = 1; i < DP.length; i++) 
+            for (int j = 1; j <= V; j++) 
+                DP[i][j] = DP[i - 1][DP[i - 1][j]];
+
+    }
+
+    static int LCA(int u , int v){
+        if(level[v] < level[u]){
+            int temp = u;
+            u = v;
+            v = temp;
+        }
+        int diff = level[v] - level[u];
+        while(diff > 0){        // Bring v to the same level as u
+            int log = log(diff);
+            v = DP[log][v];
+            diff -= (1 << log);
+        }
+        if(u == v)
+            return u;
+        for(int i = log(level[u]); i >= 0; i--) {    
+            if(DP[i][u] != DP[i][v]) { 
+                u = DP[i][u];
+                v = DP[i][v];
+            }
+        }
+        return DP[0][u];
     }
     
+    static void dfs(int u , int par , int lev) {
+        level[u] = lev;
+        parent[u] = par;
+        for(int v : adj[u])
+            if(v != par)
+                dfs(v, u, lev + 1);
+    }
     
+    static ArrayList<Integer>[] adj;
+    static int V;
     private static void solve() {
         
+        V = nextInt();
+        int Q = nextInt();
+        int G[] = nextIntArrayOneBased(V);
+        DP = new int[log(V) + 1][V + 1];
         
-        int N = nextInt();
-        int K = nextInt();
-        int X = nextInt();
+        level = new int[V + 1];
+        parent = new int[V + 1];
+        dfs(1, 0, 0);
+        binaryLift();
         
-        int arr[][] = new int[N][];
-        int trans[][] = new int[N][N];
-        
-        for(int i = 0; i < N; i++)
-            arr[i] = nextIntArray(N);
-        
-        for(int i = 0; i < N; i++)
-            for(int j = 0; j < N; j++)
-                trans[j][i] = arr[i][j];
-        
-        for(int i = 0; i < N; i++)
-            Arrays.sort(trans[i]);
-        
-        double totalExpectation = 0;
-        for(int i = 0; i < N; i++) {
-            double colExpectation = 0;
-            for(int j = 1; j <= N - K + 1; j++) {
-                double logProb = Math.log(K) + logFact[N - K] + logFact[N - j] - logFact[N - K - (j - 1)] - logFact[N];
-                double prob = Math.exp(logProb);
-                colExpectation += prob * (trans[i][N - j] + X); 
-            }
-            totalExpectation += colExpectation;
+        while(Q-->0) {
+            int u = nextInt();
+            int v = nextInt();
+            int lca = LCA(u, v);
         }
-        
-        println(String.format("%.15f", totalExpectation));
     }
     
     
