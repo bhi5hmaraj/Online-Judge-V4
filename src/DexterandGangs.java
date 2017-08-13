@@ -7,7 +7,7 @@ public class DexterandGangs  {
     /************************ SOLUTION STARTS HERE ************************/
     
     static int freq[];
-/*    static SegmentTree segTreeFreq;
+    static SegmentTree segTreeFreq;
     static class SegmentTree  { // Implemented to store min in a range , point update and range query
         int tree[];
         int len;
@@ -53,7 +53,7 @@ public class DexterandGangs  {
         }
     }
     
-    */
+    
     /* LCA <NlogN , logN> dependency : level , log , V , DP = new int[log(V) + 1][V + 1];, parent (for the first level of DP) */
     static int DP[][]; // One based vertices
     static int level[];
