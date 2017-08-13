@@ -1850,7 +1850,7 @@ class helper {
         return DP[0][u];
     }
     
-
+	
 	static class SegmentTree  { // Implemented to store min in a range , point update and range query
 		int tree[];
 		int len;
