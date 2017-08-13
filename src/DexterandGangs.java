@@ -10,6 +10,16 @@ public class DexterandGangs  {
     static int DP[][]; // One based vertices
     static int level[];
     static int parent[];
+    static int[] compress(int arr[]) {
+        HashMap<Integer , Integer> map = new HashMap<>();
+        Arrays.stream(arr).forEach(a -> map.putIfAbsent(a, map.size()));
+        int inv[] = new int[map.size()];
+        for(int i = 0; i < arr.length; i++) {
+            inv[map.get(arr[i])] = arr[i];
+            arr[i] = map.get(arr[i]);
+        }
+        return inv;
+    }
     static int log(int N){
         return 31 - Integer.numberOfLeadingZeros(N);
     }
@@ -57,13 +67,23 @@ public class DexterandGangs  {
     
     static ArrayList<Integer>[] adj;
     static int V;
-    private static void solve() {   // Let the (Brute) force be with you
-        
+    private static void solve() {   // May the (Brute) force be with you
+        // https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_majority_vote_algorithm
         V = nextInt();
         int Q = nextInt();
         int G[] = nextIntArrayOneBased(V);
+        int inv[] = compress(G);
+        adj = new ArrayList[V + 1];
+        for(int i = 1; i <= V; i++)
+            adj[i] = new ArrayList<>();
+        int E = V - 1;
+        while(E-->0) {
+            int u = nextInt();
+            int v = nextInt();
+            adj[u].add(v);
+            adj[v].add(u);
+        }
         DP = new int[log(V) + 1][V + 1];
-        
         level = new int[V + 1];
         parent = new int[V + 1];
         dfs(1, 0, 0);
@@ -76,10 +96,10 @@ public class DexterandGangs  {
             int x = lca;
             int cnt = 1;
             int n = 1;
-            println(u + " " + v + " " + lca);
+            // println(u + " " + v );
             for(int i = u; i != lca; i = parent[i]) {
-                print(i + " => ");
-                cnt += i == x ? 1 : -1;
+                // print(i + " => ");
+                cnt += G[i] == G[x] ? 1 : -1;
                 if(cnt < 0) {
                     cnt = 0;
                     x = i;
@@ -87,21 +107,22 @@ public class DexterandGangs  {
                 n++;
             }
             for(int i = v; i != lca; i = parent[i]) {
-                print(i + " => ");
-                cnt += i == x ? 1 : -1;
+                // print(i + " => ");
+                cnt += G[i] == G[x] ? 1 : -1;
                 if(cnt < 0) {
                     cnt = 0;
                     x = i;
                 }
                 n++;
             }
-            int freq = x == lca ? 1 : 0;
+            // println(lca);
+            int freq = G[x] == G[lca] ? 1 : 0;
             for(int i = u; i != lca; i = parent[i]) 
-                freq += i == x ? 1 : 0;
+                freq += G[i] == G[x] ? 1 : 0;
             for(int i = v; i != lca; i = parent[i])
-                freq += i == x ? 1 : 0;
+                freq += G[i] == G[x] ? 1 : 0;
             
-            println(freq > n / 2 ? "D " + x : "S");
+            println(freq > n / 2 ? "D " + inv[G[x]] : "S");
         }
     }
     
@@ -114,7 +135,7 @@ public class DexterandGangs  {
     
     
     /************************ TEMPLATE STARTS HERE **********************/
-    
+   /* 
     public static void main(String[] args) throws IOException {
         reader = new BufferedReader(new InputStreamReader(System.in));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
@@ -123,6 +144,29 @@ public class DexterandGangs  {
         reader.close();
         writer.close();
     }
+    */
+    public static void main(String[] args) throws IOException {
+        new Thread(null, new Runnable() {
+            public void run() {
+                try {
+                    new DexterandGangs().run();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, "Increase Stack", 1 << 25).start();
+
+    }
+
+    void run() throws IOException { 
+        reader = new BufferedReader(new InputStreamReader(System.in));
+        writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
+        st     = null;
+        solve();
+        reader.close();
+        writer.close();
+    }
+
     
     static BufferedReader reader;
     static PrintWriter    writer;
