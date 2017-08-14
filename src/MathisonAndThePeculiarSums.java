@@ -9,7 +9,24 @@ public class MathisonAndThePeculiarSums {
     static ArrayList<Integer>[] adj;
     static int wt[] , inv[];
     static final int mod = (int) 1e9 + 7;
+    // Courtesy : UWI ( adjacency list using Jagged Arrays )
+    static int[][] packU(int n, int[] from, int[] to , int isOneBased) {   
+        int[][] g = new int[n + isOneBased][];
+        int[] p = new int[n + isOneBased];
+        for (int f : from)
+            p[f]++;
+        for (int t : to)
+            p[t]++;
+        for (int i = 0 + isOneBased; i < n + isOneBased; i++)
+            g[i] = new int[p[i]];
+        for (int i = 0; i < from.length; i++) {
+            g[from[i]][--p[from[i]]] = to[i];
+            g[to[i]][--p[to[i]]] = from[i];
+        }
+        return g;
+    }
     static void compress() {
+        /*
         TreeSet<Integer> set = new TreeSet<>();
         for(int i = 1; i < wt.length; i++)
             set.add(wt[i]);
@@ -20,6 +37,10 @@ public class MathisonAndThePeculiarSums {
             inv[map.get(wt[i])] = wt[i];
             wt[i] = map.get(wt[i]);
         }
+        */
+        int temp[] = Arrays.copyOf(wt, wt.length);
+        Arrays.sort(temp);
+        throw new RuntimeException();
     }
     static class SegmentTree  { // Implemented to store min in a range , point update and range query
         int size[];
@@ -49,7 +70,7 @@ public class MathisonAndThePeculiarSums {
                         odd[node] = (odd[node] - inv[idx] + mod) % mod;
                 }
                 size[node] += val;
-                println("nl " + nl + " nr " + nr + " size " + size[node] + " ev " + even[node] + " od " + odd[node]);
+                // println("nl " + nl + " nr " + nr + " size " + size[node] + " ev " + even[node] + " od " + odd[node]);
             }
             else {
                 int mid = (nl + nr) >> 1;
@@ -67,7 +88,7 @@ public class MathisonAndThePeculiarSums {
                     even[node] = (even[2 * node] + odd[2 * node + 1]) % mod;
                     odd[node] = (odd[2 * node] + even[2 * node + 1]) % mod;
                 }
-                println("nl " + nl + " nr " + nr + " size " + size[node] + " ev " + even[node] + " od " + odd[node]); 
+                // println("nl " + nl + " nr " + nr + " size " + size[node] + " ev " + even[node] + " od " + odd[node]); 
             }
         }
         void update(int idx , int val){
@@ -85,11 +106,13 @@ public class MathisonAndThePeculiarSums {
     static int ans[];
     
     static void dfs(int u , int par) {
+        // println("Entering " + u);
         segTree.update(wt[u], 1);
         ans[u] = segTree.query();
         for(int v : adj[u])
             if(v != par)
                 dfs(v, u);
+        // println("Exiting " + u);
         segTree.update(wt[u], -1);
     }
     
@@ -126,16 +149,31 @@ public class MathisonAndThePeculiarSums {
     
     
     /************************ TEMPLATE STARTS HERE **********************/
-    
+    /* 
+     * Increase stack size in java
+     */
     public static void main(String[] args) throws IOException {
+        new Thread(null, new Runnable() {
+            public void run() {
+                new MathisonAndThePeculiarSums().run();
+            }
+        }, "Increase Stack", 1 << 25).start();
+
+    }
+
+    void run(){ 
         reader = new BufferedReader(new InputStreamReader(System.in));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
         solve();
-        reader.close();
-        writer.close();
+        try {
+            reader.close();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-    
+
     static BufferedReader reader;
     static PrintWriter    writer;
     static StringTokenizer st;
