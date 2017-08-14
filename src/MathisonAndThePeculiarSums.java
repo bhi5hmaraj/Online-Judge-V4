@@ -63,44 +63,27 @@ public class MathisonAndThePeculiarSums {
             int node = (treeSize >> 1) + idx;
             if(val == 1) {
                 if(size[node] % 2 == 0)
-                    even[node] = (even[node] + inv[idx]);
+                    even[node] = (even[node] + inv[idx]) % mod;
                 else
-                    odd[node] = (odd[node] + inv[idx]);
+                    odd[node] = (odd[node] + inv[idx]) % mod;
             }
             else {
                 if(size[node] % 2 == 1)
-                    even[node] = (even[node] - inv[idx]);
+                    even[node] = (even[node] - inv[idx] + mod) % mod;
                 else 
-                    odd[node] = (odd[node] - inv[idx]);
+                    odd[node] = (odd[node] - inv[idx] + mod) % mod;
             }
-            if(even[node] >= mod)
-                even[node] -= mod;
-            if(even[node] < 0)
-                even[node] += mod;
-            if(odd[node] >= mod)
-                odd[node] -= mod;
-            if(odd[node] < 0)
-                odd[node] += mod;
-            
             size[node] += val;
             for(node >>= 1; node > 0; node >>= 1) {
                 size[node] = size[2 * node] + size[2 * node + 1];
                 if(size[2 * node] % 2 == 0) {
-                    even[node] = (even[2 * node] + even[2 * node + 1]);
-                    odd[node] = (odd[2 * node] + odd[2 * node + 1]);
+                    even[node] = (even[2 * node] + even[2 * node + 1]) % mod;
+                    odd[node] = (odd[2 * node] + odd[2 * node + 1]) % mod;
                 }
                 else {
-                    even[node] = (even[2 * node] + odd[2 * node + 1]);
-                    odd[node] = (odd[2 * node] + even[2 * node + 1]);
+                    even[node] = (even[2 * node] + odd[2 * node + 1]) % mod;
+                    odd[node] = (odd[2 * node] + even[2 * node + 1]) % mod;
                 }
-                if(even[node] >= mod)
-                    even[node] -= mod;
-                if(even[node] < 0)
-                    even[node] += mod;
-                if(odd[node] >= mod)
-                    odd[node] -= mod;
-                if(odd[node] < 0)
-                    odd[node] += mod;
             }
         }
         int query(){
@@ -123,16 +106,20 @@ public class MathisonAndThePeculiarSums {
         segTree.update(wt[u], -1);
     }
     
-    private static void solve() {
-        int N = nextInt();
-        wt  = nextIntArrayOneBased(N);
+    private static void solve() throws IOException {
+        FasterScanner scan = new FasterScanner();
+        PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
+        int N = scan.nextInt();
+        wt = new int[N + 1];
+        for(int i = 1; i <= N; i++)
+            wt[i] = scan.nextInt();
         compress();
         int E = N - 1;
         int from[] = new int[E];
         int to[] = new int[E];
         while(E-->0) {
-            from[E] = nextInt();
-            to[E] = nextInt();
+            from[E] = scan.nextInt();
+            to[E] = scan.nextInt();
         }
         adj = packU(N, from, to, 1);
         int M = inv.length;
@@ -140,7 +127,8 @@ public class MathisonAndThePeculiarSums {
         ans = new int[N + 1];
         dfs(1, 0);
         for(int i = 1; i <= N; i++)
-            println(ans[i]);
+            out.println(ans[i]);
+        out.close();
     }
     
     
@@ -158,44 +146,70 @@ public class MathisonAndThePeculiarSums {
     public static void main(String[] args) throws IOException {
         new Thread(null, new Runnable() {
             public void run() {
-                new MathisonAndThePeculiarSums().run();
+                try {
+                    new MathisonAndThePeculiarSums().run();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }, "Increase Stack", 1 << 25).start();
 
     }
 
-    void run(){ 
-        reader = new BufferedReader(new InputStreamReader(System.in));
-        writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
-        st     = null;
+    void run() throws IOException{ 
         solve();
-        try {
-            reader.close();
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+    }
+
+    static class FasterScanner {
+        private byte[] buf = new byte[1024];
+        private int tmp_curChar;
+        private int tmp_numChars;
+
+        public int read() {
+            if (tmp_numChars == -1)
+                throw new InputMismatchException();
+            if (tmp_curChar >= tmp_numChars) {
+                tmp_curChar = 0;
+                try {
+                    tmp_numChars = System.in.read(buf);
+                } catch (IOException e) {
+                    throw new InputMismatchException();
+                }
+                if (tmp_numChars <= 0)
+                    return -1;
+            }
+            return buf[tmp_curChar++];
+        }
+
+        public int nextInt() {
+            int c = read();
+            while (isSpaceChar(c))
+                c = read();
+            int sgn = 1;
+            if (c == '-') {
+                sgn = -1;
+                c = read();
+            }
+            int res = 0;
+            do {
+                if (c < '0' || c > '9')
+                    throw new InputMismatchException();
+                res *= 10;
+                res += c - '0';
+                c = read();
+            } while (!isSpaceChar(c));
+            return res * sgn;
+        }
+
+        private boolean isSpaceChar(int c) {
+            return c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == -1;
+        }
+
+        private boolean isEndOfLine(int c) {
+            return c == '\n' || c == '\r' || c == -1;
         }
     }
 
-    static BufferedReader reader;
-    static PrintWriter    writer;
-    static StringTokenizer st;
-    
-    static String next()
-    {while(st == null || !st.hasMoreTokens()){try{String line = reader.readLine();if(line == null){return null;}            
-    st = new StringTokenizer(line);}catch (Exception e){throw new RuntimeException();}}return st.nextToken();}
-    static String nextLine()  {String s=null;try{s=reader.readLine();}catch(IOException e){e.printStackTrace();}return s;}             
-    static int    nextInt()   {return Integer.parseInt(next());}
-    static long   nextLong()  {return Long.parseLong(next());}     
-    static double nextDouble(){return Double.parseDouble(next());}
-    static char   nextChar()  {return next().charAt(0);}
-    static int[]  nextIntArray(int n)         {int[] a= new int[n];   int i=0;while(i<n){a[i++]=nextInt();}  return a;}
-    static long[] nextLongArray(int n)        {long[]a= new long[n];  int i=0;while(i<n){a[i++]=nextLong();} return a;}    
-    static int[]  nextIntArrayOneBased(int n) {int[] a= new int[n+1]; int i=1;while(i<=n){a[i++]=nextInt();} return a;}            
-    static long[] nextLongArrayOneBased(int n){long[]a= new long[n+1];int i=1;while(i<=n){a[i++]=nextLong();}return a;}            
-    static void   print(Object o)  { writer.print(o);  }
-    static void   println(Object o){ writer.println(o);}
-    
     /************************ TEMPLATE ENDS HERE ************************/
     
 }
