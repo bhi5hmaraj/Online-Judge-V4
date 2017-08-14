@@ -41,7 +41,7 @@ public class MikeandMatrixGame {
             for(int j = 1; j <= N - K + 1; j++) {
                 double logProb = Math.log(K) + logFact[N - K] + logFact[N - j] - logFact[N - K - (j - 1)] - logFact[N];
                 double prob = Math.exp(logProb);
-                colExpectation += prob * (trans[i][N - j] + X); 
+                colExpectation += prob * (Math.max(trans[i][N - j] + X , trans[i][N - 1])); 
             }
             totalExpectation += colExpectation;
         }
