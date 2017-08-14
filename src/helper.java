@@ -2603,4 +2603,17 @@ class helper {
             return (a / b) + (Long.signum(a) * Long.signum(b) < 0 && a % b != 0 ? -1 : 0);
         }
     }
+    
+    static int[] compress(int arr[]) {
+        HashMap<Integer , Integer> map = new HashMap<>();
+        for(int i = 1; i < arr.length; i++)
+            map.putIfAbsent(arr[i], map.size());
+        // System.out.println(map);
+        int inv[] = new int[map.size()];
+        for(int i = 1; i < arr.length; i++) {
+            inv[map.get(arr[i])] = arr[i];
+            arr[i] = map.get(arr[i]);
+        }
+        return inv;
+    }
 }
