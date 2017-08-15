@@ -159,6 +159,7 @@ public class MathisonAndThePeculiarSums {
     void run() throws IOException{ 
         solve();
     }
+    
 
     static class FasterScanner {
         private byte[] buf = new byte[1024];
