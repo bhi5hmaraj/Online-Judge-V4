@@ -108,7 +108,8 @@ public class MathisonAndThePeculiarSums {
     
     private static void solve() throws IOException {
         FasterScanner scan = new FasterScanner();
-        PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
+        //PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
+        PrintWriter out = new PrintWriter(System.out);
         int N = scan.nextInt();
         wt = new int[N + 1];
         for(int i = 1; i <= N; i++)
