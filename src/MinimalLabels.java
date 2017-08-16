@@ -28,13 +28,6 @@ public class MinimalLabels {
                 grpSize++;
         PriorityQueue<Integer>[] grp = new PriorityQueue[grpSize];
         boolean marked[] = new boolean[n + 1];
-        for(int i = 1 , id = 0; i <= n; i++)
-            if(inDegree[i] == 0) {
-                ArrayDeque<Integer> queue = new ArrayDeque<>();
-                queue.add(i);
-                marked[i] = true;
-                
-            }
         
         PriorityQueue<Integer> pq = new PriorityQueue<>();
         for(int i = 1; i <= n; i++)
