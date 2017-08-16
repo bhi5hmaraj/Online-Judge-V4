@@ -60,15 +60,25 @@ public class DexterandGangs  {
     static int parent[];
     static int clock , eulerTour[] , start[] , end[];
     static int[] compress(int arr[]) {
-        HashMap<Integer , Integer> map = new HashMap<>();
-        for(int i = 1; i < arr.length; i++)
-            map.putIfAbsent(arr[i], map.size());
-        // System.out.println(map);
-        int inv[] = new int[map.size()];
-        for(int i = 1; i < arr.length; i++) {
-            inv[map.get(arr[i])] = arr[i];
-            arr[i] = map.get(arr[i]);
+        int temp[] = Arrays.copyOf(arr, arr.length);
+        Arrays.sort(temp);
+        int sz = 0;
+        for(int i = 0; i < temp.length; ) {
+            int curr = temp[i];
+            sz++;
+            for(; i < temp.length && temp[i] == curr; i++)
+                ;
         }
+        int inv[] = new int[sz];
+        sz = 0;
+        for(int i = 0; i < temp.length; ) {
+            int curr = temp[i];
+            inv[sz++] = curr;
+            for(; i < temp.length && temp[i] == curr; i++)
+                ;
+        }
+        for(int i = 1; i < arr.length; i++)
+            arr[i] = Arrays.binarySearch(inv, arr[i]);
         return inv;
     }
     static int log(int N){
@@ -140,8 +150,8 @@ public class DexterandGangs  {
         public int compare(Query o1, Query o2) {
             if(blockCache[o1.L] != blockCache[o2.L])
                 return blockCache[o1.L] - blockCache[o2.L];
-            else 
-                return blockCache[o1.R] - blockCache[o2.R];
+            else
+                return o1.R - o2.R;
         }
     }
     
