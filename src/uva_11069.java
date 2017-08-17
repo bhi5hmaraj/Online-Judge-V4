@@ -28,14 +28,6 @@ public class uva_11069 {
             println(F[n][0] + F[n][1]);
         }
         
-        // Just to check runtime !! 
-        double arr[][] = new double[500][500];
-        for(int i = 0; i < 500; i++)
-            for(int j = 0; j < 500; j++)
-                for(int k = 0; k < 500; k++)
-                    arr[i][k] += (1 + arr[i][j]) * (1 + arr[j][k]);
-            
-        
     }
     
     

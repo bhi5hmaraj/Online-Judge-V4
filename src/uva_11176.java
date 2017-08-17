@@ -6,15 +6,38 @@ public class uva_11176 {
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    static double memo[][][][];
+    static double p;
+    static double rec(int idx , int streakRem , int done , int maxStreak) {
+        if(idx == 0)
+            return (done == 1 || streakRem == 0) ? 1 : 0;
+        else if(memo[idx][streakRem][maxStreak][done] != -1)
+            return memo[idx][streakRem][maxStreak][done];
+        else if(streakRem == 0)
+            return (1 - p) * rec(idx - 1, maxStreak, 1 , maxStreak);
+        else 
+            return memo[idx][streakRem][maxStreak][done] = p * rec(idx - 1, streakRem - 1, done , maxStreak) 
+                                        + (1 - p) * rec(idx - 1, maxStreak, done , maxStreak);
+    }
+    
     
     private static void solve() {
         
-        int run = 500 * 500 * 500;
-        int arr[] = new int[500 * 500];
-        for(int i = 0; i < run; i++)
-            arr[i % arr.length] += run * arr[(i + run) % arr.length];
+        int n;
+        while((n = nextInt()) != 0) {
+            p = nextDouble();
+            double expect = 0;
+            memo = new double[n + 1][n + 1][n + 1][2];
+            for(double a[][][] : memo)
+                for(double b[][] : a)
+                    for(double c[] : b)
+                        Arrays.fill(c, -1);
+            for(int i = 1; i <= n; i++) 
+                expect += 1.0 * i * rec(n, i, 0, i);
+            
+            println(String.format("%.6f", expect));
+        }
         
-        println("DONE");
     }
     
     
