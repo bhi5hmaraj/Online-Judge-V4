@@ -1,70 +1,26 @@
 import java.util.*;
 import java.io.*;
-public class MinimalLabels {
+public class SellingSouvenirs {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
     
     
-    @SuppressWarnings("unchecked")
     private static void solve() {
         
         int n = nextInt();
         int m = nextInt();
-        int inDegree[] = new int[n + 1];
-        ArrayList<Integer>[] adj = new ArrayList[n + 1];
-        ArrayList<Integer>[] inv = new ArrayList[n + 1];
-        for(int i = 1; i <= n; i++) {
-            adj[i] = new ArrayList<>();
-            inv[i] = new ArrayList<>();
-        }
-        while(m-->0) {
-            int u = nextInt();
-            int v = nextInt();
-            adj[u].add(v);
-            inv[v].add(u);
-            inDegree[v]++;
+        
+        int freq[] = new int[4];
+        long cost[] = new long[n];
+        
+        for(int i = 0; i < n; i++) {
+            freq[nextInt()]++;
+            cost[i] = nextLong();
         }
         
-        boolean marked[] = new boolean[n + 1];
-        int perm[] = new int[n + 1];
-        int pos = 1;
-        for(int i = 1; i <= n; i++)
-            if(!marked[i]) {
-                HashSet<Integer> important = new HashSet<>();
-                ArrayDeque<Integer> queue  = new ArrayDeque<>();
-                PriorityQueue<Integer> pq  = new PriorityQueue<>();
-                
-                queue.add(i);
-                marked[i] = true;
-                
-                while(!queue.isEmpty()) {
-                    int curr = queue.remove();
-                    important.add(curr);
-                    if(inDegree[curr] == 0)
-                        pq.add(curr);
-                    for(int v : inv[curr])
-                        if(!marked[v]) {
-                            marked[v] = true;
-                            queue.add(v);
-                        }
-                }
-                
-                while(!pq.isEmpty()) {
-                    int curr = pq.remove();
-                    perm[curr] = pos++;
-                    for(int v : adj[curr]) {
-                        inDegree[v]--;
-                        if(inDegree[v] == 0 && important.contains(v))
-                            pq.add(v);
-                    }
-                }
-            }
         
-        
-        for(int i = 1; i <= n; i++)
-            print(perm[i] + " ");
     }
     
     
