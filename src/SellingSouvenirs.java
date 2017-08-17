@@ -13,12 +13,22 @@ public class SellingSouvenirs {
         int m = nextInt();
         
         int freq[] = new int[4];
-        long cost[] = new long[n];
+        ArrayList<Long>[] cost = new ArrayList[4];
+        for(int i = 1; i <= 3; i++)
+            cost[i] = new ArrayList<>();
         
         for(int i = 0; i < n; i++) {
-            freq[nextInt()]++;
-            cost[i] = nextLong();
+            int w = nextInt();
+            freq[w]++;
+            cost[w].add(nextLong());
         }
+        
+        for(int i = 1; i <= 3; i++) {
+            Collections.sort(cost[i], Collections.reverseOrder());
+            for(int j = 1; j < cost[i].size(); j++)
+                cost[i].set(j, cost[i].get(j - 1) + cost[i].get(j));
+        }
+        
         
         
     }
