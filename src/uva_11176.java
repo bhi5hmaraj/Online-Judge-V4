@@ -6,18 +6,26 @@ public class uva_11176 {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static double memo[][][];
+    static double memo[][];
     static double p;
-    static double rec(int idx , int streakRem , int maxStreak) {
-        if(idx == 0)
+    static double rec(int idx , int streak) {
+        if(idx < 0)
+            return 0;
+        else if(idx == 0)
             return 1;
-        else if(memo[idx][streakRem][maxStreak] != -1)
-            return memo[idx][streakRem][maxStreak];
-        else if(streakRem == 0)
-            return (1 - p) * rec(idx - 1, maxStreak, maxStreak);
-        else 
-            return memo[idx][streakRem][maxStreak] = p * rec(idx - 1, streakRem - 1, maxStreak) 
-                                        + (1 - p) * rec(idx - 1, maxStreak, maxStreak);
+        else if(memo[idx][streak] != -1)
+            return memo[idx][streak];
+        else {
+            double prob = 0;
+            double curr = 1 - p;
+            for(int i = 0; i <= streak; i++) {
+                prob += curr * rec(idx - i - 1, streak);
+                curr *= p;
+            }
+            if(idx <= streak)
+                prob += Math.pow(p, idx);
+            return memo[idx][streak] = prob;
+        }
     }
     
     
@@ -29,13 +37,12 @@ public class uva_11176 {
             p = nextDouble();
             long st = System.nanoTime();
             double expect = 0;
-            memo = new double[n + 1][n + 1][n + 1];
-            for(double b[][] : memo)
-                for(double c[] : b)
-                    Arrays.fill(c, -1);
-            double prev = rec(n, 0, 0);
+            memo = new double[n + 1][n + 1];
+            for(double c[] : memo)
+                Arrays.fill(c, -1);
+            double prev = rec(n, 0);
             for(int i = 1; i <= n; i++) { 
-                double curr = rec(n, i, i);
+                double curr = rec(n, i);
                 expect += 1.0 * i * (curr - prev);
                 prev = curr;
             }
