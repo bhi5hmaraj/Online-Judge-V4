@@ -6,15 +6,15 @@ public class uva_11176 {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static double memo[][];
+    static double memo[];
     static double p;
     static double rec(int idx , int streak) {
         if(idx < 0)
             return 0;
         else if(idx == 0)
             return 1;
-        else if(memo[idx][streak] != -1)
-            return memo[idx][streak];
+        else if(memo[idx] != -1)
+            return memo[idx];
         else {
             double prob = 0;
             double curr = 1 - p;
@@ -24,7 +24,7 @@ public class uva_11176 {
             }
             if(idx <= streak)
                 prob += Math.pow(p, idx);
-            return memo[idx][streak] = prob;
+            return memo[idx] = prob;
         }
     }
     
@@ -32,25 +32,25 @@ public class uva_11176 {
     private static void solve() {
         
         int n;
-        double t = 0;
+        // double t = 0;
+        memo = new double[501];
         while((n = nextInt()) != 0) {
             p = nextDouble();
-            long st = System.nanoTime();
+            // long st = System.nanoTime();
             double expect = 0;
-            memo = new double[n + 1][n + 1];
-            for(double c[] : memo)
-                Arrays.fill(c, -1);
+            Arrays.fill(memo, -1);
             double prev = rec(n, 0);
             for(int i = 1; i <= n; i++) { 
+                Arrays.fill(memo, -1);
                 double curr = rec(n, i);
                 expect += 1.0 * i * (curr - prev);
                 prev = curr;
             }
             println(String.format("%.10f", expect));
-            t += (System.nanoTime() - st) / 1e9;
+            // t += (System.nanoTime() - st) / 1e9;
         }
         
-        println("Time : " + t);
+        // println("Time : " + t);
     }
     
     
