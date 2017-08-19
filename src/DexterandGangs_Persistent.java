@@ -49,11 +49,11 @@ public class DexterandGangs_Persistent {
         }
     }
     
-    static int[] compress(int arr[]) {
+    static int[] compress(int arr[] , int one) {
         int temp[] = Arrays.copyOf(arr, arr.length);
         Arrays.sort(temp);
         int sz = 0;
-        for(int i = 0; i < temp.length; ) {
+        for(int i = one; i < temp.length; ) {
             int curr = temp[i];
             sz++;
             for(; i < temp.length && temp[i] == curr; i++)
@@ -61,13 +61,13 @@ public class DexterandGangs_Persistent {
         }
         int inv[] = new int[sz];
         sz = 0;
-        for(int i = 0; i < temp.length; ) {
+        for(int i = one; i < temp.length; ) {
             int curr = temp[i];
             inv[sz++] = curr;
             for(; i < temp.length && temp[i] == curr; i++)
                 ;
         }
-        for(int i = 1; i < arr.length; i++)
+        for(int i = one; i < arr.length; i++)
             arr[i] = Arrays.binarySearch(inv, arr[i]);
         return inv;
     }
@@ -131,8 +131,11 @@ public class DexterandGangs_Persistent {
         V = nextInt();
         int Q = nextInt();
         G = nextIntArrayOneBased(V);
-        int inv[] = compress(G);
-        // System.out.println(Arrays.toString(G));
+        int inv[] = compress(G , 1);
+        /*
+        System.out.println(Arrays.toString(G));
+        System.out.println(Arrays.toString(inv));
+        */
         adj = new ArrayList[V + 1];
         for(int i = 1; i <= V; i++)
             adj[i] = new ArrayList<>();
@@ -163,9 +166,27 @@ public class DexterandGangs_Persistent {
             SegTreeNode qNode = persistent[q];
             SegTreeNode lcaNode = persistent[lca];
             while(pNode.left != null) {
-                int currCnt = pNode.left.cnt + qNode.left.cnt - 2 * lcaNode.left.cnt + (G[lca] >= l && G[lca] <= r ? 1 : 0);
-                
+                int currCnt = pNode.left.cnt + qNode.left.cnt - 2 * lcaNode.left.cnt + (G[lca] >= l && G[lca] <= ((l + r) >> 1) ? 1 : 0);
+                // println("l " + l +  " r " + r + " cnt " + currCnt);
+                if(currCnt >= medianCnt) {
+                    r = (l + r) >> 1;
+                    pNode = pNode.left;
+                    qNode = qNode.left;
+                    lcaNode = lcaNode.left;
+                } else {
+                    l = ((l + r) >> 1) + 1;
+                    medianCnt -= currCnt;
+                    pNode = pNode.right;
+                    qNode = qNode.right;
+                    lcaNode = lcaNode.right;
+                }
             }
+            // println("final l " + l +  " r " + r);
+            if(pNode.cnt + qNode.cnt - 2 * lcaNode.cnt + (G[lca] >= l && G[lca] <= r ? 1 : 0) >= (len / 2 + 1)) 
+                println("D " + inv[l]);
+            else 
+                println("S");
+            
         }
     }
     
@@ -180,6 +201,19 @@ public class DexterandGangs_Persistent {
     /************************ TEMPLATE STARTS HERE **********************/
     
     public static void main(String[] args) throws IOException {
+        new Thread(null, new Runnable() {
+            public void run() {
+                try {
+                    new DexterandGangs_Persistent().run();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, "Increase Stack", 1 << 25).start();
+
+    }
+
+    void run() throws IOException { 
         reader = new BufferedReader(new InputStreamReader(System.in));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
@@ -187,7 +221,7 @@ public class DexterandGangs_Persistent {
         reader.close();
         writer.close();
     }
-    
+
     static BufferedReader reader;
     static PrintWriter    writer;
     static StringTokenizer st;
