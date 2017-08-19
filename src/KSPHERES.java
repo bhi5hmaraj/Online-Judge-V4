@@ -27,11 +27,18 @@ class KSPHERES {
         for(int i = 1; i <= C; i++)
             DP[0][i] = (radA[i] * radB[i]) % mod;
         
-        for(int seq = 1; seq <= C; seq++) {
-            for(int rad = seq + 1; rad <= C; rad++) {
-                
-            }
-        }
+        for(int i = 1; i <= C; i++)
+            DP[0][i] = (DP[0][i] + DP[0][i - 1]) % mod;
+        
+        for(int seq = 1; seq <= C; seq++) 
+            for(int rad = seq + 1; rad <= C; rad++) 
+                DP[seq][rad] = (DP[seq][rad - 1] + 
+                               ((((radA[rad] * radB[rad]) % mod) * DP[seq - 1][rad - 1]) % mod)) % mod;
+
+        
+        for(int i = 1; i <= C; i++) 
+            print(DP[i][C] + " ");
+        
     }
     
     
