@@ -7,13 +7,6 @@ public class uva_11264 {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static void pa(int a[]) {
-        Arrays.stream(a).forEach(i -> print(String.format("%2d ", i)));
-        print('\n');
-        IntStream.range(0, a.length).forEach(i -> print(String.format("%2d ", i)));
-        print('\n');
-    }
-    
     private static void solve() {
         
         
@@ -21,7 +14,16 @@ public class uva_11264 {
         while(T-->0) {
             int n = nextInt();
             int arr[] = nextIntArray(n);
-            
+            int cnt = 1;
+            int req = 1;
+            for(int i = 1; i < n - 1; i++) {
+                int avail = Math.min(arr[i] , arr[i + 1] - arr[i]) - 1;
+                if(avail >= req) {
+                    req += arr[i];
+                    cnt++;
+                }
+            }
+            println(cnt);
         }
         
     }
