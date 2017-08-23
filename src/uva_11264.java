@@ -15,7 +15,7 @@ public class uva_11264 {
             int n = nextInt();
             int arr[] = nextIntArray(n);
             int cnt = 1;
-            int req = 1;
+            int req = arr[0];
             for(int i = 1; i < n - 1; i++) {
                 int avail = Math.min(arr[i] , arr[i + 1] - arr[i]) - 1;
                 if(avail >= req) {
@@ -23,7 +23,7 @@ public class uva_11264 {
                     cnt++;
                 }
             }
-            println(cnt);
+            println(cnt + (n > 1 && arr[n - 1] - 1 >= req ? 1 : 0));
         }
         
     }
