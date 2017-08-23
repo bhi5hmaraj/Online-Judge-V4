@@ -6,6 +6,7 @@ public class poj_3177 {
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    static ArrayList<Integer> tree[];
     static ArrayList<Integer>[] adj;
     static boolean marked[];
     static int biConnected[];
@@ -16,7 +17,7 @@ public class poj_3177 {
         marked[u] = true;
         level[u]  = lev;
         int parallelEdge = 0;
-        for(int v : adj[u])
+        for(int v : adj[u]) {
             if(v != par) {
                 if(marked[v])
                     minLevel[u] = Math.min(minLevel[u] , level[v]);
@@ -25,6 +26,12 @@ public class poj_3177 {
                     minLevel[u] = Math.min(minLevel[u] , minLevel[v]);
                 }
             }
+            else 
+                parallelEdge++;
+        }
+        
+        if(parallelEdge > 1)
+            minLevel[u] = Math.min(minLevel[u] , level[par]);
     }
     static void findBiconnected(int u) {
         marked[u] = true;
@@ -38,6 +45,19 @@ public class poj_3177 {
             }
     }
     
+
+    
+    static int countLeaves(int u , int par) {
+        int subtree = 0;
+        int cnt = 0;
+        for(int v : tree[u])
+            if(v != par) {
+                subtree++;
+                cnt += countLeaves(v, u);
+            }
+        return cnt + (subtree == 0 ? 1 : 0);
+    }
+    
     private static void solve() {
         
         
@@ -46,7 +66,7 @@ public class poj_3177 {
         
         adj = new ArrayList[V + 1];
         for(int i = 1; i <= V; i++)
-            adj[i] = new ArrayList<>();
+            adj[i] = new ArrayList<Integer>();
         
         while(E-->0) {
             int u = nextInt();
@@ -65,7 +85,19 @@ public class poj_3177 {
         marked = new boolean[V + 1];
         findBiconnected(1);
         biComp++;
-        println(Arrays.toString(biConnected));
+        tree = new ArrayList[biComp];
+        for(int i = 0; i < biComp; i++)
+            tree[i] = new ArrayList<Integer>();
+        for(int i = 1; i <= V; i++)
+            for(int j : adj[i]) 
+                if(biConnected[i] != biConnected[j]) 
+                    tree[biConnected[i]].add(biConnected[j]);
+                
+        if(biComp == 1) // Single biconnected component 
+            println(0);
+        else 
+            println((countLeaves(0, -1) + 1 + (tree[0].size() == 1 ? 1 : 0)) / 2);
+        
     }
     
     
