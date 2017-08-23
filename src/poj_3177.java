@@ -11,21 +11,33 @@ public class poj_3177 {
     static int biConnected[];
     static int level[];
     static int minLevel[];
+    static int biComp;
     static void dfs(int u , int par , int lev) {
         marked[u] = true;
         level[u]  = lev;
+        int parallelEdge = 0;
         for(int v : adj[u])
             if(v != par) {
                 if(marked[v])
                     minLevel[u] = Math.min(minLevel[u] , level[v]);
                 else {
                     dfs(v, u, lev + 1);
-                    if(minLevel[v] > level[u])
-                        bridges.add(new int[]{Math.min(u , v) , Math.max(u , v)});
                     minLevel[u] = Math.min(minLevel[u] , minLevel[v]);
                 }
             }
     }
+    static void findBiconnected(int u) {
+        marked[u] = true;
+        for(int v : adj[u])
+            if(!marked[v]) {
+                if(minLevel[v] <= level[u]) // not a bridge
+                    biConnected[v] = biConnected[u];
+                else
+                    biConnected[v] = ++biComp;
+                findBiconnected(v);
+            }
+    }
+    
     private static void solve() {
         
         
@@ -43,6 +55,17 @@ public class poj_3177 {
             adj[v].add(u);
         }
         
+        marked = new boolean[V + 1];
+        biConnected = new int[V + 1];
+        level = new int[V + 1];
+        minLevel = new int[V + 1];
+        biComp = 0;
+        Arrays.fill(minLevel, Integer.MAX_VALUE);
+        dfs(1, 0, 0);
+        marked = new boolean[V + 1];
+        findBiconnected(1);
+        biComp++;
+        println(Arrays.toString(biConnected));
     }
     
     
