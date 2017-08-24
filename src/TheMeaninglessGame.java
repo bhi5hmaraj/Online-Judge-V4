@@ -38,54 +38,34 @@ public class TheMeaninglessGame {
     static final int MAX = (int) Math.sqrt(1e9) + 10;
     static int primes[] = sieve(MAX);
     
-    static HashMap<Integer , Integer> primeFactorize(int n) {
-        HashMap<Integer, Integer> freq = new HashMap<>();
-        for(int p : primes) {
-            int cnt = 0;
-            if(n == 1)
-                break;
-            while(n % p == 0) {
-                cnt++;
-                n /= p;
-            }
-            if(cnt > 0)
-                freq.put(p, cnt);
-        }
-        
-        if(n > 1)
-            freq.put(n, 1);
-        
-        return freq;
-    }
-    
     private static void solve() {
         
         int T = nextInt();
         while(T-->0) {
             int A = nextInt();
             int B = nextInt();
-            HashMap<Integer, Integer> a = primeFactorize(A);
-            HashMap<Integer, Integer> b = primeFactorize(B);
-            HashMap<Integer, Integer> merge = new HashMap<>();
-            a.forEach((k , v) -> merge.put(k, v + b.getOrDefault(k, 0)));
-            b.forEach((k , v) -> {
-                if (!merge.containsKey(k)) 
-                    merge.put(k, v);   
-            });
-            
-            println(a);
-            println(b);
-            println(merge);
-            
-            
             boolean flag = true;
-            for(Map.Entry<Integer, Integer> e : merge.entrySet())
-                flag &= e.getValue() % 3 == 0;
+            for(int p : primes) {
+                
+                if(!flag) break;
+                
+                if(A % p == 0 && B % p == 0) {
+                    int v1 = 0 , v2 = 0;
+                    while(A % p == 0) {
+                        v1++;
+                        A /= p;
+                    }
+                    while(B % p == 0) {
+                        v2++;
+                        B /= p;
+                    }
+                    flag &= (v1 + v2) % 3 == 0;
+                    flag &= (2 * v1 - v2) % 3 == 0 && (2 * v2 - v1) % 3 == 0 &&
+                            (2 * v1 - v2) / 3 >= 0 && (2 * v2 - v1) / 3 >= 0;
+                }
+            }
             
-            long min = Math.min(A , B);
-            long max = Math.max(A , B);
-            flag &= max <= min * min;
-            
+            flag &= A == B && A == 1;
             println(flag ? "Yes" : "No");
         }
         
