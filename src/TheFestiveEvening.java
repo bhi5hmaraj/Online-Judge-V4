@@ -1,29 +1,41 @@
 import java.util.*;
 import java.io.*;
-public class uva_11264 {
+public class TheFestiveEvening {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    
     private static void solve() {
         
         
-        int T = nextInt();
-        while(T-->0) {
-            int n = nextInt();
-            int arr[] = nextIntArray(n);
-            int cnt = 1;
-            int req = arr[0];
-            for(int i = 1; i < n - 1; i++) {
-                int avail = Math.min(arr[i] , arr[i + 1] - arr[i]) - 1;
-                if(avail >= req) {
-                    req += arr[i];
-                    cnt++;
+        int n = nextInt();
+        int k = nextInt();
+        char str[] = nextLine().toCharArray();
+        boolean last[] = new boolean[n];
+        for(int i = 0; i < 26; i++)
+            for(int j = n - 1; j >= 0; j--)
+                if(str[j] == 'A' + i) {
+                    last[j] = true;
+                    break;
                 }
-            }
-            println(cnt + (n > 1 && arr[n - 1] - 1 >= req ? 1 : 0));
+        boolean manned[] = new boolean[26];
+        for(int i = 0; i < n; i++) {
+            if(!manned[str[i] - 'A']) {
+                if(k == 0) {
+                    println("YES");
+                    return;
+                } else {
+                    manned[str[i] - 'A'] = true;
+                    k--;
+                }
+            } 
+            if(last[i])
+                k++;
         }
+            
+        println("NO");
         
     }
     
