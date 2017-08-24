@@ -10,10 +10,28 @@ public class InteractiveLowerBound  {
     private static void solve() {
         
         
+        int n = nextInt();
+        int to = nextInt();
+        int x = nextInt();
+        ArrayList<Integer> order = new ArrayList<>();
+        for(int i = 1; i <= n; i++)
+            order.add(i);
         
+        Collections.shuffle(order);
+        int run = 1999;
+        int ceil = Integer.MAX_VALUE;
         
+        for(int i = 0; i < Math.min(n , run); i++) {
+            println("? " + order.get(i));
+            writer.flush();
+            int val = nextInt();
+            int next = nextInt();
+            if(val >= x)
+                ceil = Math.min(ceil , val);
+        }
         
-        
+        println("! " + ceil);
+        writer.flush();
     }
     
     
