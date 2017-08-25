@@ -11,26 +11,35 @@ public class InteractiveLowerBound  {
         
         
         int n = nextInt();
-        int to = nextInt();
+        int start = nextInt();
         int x = nextInt();
         ArrayList<Integer> order = new ArrayList<>();
         for(int i = 1; i <= n; i++)
             order.add(i);
         
         Collections.shuffle(order);
-        int run = 1999;
-        int ceil = Integer.MAX_VALUE;
-        
+        int run = 1000;
+        int near = -1;
+        int pos = start;
         for(int i = 0; i < Math.min(n , run); i++) {
             println("? " + order.get(i));
             writer.flush();
-            int val = nextInt();
+            int val  = nextInt();
             int next = nextInt();
-            if(val >= x)
-                ceil = Math.min(ceil , val);
+            if(val <= x && val >= near) {
+                near = val;
+                pos = order.get(i);
+            }
         }
         
-        println("! " + ceil);
+        while(run-->1 && near < x && pos != -1) {
+            println("? " + pos);
+            writer.flush();
+            near = nextInt();
+            pos = nextInt();
+        }
+        
+        println("! " + (near >= x ? near : -1));
         writer.flush();
     }
     
