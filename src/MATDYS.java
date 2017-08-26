@@ -6,22 +6,27 @@ class MATDYS {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static final long MAX = Long.parseUnsignedLong("18446744073709551615");
-    
     private static void solve() {
         
         int T = nextInt();
         while(T-->0) {
             int N = nextInt();
             long K = Long.parseUnsignedLong(next());
-            long off = N < 64 ? (1L << N) - 1 : MAX;
+            long off = 1L << (N - 1); 
             long pos = 0;
-            while(N-->0) {
-                long next = Long.divideUnsigned(K, 2);
-                if(Long.remainderUnsigned(K, 2) == 0) {
-                    pos 
+            long accum = 0;
+            while(N-->1) {
+                if(Long.remainderUnsigned(K, 2) == 1)
+                    accum += off;
+                K = Long.divideUnsigned(K, 2);
+                off = Long.divideUnsigned(off, 2);
+                println("k " + K + " off " + off + " pos " + pos + " accum " + accum);
+                if(Long.compareUnsigned(K, off) >= 1) {
+                    K -= off;
+                    accum += off;
                 }
             }
+            println(Long.toUnsignedString(pos));
         }
         
     }
