@@ -73,7 +73,14 @@ public class TheMeaninglessGame {
         
     }
     
-    
+    private static void solve2() {
+        int T = nextInt();
+        while(T-->0) {
+            int A = nextInt();
+            int B = nextInt();
+            long prod = 1L * A * B;
+        }
+    }
     
     /************************ SOLUTION ENDS HERE ************************/
     
