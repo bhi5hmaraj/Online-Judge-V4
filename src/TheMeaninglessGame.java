@@ -72,16 +72,23 @@ public class TheMeaninglessGame {
         
         
     }
-    
+    static final double eps = 1e-8;
     private static void solve2() {
         int T = nextInt();
         while(T-->0) {
             int A = nextInt();
             int B = nextInt();
             long prod = 1L * A * B;
+            double cbrt = Math.cbrt(prod);
+            boolean flag = false;
+            if(Math.abs(cbrt - Math.round(cbrt)) <= eps) {
+                long root = (long) Math.round(cbrt);
+                flag = (A % root == 0 && B % root == 0);
+            }
+            println(flag ? "Yes" : "No");
         }
     }
-    
+
     /************************ SOLUTION ENDS HERE ************************/
     
     
@@ -94,7 +101,7 @@ public class TheMeaninglessGame {
         reader = new BufferedReader(new InputStreamReader(System.in));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
-        solve();
+        solve2();
         reader.close();
         writer.close();
     }
