@@ -6,6 +6,19 @@ class MATDYS {
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    static long pos(long idx , long len) {
+        if(len == 0)
+            return idx;
+        long accum = 0;
+        if(Long.remainderUnsigned(idx, 2) == 1)
+            accum =  len;
+        idx = Long.divideUnsigned(idx, 2);
+        len = Long.divideUnsigned(len, 2);
+        return accum + pos(idx, len);
+    }
+    
+    static final long max = Long.parseUnsignedLong("9223372036854775808");
+    
     private static void solve() {
         
         int T = nextInt();
@@ -13,20 +26,9 @@ class MATDYS {
             int N = nextInt();
             long K = Long.parseUnsignedLong(next());
             long off = 1L << (N - 1); 
-            long pos = 0;
-            long accum = 0;
-            while(N-->1) {
-                if(Long.remainderUnsigned(K, 2) == 1)
-                    accum += off;
-                K = Long.divideUnsigned(K, 2);
-                off = Long.divideUnsigned(off, 2);
-                println("k " + K + " off " + off + " pos " + pos + " accum " + accum);
-                if(Long.compareUnsigned(K, off) >= 1) {
-                    K -= off;
-                    accum += off;
-                }
-            }
-            println(Long.toUnsignedString(pos));
+            if(N == 64)
+                off = max;
+            println(Long.toUnsignedString(pos(K, off)));
         }
         
     }
