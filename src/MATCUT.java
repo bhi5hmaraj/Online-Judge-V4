@@ -9,11 +9,7 @@ class MATCUT {
     static int N = (int) 1e6;
     static int bigPrime[] = new int[N + 1];
 
-    private static void preCalBigPrimeSieve() // instead of the loPrimesieve you
-    // could use bigprimeSieve which
-    // has the same performance and
-    // its a lot more intutive
-    {
+    static {
         bigPrime[1] = 1;
         for (int i = 2; i <= N; i++) {
             if (bigPrime[i] == 0) {
@@ -23,14 +19,7 @@ class MATCUT {
             }
         }
     }
-
-    static HashMap<Integer, Integer> primeFactorize(int N) // Dependency : A
-    // sieve (loPrime[])
-    // which contains the
-    // lowest prime
-    // divisor for each
-    // number
-    {
+    static HashMap<Integer, Integer> primeFactorize(int N)  {
         HashMap<Integer, Integer> mp = new HashMap<>();
         int ct, prime;
         while (N != 1) {
@@ -49,15 +38,31 @@ class MATCUT {
     static HashMap<Integer,Integer> pFact[];
     static HashMap<Integer , Integer> curr;
     static int globalMax;
-    static boolean marked[];
-    static void dfs(int u , int len) {
-       marked[u] = true;
+    
+    static void dfs(int u , int par , int len) {
        pFact[u].forEach((k , v) -> curr.put(k, curr.getOrDefault(k, 0) + v));
+       boolean flag = true;
+       for(Map.Entry<Integer, Integer> e : curr.entrySet())
+           flag &= e.getValue() % 3 == 0;
+    
+       if(flag)
+           globalMax = Math.max(globalMax , len);
+       
+       for(int v : adj[u])
+           if(v != par)
+               dfs(v, u, len + 1);
+       
+       pFact[u].forEach((k , v) -> {
+           curr.put(k, curr.get(k) - v);
+           if(curr.get(k) == 0)
+               curr.remove(k);
+       });
     }
     
     private static void solve() {
         
         int T = nextInt();
+        curr = new HashMap<>();
         while(T-->0) {
             int V = nextInt();
             int E = V - 1;
@@ -74,7 +79,11 @@ class MATCUT {
                 adj[u].add(v);
                 adj[v].add(u);
             }
+            globalMax = -1;
+            for(int i = 1; i <= V; i++)
+                dfs(i, 0, 1);
             
+            println(globalMax);
         }
         
     }

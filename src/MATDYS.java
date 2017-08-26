@@ -1,25 +1,29 @@
 import java.util.*;
 import java.io.*;
-import java.math.BigDecimal;
-public class testing {
+class MATDYS {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    static final long MAX = Long.parseUnsignedLong("18446744073709551615");
     
     private static void solve() {
-        /*
-        long s = System.nanoTime();
-        BigDecimal bigDecimal = new BigDecimal("1e4000");
-        bigDecimal = bigDecimal.multiply(bigDecimal).add(bigDecimal);
-        bigDecimal.toBigInteger();
-        System.out.println("Time : " + ((System.nanoTime() - s) / 1e9));
-        Long.bitCount(2141231232L);
-        */
-        println(5/-7);
-        long n = Long.parseUnsignedLong("18446744073709551615");
-        println(Long.toUnsignedString(n));
+        
+        int T = nextInt();
+        while(T-->0) {
+            int N = nextInt();
+            long K = Long.parseUnsignedLong(next());
+            long off = N < 64 ? (1L << N) - 1 : MAX;
+            long pos = 0;
+            while(N-->0) {
+                long next = Long.divideUnsigned(K, 2);
+                if(Long.remainderUnsigned(K, 2) == 0) {
+                    pos 
+                }
+            }
+        }
+        
     }
     
     
