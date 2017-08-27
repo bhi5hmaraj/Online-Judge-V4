@@ -1,35 +1,44 @@
 import java.util.*;
 import java.io.*;
-class MATDYS {
+public class MagicFive {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
-    
-    static long pos(long idx , long len) {
-        if(len == 0)
-            return idx;
-        long accum = 0;
-        if(Long.remainderUnsigned(idx, 2) == 1)
-            accum =  len;
-        idx = Long.divideUnsigned(idx, 2);
-        len = Long.divideUnsigned(len, 2);
-        return accum + pos(idx, len);
+    static class MMInt {       // MM (Modular Math) class 
+        static final int mod = (int) (1e9) + 7; // Default
+        static int sub(int a, int b) {return (a - b  + mod) % mod;}
+        static int mul(int a, int b) {return (int) ((1L * a * b ) % mod);}
+        static int add(int a, int b) {return (a + b) % mod;}
+        static int div(int a, int b) {return mul(a, modInverse(b));}
+        static int modInverse(int n) {return modPow(n, mod - 2);} // Fermat's little theorem
+        static int modPow(long a , long b) {
+            long pow = 1;
+            while(b > 0) {
+                if((b & 1L) == 1)
+                    pow = ((pow * a) % mod);
+
+                a = ((a * a) % (mod));
+                b >>= 1;
+            }
+            return (int) pow;
+        }
     }
-    
-    static final long max = Long.parseUnsignedLong("9223372036854775808");
-    
     private static void solve() {
         
-        int T = nextInt();
-        while(T-->0) {
-            int N = nextInt();
-            long K = Long.parseUnsignedLong(next());
-            long off = N == 64 ? max : 1L << (N - 1); 
-            println(Long.toUnsignedString(pos(K, off)));
-        }
+        char str[] = nextLine().toCharArray();
+        int k = nextInt();
+        int ans = 0;
+        int cache = MMInt.div(MMInt.sub(MMInt.modPow(2, 1L * str.length * k), 1), 
+                    MMInt.sub(MMInt.modPow(2, str.length), 1)); 
+        for(int i = 0; i < str.length; i++) 
+            if(str[i] == '0' || str[i] == '5') 
+                ans = MMInt.add(ans, MMInt.mul(MMInt.modPow(2, i), cache));
+
+        println(ans);
         
     }
+    
     
     
     /************************ SOLUTION ENDS HERE ************************/

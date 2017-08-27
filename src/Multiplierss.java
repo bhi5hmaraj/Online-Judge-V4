@@ -1,35 +1,21 @@
 import java.util.*;
 import java.io.*;
-class MATDYS {
+public class Multiplierss {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static long pos(long idx , long len) {
-        if(len == 0)
-            return idx;
-        long accum = 0;
-        if(Long.remainderUnsigned(idx, 2) == 1)
-            accum =  len;
-        idx = Long.divideUnsigned(idx, 2);
-        len = Long.divideUnsigned(len, 2);
-        return accum + pos(idx, len);
-    }
-    
-    static final long max = Long.parseUnsignedLong("9223372036854775808");
     
     private static void solve() {
         
-        int T = nextInt();
-        while(T-->0) {
-            int N = nextInt();
-            long K = Long.parseUnsignedLong(next());
-            long off = N == 64 ? max : 1L << (N - 1); 
-            println(Long.toUnsignedString(pos(K, off)));
-        }
+        
+        
+        
+        
         
     }
+    
     
     
     /************************ SOLUTION ENDS HERE ************************/
