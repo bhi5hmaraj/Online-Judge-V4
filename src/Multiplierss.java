@@ -6,7 +6,7 @@ public class Multiplierss {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static  int mod = (int) (1e9) + 7; // Default
+    static final int mod = (int) (1e9) + 7; // Default
     static class MMInt {       // MM (Modular Math) class 
         static int sub(int a, int b , int mod) {return (a - b  + mod) % mod;}
         static int mul(int a, int b , int mod) {return (int) ((1L * a * b ) % mod);}
@@ -36,25 +36,29 @@ public class Multiplierss {
         
         TreeSet<Integer> set = new TreeSet<>(); 
         Arrays.stream(primes).forEach(set::add);
-
+        int pSorted[] = new int[set.size()];
+        int ptr = 0;
+        for(int p : set)
+            pSorted[ptr++] = p;
+        
         int left = 1;
         int right[] = new int[set.size()];
         right[set.size() - 1] = 1;
-        
+        for(int i = pSorted.length - 2; i >= 0; i--)
+            right[i] = MMInt.mul(right[i + 1], freq[pSorted[i + 1]] + 1, mod - 1);
         
         int ans = 1;
-        for(int p : set) {
-            println(p + " == " + freq[p]);
+        for(int i = 0; i < pSorted.length; i++) {
+            int p = pSorted[i];
+            // println(p + " == " + freq[p]);
             int pow = p;
-            right = MMInt.div(right, freq[p] + 1);
-            // println("left " + left + " right " + right);
-            int ways = MMInt.mul(left, right);
-            for(int i = 0; i < freq[p]; i++) {
+            int ways = MMInt.mul(left, right[i], mod - 1);
+            for(int j = 0; j < freq[p]; j++) {
                 // println("pow " + pow);
-                ans = MMInt.mul(ans, MMInt.modPow(pow, ways));
-                pow = MMInt.mul(pow, p);
+                ans = MMInt.mul(ans, MMInt.modPow(pow, ways , mod) , mod);
+                pow = MMInt.mul(pow, p , mod);
             }
-            left = MMInt.mul(left, freq[p] + 1);
+            left = MMInt.mul(left, freq[p] + 1 , mod - 1);
         }
         
         println(ans);
