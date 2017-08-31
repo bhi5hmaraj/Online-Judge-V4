@@ -7,6 +7,35 @@ public class testing {
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    // Sieve of Erathanoses
+    public static boolean[] isPrimeArray(int N) {
+        boolean num[] = new boolean[N + 1];
+        Arrays.fill(num, true);
+        num[1] = num[0]=  false;
+        for (int i = 2; i * i <= N; i++)
+            if (num[i])  // i is prime
+                for (int j = i * i; j <= N; j += i)
+                    num[j] = false;
+        
+            
+        return num;
+    }
+    
+    // Sieve of Erathanoses dependency : isPrimeArray()
+    public static int[] sieve(int N) {
+        
+        boolean isPrime[] = isPrimeArray(N);
+        int sz = 0;
+        for(boolean b : isPrime)
+            sz += b ? 1 : 0;
+        int arr[] = new int[sz];
+        int ptr = 0;
+        for (int i = 2; i <= N; i++)
+            if (isPrime[i])
+                arr[ptr++] = i;
+                
+        return arr;
+    }
     
     private static void solve() {
         /*
@@ -17,9 +46,10 @@ public class testing {
         System.out.println("Time : " + ((System.nanoTime() - s) / 1e9));
         Long.bitCount(2141231232L);
         */
-        println(5/-7);
-        long n = Long.parseUnsignedLong("18446744073709551615");
-        println(Long.toUnsignedString(n));
+        int MAX = (int) 1e8;
+        long start = System.nanoTime();
+        int primes[] = sieve(MAX);
+        System.out.println("N = " + MAX + " Time taken = " + (System.nanoTime() - start) / 1e9);
     }
     
     
