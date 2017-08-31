@@ -7,7 +7,6 @@ public class uva_12546 {
     /************************ SOLUTION STARTS HERE ************************/
     
     static final int mod = 1000000007;
-    static final int MAX_POW = 50;
     private static void solve() {
         
         for(int tc = 1 , T = nextInt(); tc <= T; tc++) {
