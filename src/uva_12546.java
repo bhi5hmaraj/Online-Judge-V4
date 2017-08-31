@@ -10,9 +10,7 @@ public class uva_12546 {
     static final int MAX_POW = 50;
     private static void solve() {
         
-        
-        int T = nextInt();
-        while(T-->0) {
+        for(int tc = 1 , T = nextInt(); tc <= T; tc++) {
             int K = nextInt();
             int primeFact[] = new int[K];
             int pow[] = new int[K];
@@ -21,15 +19,40 @@ public class uva_12546 {
                 pow[i] = nextInt();
             }
             
-            int cachePow[][] = new int[K][MAX_POW + 1];
+            int cacheSum[] = new int[K];    // 1 + p + p^2 + p^{pow - 1}
             for(int i = 0; i < K; i++) {
-                cachePow[i][0] = 1;
+                cacheSum[i] = 1;
                 int p = primeFact[i];
-                for(int j = 1; j <= MAX_POW; j++) {
-                    cachePow[i][j] = (cachePow[i][j - 1] + p) % mod;
+                for(int j = 0; j < pow[i] - 1; j++) {
+                    cacheSum[i] = (cacheSum[i] + p) % mod;
                     p = (int) ((1L * p * primeFact[i]) % mod);
                 }
             }
+            
+            int primePow[] = new int[K];
+            for(int i = 0; i < K; i++) {
+                primePow[i] = 1;
+                for(int j = 0; j < pow[i]; j++)
+                    primePow[i] = (int) ((1L * primePow[i] * primeFact[i]) % mod);
+            }
+            
+            int ans = 0;
+            for(int mask = 0; mask < (1 << K); mask++) {
+                int sumP = 1;
+                int sumQ = 1;
+                for(int i = 0; i < K; i++) {
+                    if((mask & (1 << i)) != 0) {
+                        sumP = (int) ((1L * sumP * primePow[i]) % mod);
+                        sumQ = (int) ((1L * sumQ * ((primePow[i] + cacheSum[i]) % mod)) % mod);
+                    } else {
+                        sumP = (int) ((1L * sumP * cacheSum[i]) % mod);
+                        sumQ = (int) ((1L * sumQ * primePow[i]) % mod);
+                    }
+                }
+                ans = (ans + ((sumP + sumQ) % mod)) % mod;
+            }
+            
+            println("Case " + tc + ": " + ans);
             
         }
         
