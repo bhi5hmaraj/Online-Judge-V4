@@ -37,6 +37,25 @@ public class testing {
         return arr;
     }
     
+    static boolean isComposite[];
+    static int primes[];
+    static int SIZE = (int) 5e6;
+    static void modifiedSieve(int N) {
+        isComposite = new boolean [N + 1];
+        primes = new int[SIZE];
+        int ptr = 0;
+        for(int i = 2; i <= N; i++) {
+            if(!isComposite[i])
+                primes[ptr++] = i;
+            for(int j = 0 ; j < ptr && primes[j] * i <= N; j++) {
+                // primes[j] is the lowest prime for primes[j] * i
+                isComposite[primes[j] * i] = true;
+                if(i % primes[j] == 0)
+                    break;
+            }
+        }
+    }
+    
     private static void solve() {
         /*
         long s = System.nanoTime();
@@ -46,9 +65,19 @@ public class testing {
         System.out.println("Time : " + ((System.nanoTime() - s) / 1e9));
         Long.bitCount(2141231232L);
         */
-        int MAX = (int) 1e8;
+        int MAX = (int) 5e7;
         long start = System.nanoTime();
-        int primes[] = sieve(MAX);
+//        int priArr[] = sieve(MAX);
+        modifiedSieve(MAX);
+        // println("total primes = " + priArr.length);
+        /*
+        for(int i = 0; i < priArr.length; i++)
+            if(priArr[i] != primes.get(i)) {
+                println("WA");
+                return;
+            }
+        */
+        println("AC");
         System.out.println("N = " + MAX + " Time taken = " + (System.nanoTime() - start) / 1e9);
     }
     
