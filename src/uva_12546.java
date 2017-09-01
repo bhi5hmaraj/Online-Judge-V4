@@ -37,7 +37,7 @@ public class uva_12546 {
                     primePow[i] = (int) ((1L * primePow[i] * primeFact[i]) % mod);
                 ans = (int) ((1L * ans * primePow[i]) % mod);
             }
-
+            // ans initially contains 2 * p1^pow1 * p2^pow2 ... pk^powk
             for(int mask = 0; mask < (1 << K); mask++) {
                 int sumP = 1;
                 int sumQ = 1;
