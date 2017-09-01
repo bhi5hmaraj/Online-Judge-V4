@@ -23,26 +23,21 @@ public class uva_12546 {
             for(int i = 0; i < K; i++) {
                 cacheSum[i] = 1;
                 int p = primeFact[i];
-                for(int j = 0; j < pow[i]; j++) {
+                for(int j = 0; j < pow[i] - 1; j++) {
                     cacheSum[i] = (cacheSum[i] + p) % mod;
                     p = (int) ((1L * p * primeFact[i]) % mod);
                 }
             }
             
-            int primePow[] = new int[K];
+            int primePow[] = new int[K];    // stores p^pow
+            int ans = 2;
             for(int i = 0; i < K; i++) {
                 primePow[i] = 1;
                 for(int j = 0; j < pow[i]; j++)
                     primePow[i] = (int) ((1L * primePow[i] * primeFact[i]) % mod);
+                ans = (int) ((1L * ans * primePow[i]) % mod);
             }
-            
-            int ans = 0;
-            println("sum ");
-            println(Arrays.toString(cacheSum));
-            println("prime pow");
-            println(Arrays.toString(primePow));
-            println("pow");
-            println(Arrays.toString(pow));
+
             for(int mask = 0; mask < (1 << K); mask++) {
                 int sumP = 1;
                 int sumQ = 1;
@@ -51,19 +46,18 @@ public class uva_12546 {
                 for(int i = 0; i < K; i++) {
                     if((mask & (1 << i)) != 0) {
                         sumP = (int) ((1L * sumP * primePow[i])  % mod);
-                        sumQ = (int) ((1L * sumQ * cacheSum[i])  % mod);
+                        sumQ = (int) ((1L * sumQ * ((cacheSum[i] + primePow[i]) % mod))  % mod);
                         cntQ = (int) ((1L * cntQ * (1 + pow[i])) % mod);
                     } else {
                         sumP = (int) ((1L * sumP * cacheSum[i]) % mod);
                         sumQ = (int) ((1L * sumQ * primePow[i]) % mod);
-                        cntP = (int) ((1L * cntP * (1 + pow[i])) % mod);
+                        cntP = (int) ((1L * cntP * pow[i]) % mod);
                     }
                 }
-                println("mask " + Integer.toBinaryString(mask) + " cntP " + cntP + " sumP " + sumP + " cntQ " + cntQ + " sumQ " + sumQ);
                 ans = (ans + (((int) ((1L * sumP * cntQ) % mod) + 
                                (int) ((1L * sumQ * cntP) % mod)) % mod)) % mod;
             }
-            
+            ans = (int) ((1L * ans * modInv2) % mod);
             println("Case " + tc + ": " + ans);
             
         }
