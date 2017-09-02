@@ -15,6 +15,7 @@ public class HappinessofaKingdom {
     static ArrayList<Integer> trees;
     static long globalMax = 0;
     static int backU , backV;
+    static int remU , remV;
     static int dfs(int u , int par , int lev , int grp) {
         marked[u] = true;
         level[u] = lev;
@@ -23,11 +24,12 @@ public class HappinessofaKingdom {
         degree[u] = adj[u].size();
         for(int v : adj[u])
             if(v != par) {
-                if(marked[v]) // back edge
+                if(marked[v]) { // back edge
                     if(level[v] < level[u] && backU == -1 && backV == -1) {
                         backU = u;
                         backV = v;
                     }
+                }
                 else {
                     size += dfs(v, u , lev + 1,  grp);
                     degree[u] += degree[v];
@@ -42,12 +44,18 @@ public class HappinessofaKingdom {
         for(int v : adj[u])
             if(v != par) {
                 int sz = findOpt(v, u);
-                globalMax = Math.max(globalMax , initHapp - 2L * sz * (trees.get(id[u]) - sz));
+                long hap = initHapp - 2L * sz * (trees.get(id[u]) - sz);
+                if(hap > globalMax) {
+                    globalMax = hap;
+                    remU = u;
+                    remV = v;
+                }
                 subtree += sz;
             }
         return subtree;
     }
     
+    @SuppressWarnings("unchecked")
     private static void solve() {
         
         
@@ -70,8 +78,10 @@ public class HappinessofaKingdom {
         id    = new int[V + 1];
         initHapp = 0;
         level = new int[V + 1];
+        degree = new int[V + 1];
         int comp = 0;
         int extra = 0;
+        backU = backV = -1;
         for(int i = 1; i <= V; i++)
             if(!marked[i]) {
                 int size = dfs(i, 0, 0 , comp++);
@@ -79,18 +89,12 @@ public class HappinessofaKingdom {
                 initHapp += 1L * size * (size - 1);
                 extra += (degree[i] / 2) - (size - 1);
             }
-        
-        println("back edge " + backU + " " + backV);
-        
-        println("init happ " + initHapp);
-        
-        
+
         if(extra >= 2)
             println(initHapp);
-        else if(extra == 1) {
-            int bridge[] = backEdge.get(0);
-            adj[bridge[0]].remove(adj[bridge[0]].indexOf(bridge[1]));
-            adj[bridge[1]].remove(adj[bridge[1]].indexOf(bridge[0]));
+        else if(extra == 1){
+            adj[backU].remove(adj[backU].indexOf(backV));
+            adj[backV].remove(adj[backV].indexOf(backU));
             marked = new boolean[V + 1];
             globalMax = 0;
             for(int i = 1; i <= V; i++)
@@ -98,8 +102,39 @@ public class HappinessofaKingdom {
                     findOpt(i, 0);
             println(globalMax);
         }
-/*        else
-            throw new RuntimeException("Work in progress");*/
+        else {
+            marked = new boolean[V + 1];
+            globalMax = 0;
+            for(int i = 1; i <= V; i++)
+                if(!marked[i])
+                    findOpt(i, 0);
+            
+            adj[remU].remove(adj[remU].indexOf(remV));
+            adj[remV].remove(adj[remV].indexOf(remU));
+
+            marked = new boolean[V + 1];
+            trees = new ArrayList<>();
+            id    = new int[V + 1];
+            initHapp = 0;
+            level = new int[V + 1];
+            degree = new int[V + 1];
+            comp = 0;
+            backU = backV = -1;
+            for(int i = 1; i <= V; i++)
+                if(!marked[i]) {
+                    int size = dfs(i, 0, 0 , comp++);
+                    trees.add(size);
+                    initHapp += 1L * size * (size - 1);
+                }
+            
+            marked = new boolean[V + 1];
+            globalMax = 0;
+            for(int i = 1; i <= V; i++)
+                if(!marked[i])
+                    findOpt(i, 0);
+            
+            println(globalMax);
+        }
     }
     
     
@@ -113,11 +148,25 @@ public class HappinessofaKingdom {
     /************************ TEMPLATE STARTS HERE **********************/
     
     public static void main(String[] args) throws IOException {
+        new Thread(null, new Runnable() {
+            public void run() {
+                new HappinessofaKingdom().run();
+            }
+        }, "Increase Stack", 1 << 25).start();
+
+    }
+
+    void run(){ 
         reader = new BufferedReader(new InputStreamReader(System.in));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
-        solve();
-        reader.close();
+        try {
+            solve();
+            reader.close();
+        }
+        catch (Throwable e) {
+            throw new RuntimeException();
+        }
         writer.close();
     }
     
