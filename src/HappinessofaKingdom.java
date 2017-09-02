@@ -7,27 +7,46 @@ public class HappinessofaKingdom {
     /************************ SOLUTION STARTS HERE ************************/
     
     static ArrayList<Integer>[] adj;
-    static ArrayList<int[]> bridges;
-    static int level[];
-    static int minLevel[];
     static boolean marked[];
-
-    static void dfs(int u , int par , int lev) {
+    static long initHapp;
+    static int id[];
+    static int level[];
+    static int degree[];
+    static ArrayList<Integer> trees;
+    static long globalMax = 0;
+    static int backU , backV;
+    static int dfs(int u , int par , int lev , int grp) {
         marked[u] = true;
-        level[u]  = lev;
+        level[u] = lev;
+        int size = 1;
+        id[u] = grp;
+        degree[u] = adj[u].size();
         for(int v : adj[u])
             if(v != par) {
-                if(marked[v])
-                    minLevel[u] = Math.min(minLevel[u] , level[v]);
+                if(marked[v]) // back edge
+                    if(level[v] < level[u] && backU == -1 && backV == -1) {
+                        backU = u;
+                        backV = v;
+                    }
                 else {
-                    dfs(v, u, lev + 1);
-                    if(minLevel[v] > level[u] && bridges.size() < 2)
-                        bridges.add(new int[]{Math.min(u , v) , Math.max(u , v)});
-                    minLevel[u] = Math.min(minLevel[u] , minLevel[v]);
+                    size += dfs(v, u , lev + 1,  grp);
+                    degree[u] += degree[v];
                 }
             }
+        return size;
     }
     
+    static int findOpt(int u , int par) {
+        marked[u] = true;
+        int subtree = 1;
+        for(int v : adj[u])
+            if(v != par) {
+                int sz = findOpt(v, u);
+                globalMax = Math.max(globalMax , initHapp - 2L * sz * (trees.get(id[u]) - sz));
+                subtree += sz;
+            }
+        return subtree;
+    }
     
     private static void solve() {
         
@@ -46,12 +65,41 @@ public class HappinessofaKingdom {
             adj[v].add(u);
         }
         
-        marked = new boolean[V];
-        level  = new int[V];
-        minLevel = new int[V];
-        Arrays.fill(minLevel, Integer.MAX_VALUE);
-        bridges = new ArrayList<>();
+        marked = new boolean[V + 1];
+        trees = new ArrayList<>();
+        id    = new int[V + 1];
+        initHapp = 0;
+        level = new int[V + 1];
+        int comp = 0;
+        int extra = 0;
+        for(int i = 1; i <= V; i++)
+            if(!marked[i]) {
+                int size = dfs(i, 0, 0 , comp++);
+                trees.add(size);
+                initHapp += 1L * size * (size - 1);
+                extra += (degree[i] / 2) - (size - 1);
+            }
         
+        println("back edge " + backU + " " + backV);
+        
+        println("init happ " + initHapp);
+        
+        
+        if(extra >= 2)
+            println(initHapp);
+        else if(extra == 1) {
+            int bridge[] = backEdge.get(0);
+            adj[bridge[0]].remove(adj[bridge[0]].indexOf(bridge[1]));
+            adj[bridge[1]].remove(adj[bridge[1]].indexOf(bridge[0]));
+            marked = new boolean[V + 1];
+            globalMax = 0;
+            for(int i = 1; i <= V; i++)
+                if(!marked[i])
+                    findOpt(i, 0);
+            println(globalMax);
+        }
+/*        else
+            throw new RuntimeException("Work in progress");*/
     }
     
     
