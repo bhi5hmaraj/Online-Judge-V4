@@ -97,18 +97,23 @@ public class LA_5112 {
                 oldBase[i][i - 1] = 1;
             
             base = pow(oldBase, K);
-            
+            int start = (K * ((R / K) + 1));
+            N -= R / K;
             int sum[][] = gpSum(N);
-            multiplyAndSet(sum, pow(oldBase, K - 1));
+            multiplyAndSet(sum, pow(oldBase, start - R));
             int ans = 0;
+            for(int i = K - 1; i < R; i += K)
+                ans = (ans + seed[i]) % mod;
             for(int i = 0; i < R; i++)
-                ans += seed[R - i - 1] * sum[0][i];
+                ans = (ans + ((int)((1L * seed[R - i - 1] * sum[0][i]) % mod))) % mod;
             println(ans);
-            for(int i = 1; i <= 8; i++){
+            /*
+            for(int i = 1; i <= 6; i++){
                 println("i " + i);
                 print(pow(oldBase, i));
                 print('\n');
             }
+            */
         }
         
         
