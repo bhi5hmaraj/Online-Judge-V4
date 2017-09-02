@@ -9,29 +9,97 @@ public class LA_5112 {
     static final int mod = (int) 1e9 + 7;
     static int R;
     static int aux[][];
+    static int base[][];
+    static int unit[][];
+    
     static void setUnit(int a[][]) {
         for(int i = 0 ; i < R; i++)
             a[i][i] = 1;
     }
+    static void multiplyAndSet(int a[][] , int b[][]) {
+        for(int i = 0; i < R; i++)
+            for(int j = 0; j < R; j++) {
+                aux[i][j] = 0;
+                for(int k = 0; k < R; k++)
+                    aux[i][j] = (aux[i][j] + (int) ((1L * a[i][k] * b[k][j]) % mod)) % mod;
+            }
+        for(int i = 0; i < R; i++)
+            for(int j = 0; j < R; j++)
+                a[i][j] = aux[i][j];
+    }
     public static int[][] pow(int[][] mat , int b) {
         int ans[][] = new int[R][R];
+        setUnit(ans);
+        int m[][] = new int[R][];
+        for(int i = 0; i < R; i++)
+            m[i] = Arrays.copyOf(mat[i], R);
         
         while(b > 0) {
             if((b & 1) == 1)
-                ans.multiply(m);
-            m.multiply(m);
+                multiplyAndSet(ans, m);
+            multiplyAndSet(m, m);
             b >>= 1;
         }
         return ans;
     }
-
+    static int[][] add(int a[][] , int b[][]) {
+        int c[][] = new int[R][R];
+        for(int i = 0; i < R; i++)
+            for(int j = 0; j < R; j++)
+                c[i][j] = (a[i][j] + b[i][j]) % mod;
+        
+        return c;
+    }
+    
+    static int[][] gpSum(int n) {
+        if (n <= 1)
+            return base;
+        else if((n & 1) != 0) 
+            return add(pow(base, n - 1), gpSum(n - 1));
+        else {
+            int temp[][] = add(unit, pow(base, n / 2));
+            multiplyAndSet(temp, gpSum(n / 2));
+            return temp;
+        }
+    }
+    
+    static void print(int a[][]) {
+        for(int i = 0; i < R; i++) {
+            for(int j = 0; j < R; j++)
+                print(String.format("%3d ", a[i][j]));
+            print('\n');
+        }
+    }
     
     private static void solve() {
         
-        
         int T = nextInt();
         
-        
+        while(T-->0) {
+            int N = nextInt();
+            R = nextInt();
+            aux = new int[R][R];
+            unit = new int[R][R];
+            for(int i = 0; i < R; i++)
+                unit[i][i] = 1;
+            
+            int K = nextInt();
+            int seed[] = nextIntArray(R);
+            base = new int[R][R];
+            base[0] = nextIntArray(R);
+            for(int i = 1; i < R; i++)
+                base[i][i - 1] = 1;
+            
+            base = pow(base, K);
+            int sum[][] = gpSum(N);
+            int ans = 0;
+            for(int i = 0; i < R; i++)
+                ans = (ans + (int) ((1L * sum[0][i] * seed[R - i - 1]) % mod)) % mod;
+            
+            println(ans);
+            for(int i = 1; i <= N; i++)
+                print(pow(base, i));
+        }
         
         
     }
