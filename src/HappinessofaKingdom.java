@@ -1,55 +1,57 @@
 import java.util.*;
 import java.io.*;
-public class BuyingEverything {
+public class HappinessofaKingdom {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static ArrayList<Integer> pos;
-    static int k , m;
-    static long memo[][];
-    
-    static final long INF = (long) 1e16;
-    static long findOpt(int idx , int rem) {
-        if(rem == 0)
-            return 0;
-        else if(memo[idx][rem] != -1)
-            return memo[idx][rem];
-        else {
-            int bought = m - rem;
-            long min = INF;
-            for(int i = idx + 1; i + rem <= pos.size(); i++) {
-                long cost = 1L * (pos.get(i) - pos.get(idx)) * (bought == 0 ? 1 : 1L * bought * k);
-                long nextVal = findOpt(i, rem - 1);
-                if(nextVal < INF)
-                    min = Math.min(min , cost + nextVal);
+    static ArrayList<Integer>[] adj;
+    static ArrayList<int[]> bridges;
+    static int level[];
+    static int minLevel[];
+    static boolean marked[];
+
+    static void dfs(int u , int par , int lev) {
+        marked[u] = true;
+        level[u]  = lev;
+        for(int v : adj[u])
+            if(v != par) {
+                if(marked[v])
+                    minLevel[u] = Math.min(minLevel[u] , level[v]);
+                else {
+                    dfs(v, u, lev + 1);
+                    if(minLevel[v] > level[u] && bridges.size() < 2)
+                        bridges.add(new int[]{Math.min(u , v) , Math.max(u , v)});
+                    minLevel[u] = Math.min(minLevel[u] , minLevel[v]);
+                }
             }
-            return memo[idx][rem] = min;
-        }
     }
     
     
     private static void solve() {
         
         
-        int n = nextInt();
-        m = nextInt();
-        k = nextInt();
+        int V = nextInt();
+        int m = nextInt();
         
-        int b[] = nextIntArray(n);
-        pos = new ArrayList<>();
-        pos.add(0);
-        for(int i = 0; i < n; i++)
-            if(b[i] == 1)
-                pos.add(i);
+        adj = new ArrayList[V + 1];
+        for(int i = 1; i <= V; i++)
+            adj[i] = new ArrayList<>();
         
-        memo = new long[pos.size()][m + 1];
-        for(long t[] : memo)
-            Arrays.fill(t, -1);
+        while(m-->0) {
+            int u = nextInt();
+            int v = nextInt();
+            adj[u].add(v);
+            adj[v].add(u);
+        }
         
-        long ret = findOpt(0, m);
-        println(ret == INF ? -1 : ret);
+        marked = new boolean[V];
+        level  = new int[V];
+        minLevel = new int[V];
+        Arrays.fill(minLevel, Integer.MAX_VALUE);
+        bridges = new ArrayList<>();
+        
     }
     
     
@@ -63,32 +65,13 @@ public class BuyingEverything {
     /************************ TEMPLATE STARTS HERE **********************/
     
     public static void main(String[] args) throws IOException {
-        new Thread(null, new Runnable() {
-            public void run() {
-                new BuyingEverything().run();
-            }
-        }, "Increase Stack", 1 << 25).start();
-
-    }
-
-    void run(){ 
         reader = new BufferedReader(new InputStreamReader(System.in));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
-        try {
-            solve();
-        }
-        catch (Throwable e) {
-            throw new RuntimeException();
-        }
-        try {
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        solve();
+        reader.close();
         writer.close();
     }
-    
     
     static BufferedReader reader;
     static PrintWriter    writer;
