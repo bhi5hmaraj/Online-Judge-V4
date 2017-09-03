@@ -75,12 +75,7 @@ public class BuyingEverything {
         reader = new BufferedReader(new InputStreamReader(System.in));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
-        try {
-            solve();
-        }
-        catch (Throwable e) {
-            throw new RuntimeException();
-        }
+        solve();
         try {
             reader.close();
         } catch (IOException e) {
