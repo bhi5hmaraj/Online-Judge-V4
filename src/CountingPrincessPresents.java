@@ -13,9 +13,9 @@ public class CountingPrincessPresents {
         long ways = 1;
         for(int v[] : adj[u])
             if(v[0] != par) {
-                hasSpecial[u] |= hasSpecial[v[0]] | (v[1] == 1);
                 long subTreeWays = dfs(v[0], u);
-                println("u " + u + " v " + v[0] + " sub " + subTreeWays);
+                hasSpecial[u] |= hasSpecial[v[0]] | (v[1] == 1);
+                 println("u " + u + " v " + v[0] + " sub " + subTreeWays);
                 if(!(hasSpecial[v[0]] || (v[1] == 1)))
                     subTreeWays = (subTreeWays + 1) % mod;  // can remove
                 ways = (ways * subTreeWays) % mod;
@@ -35,16 +35,19 @@ public class CountingPrincessPresents {
             for(int i = 1; i <= V; i++)
                 adj[i] = new ArrayList<>();
             
+            int root = 1;
             while(E-->0) {
                 int u = nextInt();
                 int v = nextInt();
                 int type = nextInt();
                 adj[u].add(new int[]{v , type});
                 adj[v].add(new int[]{u , type});
+                if(type == 1)
+                    root = u;
             }
-            
+             println("root " + root);
             hasSpecial = new boolean[V + 1];
-            println(dfs(1, 0));
+            println(dfs(2, 0));
             
         }
         
