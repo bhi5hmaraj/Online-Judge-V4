@@ -52,7 +52,11 @@ public class BuyingEverything {
         println(ret == INF ? -1 : ret);
     }
     
-    
+    private static void solve2() {
+        
+        
+        
+    }
     
     /************************ SOLUTION ENDS HERE ************************/
     
