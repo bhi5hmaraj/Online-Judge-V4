@@ -12,7 +12,7 @@ class INSQ17R {
         static final long mod = (long) (1e9) + 7; // Default
         static long sub(long a, long b) {return (a - b  + mod) % mod;}
         static long mul(long a, long b) {return ((a % mod) * (b % mod)) % mod;}
-        static long add(long a, long b) {return (a + b) % mod;}
+        static long add(long a, long b) {return ((a % mod) + (b % mod)) % mod;}
         static long div(long a, long b) {return mul(a, modInverse(b));}
         static long modInverse(long n)  {return modPow(n, mod - 2);} // Fermat's little theorem
         static long modPow(long a , long b) {
@@ -34,35 +34,47 @@ class INSQ17R {
         else {
             long sub[] = rec(N / 2);
             long n = N / 2;
-            long conv = MM.add(MM.add(sub[0], (n * (n - 1)) / 2), MM.add(MM.mul(n, sub[1]), n * n));
-            long bitCnt = 2 * sub[1] + n;
-            return memo[Long.numberOfTrailingZeros(N)] = new long[]{conv + sub[0], bitCnt};
+            long nc2 = MM.div(MM.mul(n, MM.sub(n, 1)), 2);
+            long conv = MM.add(MM.add(sub[0], nc2), MM.add(MM.mul(n, sub[1]),MM.mul(n, n)));
+            long bitCnt = MM.add(n, MM.mul(2, sub[1]));
+            return memo[Long.numberOfTrailingZeros(N)] = new long[]{MM.add(conv, sub[0]), bitCnt};
         }
     }
     
-    static long[] sum(long N , long padding , int off) {
+    static long sum(long N , long padding , int off) {
+        // System.out.println("N " + N + " pad " + padding + " off " + off);
         if((N & (N + 1)) == 0) {
-            long ret[] = Arrays.copyOf(memo[Long.numberOfTrailingZeros(N + 1)], 2);
+            int idx = Long.numberOfTrailingZeros(N + 1);
+            long ret[] = memo[idx];
+            long n = 1L << idx;
+            long nc2 = MM.div(MM.mul(n, MM.sub(n, 1)), 2);
+            long conv = MM.add(MM.add(ret[0], MM.mul(off, nc2)), 
+                               MM.add(MM.mul(padding, ret[1]), MM.mul(MM.mul(padding, off), n)));
+            return conv;
         }
         else {
             long near = Long.highestOneBit(N);
-            
+            long sub = sum(near - 1, padding, off);
+            long remain = N - (near - 1) - 1;
+            return MM.add(sub, sum(remain, padding + near, off + 1));
         }
     }
     
     private static void solve() {
         
-        /*int T = nextInt();
+        memo = new long[40][];
+        memo[0] = base;
+        rec(1L << 32);
+
+        int T = nextInt();
         while(T-->0) {
-            
-            
+            int N = nextInt();
+            println(sum(N, 0, 0));
+            println("correct " + (IntStream.range(1, N + 1).mapToLong(i -> 1L * i * Integer.bitCount(i)).sum()) % MM.mod);
             
         }
-        */
-        memo = new long[40][];
-        int N = nextInt();
-        println("correct " + IntStream.range(1, N).map(i -> i * Integer.bitCount(i)).sum());
-        println("test " + Arrays.toString(rec(N)));
+        
+        //println(Arrays.toString(rec(N)));
     }
     
     
