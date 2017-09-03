@@ -6,22 +6,22 @@ public class CountingPrincessPresents {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static ArrayList<int[]>[] adj;
+    static ArrayList<int[]>[] adj;  // stores to vertex and type 
     static final long mod = (long) 1e9 + 7;
-    static boolean hasSpecial[];
+    static boolean hasSpecial[];   // hasSpecial[u] is true when subtree rooted at u contains atleast 1 special edge
+    static long DP[];
     static long dfs(int u , int par) {
-        long ways = 1;
+        long ways = 1;      // calculates number of valid subtrees rooted at node u 
         for(int v[] : adj[u])
             if(v[0] != par) {
                 long subTreeWays = dfs(v[0], u);
                 hasSpecial[u] |= hasSpecial[v[0]] | (v[1] == 1);
-                 println("u " + u + " v " + v[0] + " sub " + subTreeWays);
                 if(!(hasSpecial[v[0]] || (v[1] == 1)))
                     subTreeWays = (subTreeWays + 1) % mod;  // can remove
-                ways = (ways * subTreeWays) % mod;
+                ways = (ways * subTreeWays) % mod;  // calculate number of ways
             }
         
-        return ways;
+        return DP[u] = ways;
     }
     private static void solve() {
         
@@ -35,19 +35,25 @@ public class CountingPrincessPresents {
             for(int i = 1; i <= V; i++)
                 adj[i] = new ArrayList<>();
             
-            int root = 1;
+            int root = -1;
             while(E-->0) {
                 int u = nextInt();
                 int v = nextInt();
                 int type = nextInt();
-                adj[u].add(new int[]{v , type});
+                adj[u].add(new int[]{v , type});    
                 adj[v].add(new int[]{u , type});
                 if(type == 1)
                     root = u;
             }
-             println("root " + root);
+
             hasSpecial = new boolean[V + 1];
-            println(dfs(2, 0));
+            DP = new long[V + 1];
+            if(root > 0)    // contains atleast 1 special edge
+                println(dfs(root, 0));
+            else {
+                dfs(1, 0);
+                println(Arrays.stream(DP).reduce(0, (a , b) -> (a + b) % mod)); // I can root at any node
+            }
             
         }
         
