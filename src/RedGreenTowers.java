@@ -1,5 +1,4 @@
 import java.util.*;
-import java.util.stream.IntStream;
 import java.io.*;
 public class RedGreenTowers {
     
@@ -8,12 +7,7 @@ public class RedGreenTowers {
     /************************ SOLUTION STARTS HERE ************************/
     
     static final int mod = (int) 1e9 + 7;
-    static void pa(int a[]) {
-        Arrays.stream(a).forEach(i -> print(String.format("%3d ", i)));
-        print('\n');
-        IntStream.range(0, a.length).forEach(i -> print(String.format("%3d ", i)));
-        print('\n');
-    }
+
     private static void solve() {
         
         int R = nextInt();
@@ -27,7 +21,6 @@ public class RedGreenTowers {
         canPrev[1] = R > 0;
         boolean flag = false;
         int h = 2;
-        int sum = 0;
         do {    // Upperbound = sqrt(R + G)
             int DPnew[] = new int[R + 1];
             boolean canNew[] = new boolean[R + 1];
@@ -42,13 +35,21 @@ public class RedGreenTowers {
                     DPnew[i] = (DPnew[i] + DPprev[i]) % mod;
                     canNew[i] |= canPrev[i];
                 }
+                flag |= canNew[i];
             }
-            for(boolean b : canNew) flag |= b;
-            sum = Arrays.stream(DPprev).reduce(0, (a , b) -> (a + b) % mod);
-            h++;
+            
+            if(!flag)
+                break;
             canPrev = canNew;
             DPprev = DPnew;
+            h++;
+            
         }while(flag);
+        
+        println("h " + h);
+        int sum = 0;
+        for(int a : DPprev)
+            sum = (sum + a) % mod;
         
         println(sum);
         
