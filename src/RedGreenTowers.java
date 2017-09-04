@@ -6,12 +6,10 @@ public class RedGreenTowers {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static int memo[][][];
     
     static int maxDepth(int h , int R , int G /*, String str*/) {
-        if(R < h + 1 && G < h + 1) {
+        if(R < h + 1 && G < h + 1) 
             return h;
-        }
         else {
             int opt1 = 0 , opt2 = 0;
             if(R >= h + 1)
