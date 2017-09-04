@@ -25,7 +25,6 @@ public class CountingPrincessPresents {
     }
     private static void solve() {
         
-        
         int T = nextInt();
         while(T-->0) {
             
