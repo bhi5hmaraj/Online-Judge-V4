@@ -70,7 +70,7 @@ class INSQ17R {
         while(T-->0) {
             int N = nextInt();
             println(sum(N, 0, 0));
-            println("correct " + (IntStream.range(1, N + 1).mapToLong(i -> 1L * i * Integer.bitCount(i)).sum()) % MM.mod);
+            // println("correct " + (IntStream.range(1, N + 1).mapToLong(i -> 1L * i * Integer.bitCount(i)).sum()) % MM.mod);
             
         }
         
