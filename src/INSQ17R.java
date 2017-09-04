@@ -74,7 +74,6 @@ class INSQ17R {
             
         }
         
-        //println(Arrays.toString(rec(N)));
     }
     
     

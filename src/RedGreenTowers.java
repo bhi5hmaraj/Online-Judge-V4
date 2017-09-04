@@ -6,7 +6,21 @@ public class RedGreenTowers {
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    static int memo[][][];
     
+    static int maxDepth(int h , int R , int G /*, String str*/) {
+        if(R < h + 1 && G < h + 1) {
+            return h;
+        }
+        else {
+            int opt1 = 0 , opt2 = 0;
+            if(R >= h + 1)
+                opt1 = maxDepth(h + 1, R - h - 1, G/*, str + "R"*/);
+            if(G >= h + 1)
+                opt2 = maxDepth(h + 1, R, G - h - 1/*, str + "G"*/);
+            return Math.max(opt1 , opt2);
+        }
+    }
     
     private static void solve() {
         
@@ -14,7 +28,7 @@ public class RedGreenTowers {
         int R = nextInt();
         int G = nextInt();
         
-        
+        println(maxDepth(0, R, G /*, ""*/));
         
         
     }
