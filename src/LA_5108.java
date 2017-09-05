@@ -15,6 +15,40 @@ public class LA_5108 {
         return Math.abs((t1 + t2 + t3) / 2.0);
     }
     
+    static int BLOCK_SIZE;
+    
+    static class Query implements Comparable<Query> {
+        int L , R;
+        int id;
+        public Query(int l, int r, int id) {
+            L = l;
+            R = r;
+            this.id = id;
+        }
+        @Override
+        public String toString() {
+            return String.format("[L = %d R = %d]", L , R);
+        }
+        @Override
+        public int compareTo(Query o) {
+            int b1 = L / BLOCK_SIZE;
+            int b2 = o.L / BLOCK_SIZE;
+            if(b1 != b2)
+                return b1 - b2;
+            else
+                return R - o.R;
+        }
+    }
+    
+    static double areaOfPoly(int start , int end) {
+        double area = 0;
+        int prev = end;
+        for(int i = start; i <= end; i++) {
+            area += (pt[prev][0] + pt[i][0]) * (pt[prev][1] - pt[i][1]);
+            prev = i;
+        }
+        return Math.abs(area / 2.0);
+    }
     
     
     private static void solve() {
@@ -24,9 +58,38 @@ public class LA_5108 {
         while((N = nextInt()) != 0) {
             Q = nextInt();
             int pt[][] = new int[N][2];
+            BLOCK_SIZE = 1 + (int) Math.sqrt(N);
+            
             for(int i = 0; i < N; i++)
                 pt[i] = nextIntArray(2);
             
+            Query queries[] = new Query[Q];
+            for(int i = 0; i < Q; i++)
+                queries[i] = new Query(nextInt(), nextInt(), i);
+            
+            Arrays.sort(queries);
+            double totalArea = areaOfPoly(0, N - 1);
+            double currArea = areaOfPoly(queries[0].L, queries[0].R);
+            double ans[] = new double[Q];
+            ans[queries[0].id] = Math.min(currArea , totalArea - currArea);
+            int moLeft = queries[0].L;
+            int moRight = queries[0].R;
+            for(int i = 1; i < Q; i++) {
+                Query q = queries[i];
+                while(moLeft < q.L) 
+                    currArea -= areaOfTri(moLeft, ++moLeft, moRight);
+                
+                while(moLeft > q.L)
+                    currArea += areaOfTri(moLeft, --moLeft, moRight);
+                
+                while(moRight < q.R)
+                    currArea += areaOfTri(moLeft, moRight, ++moRight);
+                
+                while(moRight > q.R)
+                    currArea -= areaOfTri(moLeft, moRight, --moRight);
+                
+                
+            }
         }
         
         
