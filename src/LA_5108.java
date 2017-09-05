@@ -6,6 +6,16 @@ public class LA_5108 {
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    static double pt[][];
+    
+    static double areaOfTri(int a , int b , int c) {
+        double t1 = pt[a][0] * (pt[b][1] - pt[c][1]);
+        double t2 = pt[b][0] * (pt[c][1] - pt[a][1]);
+        double t3 = pt[c][0] * (pt[a][1] - pt[b][1]);
+        return Math.abs((t1 + t2 + t3) / 2.0);
+    }
+    
+    
     
     private static void solve() {
         

@@ -14,43 +14,40 @@ public class RedGreenTowers {
         int G = nextInt();
         
         int DPprev[] = new int[R + 1];  // number of ways of building blocks using exactly i red blocks
-        boolean canPrev[] = new boolean[R + 1];
         DPprev[0] = G > 0 ? 1 : 0;
-        DPprev[1] = R > 0 ? 1 : 0;
-        canPrev[0] = G > 0;
-        canPrev[1] = R > 0;
+        
+        if(R > 0)
+            DPprev[1] = 1;
+        
         boolean flag = false;
         int h = 2;
-        do {    // Upperbound = sqrt(R + G)
+        int hMax = (int) Math.ceil((Math.sqrt(1 + 8 * (R + G)) - 1) / 2.0) + 1; // Solve the quadratic equation
+        for(int run = 1; run <= hMax; run++) {   
             int DPnew[] = new int[R + 1];
-            boolean canNew[] = new boolean[R + 1];
             flag = false;
             for(int i = 0; i <= R; i++) {
                 int j = ((h * (h + 1)) / 2) - i;    // green
                 if(i >= h) {    // build base with red
                     DPnew[i] = DPprev[i - h];
-                    canNew[i] |= canPrev[i - h];
                 }
                 if(j >= h && j <= G) {    // build base with green
                     DPnew[i] = (DPnew[i] + DPprev[i]) % mod;
-                    canNew[i] |= canPrev[i];
                 }
-                flag |= canNew[i];
+                
+                flag |= DPnew[i] != 0;
             }
             
             if(!flag)
                 break;
-            canPrev = canNew;
+
             DPprev = DPnew;
             h++;
             
-        }while(flag);
-        
-        println("h " + h);
+        }
         int sum = 0;
         for(int a : DPprev)
             sum = (sum + a) % mod;
-        
+            
         println(sum);
         
     }
