@@ -53,27 +53,31 @@ public class LA_5108 {
     
     private static void solve() {
         
-        
         int N , Q;
+        ArrayList<String> buffer = new ArrayList<>();
         while((N = nextInt()) != 0) {
             Q = nextInt();
-            int pt[][] = new int[N][2];
+            pt = new double[N][2];
             BLOCK_SIZE = 1 + (int) Math.sqrt(N);
             
-            for(int i = 0; i < N; i++)
-                pt[i] = nextIntArray(2);
-            
+            for(int i = 0; i < N; i++) {
+                pt[i][0] = nextDouble();
+                pt[i][1] = nextDouble();
+            }
             Query queries[] = new Query[Q];
-            for(int i = 0; i < Q; i++)
+            for(int i = 0; i < Q; i++) 
                 queries[i] = new Query(nextInt(), nextInt(), i);
             
             Arrays.sort(queries);
             double totalArea = areaOfPoly(0, N - 1);
             double currArea = areaOfPoly(queries[0].L, queries[0].R);
+            
             double ans[] = new double[Q];
             ans[queries[0].id] = Math.min(currArea , totalArea - currArea);
             int moLeft = queries[0].L;
             int moRight = queries[0].R;
+            
+            
             for(int i = 1; i < Q; i++) {
                 Query q = queries[i];
                 while(moLeft < q.L) 
@@ -88,12 +92,17 @@ public class LA_5108 {
                 while(moRight > q.R)
                     currArea -= areaOfTri(moLeft, moRight, --moRight);
                 
-                
+                ans[q.id] = Math.min(currArea , totalArea - currArea);
             }
+            
+            StringBuilder sb = new StringBuilder();
+            for(double a : ans)
+                sb.append(String.format("%.1f\n", a));
+            buffer.add(sb.toString());
         }
         
-        
-        
+        for(int i = 0; i < buffer.size(); i++)
+            print((i > 0 ? "\n" : "") + buffer.get(i));
     }
     
     
@@ -107,10 +116,14 @@ public class LA_5108 {
     /************************ TEMPLATE STARTS HERE **********************/
     
     public static void main(String[] args) throws IOException {
+//        System.setIn(new FileInputStream("LA_5108_input.txt"));
+//        System.setOut(new PrintStream("out.txt"));
         reader = new BufferedReader(new InputStreamReader(System.in));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
+//        long start = System.nanoTime();
         solve();
+//        System.err.println("Time Elapsed : " + (System.nanoTime() - start) / 1e9);
         reader.close();
         writer.close();
     }
