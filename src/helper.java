@@ -2616,4 +2616,24 @@ class helper {
         }
         return inv;
     }
+    
+    static double pt[][];   // array of coordinates 
+    
+    static double areaOfTri(int a , int b , int c) {
+        double t1 = pt[a][0] * (pt[b][1] - pt[c][1]);
+        double t2 = pt[b][0] * (pt[c][1] - pt[a][1]);
+        double t3 = pt[c][0] * (pt[a][1] - pt[b][1]);
+        return Math.abs((t1 + t2 + t3) / 2.0);
+    }
+    
+    static double areaOfPoly(int start , int end) {
+        double area = 0;
+        int prev = end;
+        for(int i = start; i <= end; i++) {
+            area += (pt[prev][0] + pt[i][0]) * (pt[prev][1] - pt[i][1]);
+            prev = i;
+        }
+        return Math.abs(area / 2.0);
+    }
+    
 }

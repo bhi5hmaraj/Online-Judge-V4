@@ -39,7 +39,7 @@ public class LA_5108 {
                 return R - o.R;
         }
     }
-    
+    // http://www.mathopenref.com/coordpolygonarea2.html
     static double areaOfPoly(int start , int end) {
         double area = 0;
         int prev = end;
@@ -116,14 +116,10 @@ public class LA_5108 {
     /************************ TEMPLATE STARTS HERE **********************/
     
     public static void main(String[] args) throws IOException {
-//        System.setIn(new FileInputStream("LA_5108_input.txt"));
-//        System.setOut(new PrintStream("out.txt"));
         reader = new BufferedReader(new InputStreamReader(System.in));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
-//        long start = System.nanoTime();
         solve();
-//        System.err.println("Time Elapsed : " + (System.nanoTime() - start) / 1e9);
         reader.close();
         writer.close();
     }
