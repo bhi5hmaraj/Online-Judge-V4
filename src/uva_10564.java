@@ -43,8 +43,43 @@ public class uva_10564 {
                 }
             }
             
+            long totalWays = 0;
+            if(S <= MAX_SUM)
+                for(int i = 0; i < N; i++)
+                    totalWays += DP[0][i][S];
             
+            println(totalWays);
             
+            if(totalWays > 0) {
+                int curr = 0;
+                for(int i = 0; i < N; i++)
+                    if(DP[0][i][S] > 0) {
+                        curr = i;
+                        break;
+                    }
+                print(curr + " ");
+                for(int i = 0; i < table.length - 1; i++) {
+                    S -= table[i][curr];
+                    if(i < N - 1) {
+                        if(curr - 1 >= 0 && DP[i + 1][curr - 1][S] > 0) {
+                            print("L");
+                            curr--;
+                        }
+                        else 
+                            print("R");
+                    }
+                    else {
+                        if(DP[i + 1][curr][S] > 0)
+                            print("L");
+                        else {
+                            print("R");
+                            curr++;
+                        }
+                    }
+                }
+            }
+
+            print('\n');
         }
         
         
