@@ -9,11 +9,27 @@ public class Planning  {
     
     private static void solve() {
         
+        int n = nextInt();
+        int k = nextInt();
         
+        int cost[] = nextIntArray(n);
+        PriorityQueue<int[]> pq = new PriorityQueue<>((p1 , p2) -> p2[0] - p1[0]);     // cost , index
+        for(int i = 0; i < k; i++)
+            pq.add(new int[]{cost[i] , i});
         
+        long totalCost = 0;
+        int pos[] = new int[n];
+        for(int i = k ; i < k + n; i++) {
+            if(i < n)
+                pq.add(new int[]{cost[i] , i});
+            
+            int[] curr = pq.remove();
+            totalCost += 1L * (i - curr[1]) * curr[0];
+            pos[curr[1]] = i + 1;
+        }
         
-        
-        
+        println(totalCost);
+        for(int p : pos) print(p + " ");
     }
     
     
