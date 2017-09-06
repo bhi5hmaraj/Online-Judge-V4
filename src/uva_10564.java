@@ -10,7 +10,42 @@ public class uva_10564 {
     private static void solve() {
         
         
-        
+        int N , S;
+        while((N = nextInt()) != 0) {
+            S = nextInt();
+            int table[][] = new int[2 * N - 1][];
+            for(int i = 0; i < N; i++)
+                table[i] = nextIntArray(N - i);
+            for(int i = N; i < table.length; i++)
+                table[i] = nextIntArray(i - N + 2);
+            
+            int MAX_SUM = 9 * table.length;
+            long DP[][][] = new long[table.length][N][MAX_SUM + 1];
+            for(int i = 0; i < N; i++)
+                DP[table.length - 1][i][table[table.length - 1][i]] = 1;
+            
+            int adj = 1;
+            
+            for(int i = table.length - 2; i >= 0; i--) {
+                if(i < N - 1)
+                    adj = -1;
+                
+                int col = i >= N ? i - N + 2 : N - i;
+                for(int j = 0; j < col; j++) {
+                    int nj = j + adj;
+                    int curr = table[i][j];
+                    for(int k = curr; k <= MAX_SUM; k++) {
+                        if(nj >= 0)
+                            DP[i][j][k] = DP[i + 1][nj][k - curr];
+                        if(!(i < N - 1 && j == col - 1))
+                            DP[i][j][k] += DP[i + 1][j][k - curr];
+                    }
+                }
+            }
+            
+            
+            
+        }
         
         
         
