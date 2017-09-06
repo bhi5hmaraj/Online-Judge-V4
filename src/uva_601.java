@@ -7,12 +7,61 @@ public class uva_601 {
     /************************ SOLUTION STARTS HERE ************************/
     
     static int N;
+    static char grid[][];
+    static int x[] = {-1 , 0 , 1 , 0};
+    static int y[] = {0 , 1 , 0 , -1};
+    static boolean isValid(int i , int j) {
+        return i >= 0 && i < N && j >= 0 && j < N;
+    }
+    
+    static void dfs(int i , int j , char ch , boolean marked[][]) {
+        marked[i][j] = true;
+        for(int k = 0; k < 4; k++) {
+            int ni = i + x[k];
+            int nj = j + y[k];
+            if(isValid(ni, nj) && !marked[ni][nj] && grid[ni][nj] == ch)
+                dfs(ni, nj, ch, marked);
+        }
+    }
     
     private static void solve() {
         
         
         while((N = nextInt()) != 0) {
+            nextLine(); // burn
+            grid = new char[N][];
+            for(int i = 0; i < N; i++)
+                grid[i] = nextLine().toCharArray();
+            nextLine(); // burn
+            boolean whiteMark[][] = new boolean[N][N];
+            for(int i = 0; i < N; i++)
+                if(grid[i][0] == 'W' && !whiteMark[i][0])
+                    dfs(i, 0, 'W', whiteMark);
+            boolean blackMark[][] = new boolean[N][N];
+            for(int i = 0; i < N; i++)
+                if(grid[0][i] == 'B' && !blackMark[0][i])
+                    dfs(0, i, 'B', blackMark);
             
+            boolean whiteWin = false;
+            boolean whiteWinnext = false;
+            for(int i = 0; i < N; i++) {
+                whiteWin |= whiteMark[i][N - 1];
+                if(N > 1)
+                    whiteWinnext |= (whiteMark[i][N - 2] && grid[i][N - 1] == 'U');
+            }
+            boolean blackWin = false;
+            boolean blackWinNext = false;
+            for(int i = 0; i < N; i++) {
+                blackWin |= blackMark[N - 1][i];
+                if(N > 1)
+                    blackWinNext |= blackMark[N - 2][i] && grid[N - 1][i] == 'U';
+            }
+            
+            if(whiteWin)          println("White has a winning path.");
+            else if(blackWin)     println("Black has a winning path.");
+            else if(whiteWinnext) println("White can win in one move.");
+            else if(blackWinNext) println("Black can win in one move.");
+            else                  println("There is no winning path.");
         }
         
         
