@@ -24,9 +24,11 @@ public class PashmakandGraph {
         for(int i = 0; i < E; ) {
             int j;
             for(j = i; j < E && edges[j][2] == edges[i][2]; j++)
-                aux[edges[j][1]] = Math.max(DP[edges[j][1]] , DP[edges[j][0]] + 1);
+                aux[edges[j][1]] = 0;
             for(j = i; j < E && edges[j][2] == edges[i][2]; j++)
-                DP[edges[j][1]] = aux[edges[j][1]];
+                aux[edges[j][1]] = Math.max(aux[edges[j][1]], DP[edges[j][0]] + 1);
+            for(j = i; j < E && edges[j][2] == edges[i][2]; j++)
+                DP[edges[j][1]] = Math.max(DP[edges[j][1]] , aux[edges[j][1]]);
             
             i = j;
         }
