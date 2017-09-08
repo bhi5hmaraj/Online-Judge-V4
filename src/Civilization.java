@@ -24,8 +24,8 @@ public class Civilization {
         }
 
         int root(int p) {
-            while(p != parent[p]) p = parent[p];
-            return p;
+             while(p != parent[p]) p = parent[p];
+             return p;
         }
 
         int sizeOf(int p) {
@@ -45,12 +45,17 @@ public class Civilization {
                 cnt--;
                 int rootU = root(u);
                 int rootV = root(v);
+                int bigD = Math.max(diameter[rootU] , diameter[rootV]);
+                int smallD = Math.min(diameter[rootU] , diameter[rootV]);
+                int newDiam = (bigD + 1) / 2 + (Math.max(bigD / 2 , 1 + ((smallD + 1) / 2)));
                 if (size[rootU] < size[rootV]) {
                     parent[rootU] = rootV;
                     size[rootV] += size[rootU];
+                    diameter[rootV] = newDiam;
                 } else {
                     parent[rootV] = rootU;
                     size[rootU] += size[rootV];
+                    diameter[rootU] = newDiam;
                 }
             }
         }
@@ -76,6 +81,7 @@ public class Civilization {
     
     
     
+    @SuppressWarnings("unchecked")
     private static void solve() {
         
         
@@ -104,11 +110,8 @@ public class Civilization {
         while(Q-->0) {
             if(nextInt() == 1) 
                 println(unionFind.diameter[unionFind.root(nextInt())]);
-            else {
-                int u = nextInt();
-                int v = nextInt();
-                
-            }
+            else
+                unionFind.union(nextInt(), nextInt());
         }
     }
     
