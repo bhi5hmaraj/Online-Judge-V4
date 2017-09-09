@@ -15,25 +15,46 @@ public class YetAnotherTaskwithQueens {
         int pt[][] = new int[m][];
         int row[][] = new int[n + 1][2];    // (min , max)
         int col[][] = new int[n + 1][2];
-        int D1[][] = new int[n + 1][2];
-        int D2[][] = new int[n + 1][2];
+        int D1[][] = new int[2 * n + 1][2];
+        int D2[][] = new int[2 * n + 1][2];
         
         for(int i = 1; i <= n; i++) {
-            row[i][0] = col[i][0] = D1[i][0] = D2[i][0] = Integer.MAX_VALUE;
-            row[i][1] = col[i][1] = D1[i][1] = D2[i][1] = Integer.MIN_VALUE;
+            row[i][0] = col[i][0] = Integer.MAX_VALUE;
+            row[i][1] = col[i][1] = Integer.MIN_VALUE;
         }
         
+        for(int i = 0; i <= 2 * n; i++) {
+            D1[i][0] = D2[i][0] = Integer.MAX_VALUE;
+            D1[i][1] = D2[i][1] = Integer.MIN_VALUE;
+        }
         
         for(int i = 0; i < m; i++) {
             pt[i] = nextIntArray(2);
             row[pt[i][0]][0] = Math.min(row[pt[i][0]][0] , pt[i][1]);
             row[pt[i][0]][1] = Math.max(row[pt[i][0]][1] , pt[i][1]);
             col[pt[i][1]][0] = Math.min(col[pt[i][1]][0] , pt[i][0]);
-            col[pt[i][1]][1] = Math.max(col[pt[i][1]][0] , pt[i][0]);
+            col[pt[i][1]][1] = Math.max(col[pt[i][1]][1] , pt[i][0]);
+            int d1 = pt[i][0] - pt[i][1] + n;
+            D1[d1][0] = Math.min(D1[d1][0] , pt[i][1]);
+            D1[d1][1] = Math.max(D1[d1][1] , pt[i][1]);
+            int d2 = pt[i][0] + pt[i][1];
+            D2[d2][0] = Math.min(D2[d2][0] , pt[i][1]);
+            D2[d2][1] = Math.max(D2[d2][1] , pt[i][1]);
         }
         
+        int cnt[] = new int[9];
+        for(int i = 0; i < m; i++) {
+            int d1 = pt[i][0] - pt[i][1] + n;
+            int d2 = pt[i][0] + pt[i][1];
+            cnt[
+               (row[pt[i][0]][0] != pt[i][1] ? 1 : 0) + (row[pt[i][0]][1] != pt[i][1] ? 1 : 0) +
+               (col[pt[i][1]][0] != pt[i][0] ? 1 : 0) + (col[pt[i][1]][1] != pt[i][0] ? 1 : 0) + 
+               (D1[d1][0] != pt[i][1] ? 1 : 0) + (D1[d1][1] != pt[i][1] ? 1 : 0) +
+               (D2[d2][0] != pt[i][1] ? 1 : 0) + (D2[d2][1] != pt[i][1] ? 1 : 0)
+            ]++;
+        }
         
-        
+        Arrays.stream(cnt).forEach(c -> print(c + " "));
     }
     
     
