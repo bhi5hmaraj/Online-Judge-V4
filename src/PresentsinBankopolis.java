@@ -10,6 +10,7 @@ public class PresentsinBankopolis {
     static final int INF = (int) 1e7;
     static int memo[][][][];
     // dir - 0 (we are at left)
+    static int n;
     static int rec(int L , int R , int k , int dir) {
         int mem = memo[L][R][k][dir];
         if(k > R - L - 1)
@@ -20,17 +21,45 @@ public class PresentsinBankopolis {
             return mem;
         else {
             int min = INF;
-            for(int edge[] : adj[dir == 0 ? L : R])
-                if(edge[0] > L && edge[0] < R)
-                    min = Math.min(min , edge[1] + rec(dir == 0 ? L : edge[0], 
-                                                       dir == 0 ? edge[0] : R, k - 1, 1 - dir));
+            
+            if(L > 0 && L <= n && R > 0 && R <= n) {
+                if(dir == 0) {
+                    for(int edge[] : adj[L])
+                        if(edge[0] > L && edge[0] < R) {
+                            min = Math.min(min , edge[1] + rec(L, edge[0], k - 1, 1));
+                            min = Math.min(min , edge[1] + rec(edge[0], R, k - 1, 0));
+                        }
+                }
+                else {
+                    for(int edge[] : adj[R])
+                        if(edge[0] > L && edge[0] < R) {
+                            min = Math.min(min , edge[1] + rec(edge[0], R, k - 1, 0));
+                            min = Math.min(min , edge[1] + rec(L, edge[0], k - 1, 1));
+                        }
+                }
+            }
+            else if(R == n + 1) {
+                for(int edge[] : adj[L])
+                    if(edge[0] > L) {
+                        min = Math.min(min , edge[1] + rec(L, edge[0], k - 1, 1));
+                        min = Math.min(min , edge[1] + rec(edge[0], R, k - 1, 0));
+                    }
+            }
+            else if(L == 0) {
+                for(int edge[] : adj[R])
+                    if(edge[0] < R) {
+                        min = Math.min(min , edge[1] + rec(edge[0], R, k - 1, 0));
+                        min = Math.min(min , edge[1] + rec(L, edge[0], k - 1, 1));
+                    }
+            }
+            
             return memo[L][R][k][dir] = min;
         }
     }
     
     private static void solve() {
         
-        int n = nextInt();
+        n = nextInt();
         int k = nextInt();
         int m = nextInt();
         
@@ -46,21 +75,18 @@ public class PresentsinBankopolis {
         while(m-->0) 
             adj[nextInt()].add(new int[]{nextInt() , nextInt()});
         
-        memo = new int[n + 1][n + 1][k + 1][2];
+        memo = new int[n + 2][n + 2][k + 1][2];
         for(int a[][][] : memo)
             for(int b[][] : a)
                 for(int c[] : b)
                     Arrays.fill(c, -1);
         
         int minCost = INF;
-        for(int i = 1; i <= n; i++)
-            for(int edge[] : adj[i]) {
-                if(i < edge[0]) 
-                    minCost = Math.min(minCost , edge[1] + rec(i, edge[0], k - 2, 1));
-                else if(i > edge[0])
-                    minCost = Math.min(minCost , edge[1] + rec(edge[0], i, k - 2, 0));
-            }
-        
+        for(int i = 1; i <= n; i++) {
+            minCost = Math.min(minCost , rec(i, n + 1, k - 1, 0));
+            minCost = Math.min(minCost , rec(0, i, k - 1, 1));
+        }
+            
         println(minCost == INF ? -1 : minCost);
     }
     
