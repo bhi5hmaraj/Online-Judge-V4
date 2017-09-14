@@ -23,7 +23,7 @@ Nice problem on palindromes (http://codeforces.com/contest/159/problem/D)
 Nice problem on combinatorics (http://codeforces.com/problemset/problem/294/C)
 Nice problem on bitmask DP (http://codeforces.com/problemset/problem/453/B)
 Nice problem on counting (http://codeforces.com/contest/758/problem/C)
-DSU on tree (Merging trick) (https://www.hackerearth.com/practice/algorithms/graphs/depth-first-search/practice-problems/algorithm/the-grass-type/)
+DSU on tree (Merging trick) (https://www.hackerearth.co/practice/algorithms/graphs/depth-first-search/practice-problems/algorithm/the-grass-type/)
 Nice problem on trees http://codeforces.com/contest/375/problem/D ( Lot of approaches available , used a treap approach)
 Nice Binary Search problem http://codeforces.com/problemset/problem/448/D
 Classic array problem http://codeforces.com/problemset/problem/819/B
