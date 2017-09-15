@@ -19,10 +19,24 @@ public class uva_10189 {
             char arr[][] = new char[r][];
             for (int i = 0; i < r; i++)
                 arr[i] = nextLine().toCharArray();
-
+            PrintWriter out , in;
+            out = in = null;
+            
+            try {
+                out = new PrintWriter("output" + String.format("%03d", tc) + ".txt");
+                in = new PrintWriter("input" + String.format("%03d", tc) + ".txt");
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            
+            in.println(r + " "+ c);
+            for (int i = 0; i < r; i++)
+                in.println(new String(arr[i]));
+            
             for (int i = 0; i < r; i++) {
                 for (int j = 0; j < c; j++) {
                     if (arr[i][j] == '*') {
+                        out.print('*');
                         print('*');
                         continue;
                     } else {
@@ -33,10 +47,14 @@ public class uva_10189 {
                                 adj++;
                         }
                         print(adj);
+                        out.print(adj);
                     }
                 }
                 print('\n');
+                out.print('\n');
             }
+            in.close();
+            out.close();
         }
     }
 
