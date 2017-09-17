@@ -28,10 +28,11 @@ public class MaximumSubmatrix2 {
         for(int i = 0; i < M; i++)
             Arrays.sort(DP[i]);
         
+        
         int maxArea = 0;
         for(int i = 0; i < M; i++)
             for(int j = 0; j < N; j++)
-                maxArea = Math.max(maxArea , (N - j + 1) * DP[i][j]);
+                maxArea = Math.max(maxArea , (N - j) * DP[i][j]);
         
         println(maxArea);
     }
