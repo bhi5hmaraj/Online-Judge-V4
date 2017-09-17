@@ -17,9 +17,23 @@ public class MaximumSubmatrix2 {
         for(int i = 0; i < N; i++)
             grid[i] = nextLine().toCharArray();
         
-        int DP[][] = new int[N][M]; // DP[i][j] = stores the largest block of 1 to the right of (j , i) 
+        int DP[][] = new int[M][N]; // DP[i][j] = stores the largest block of 1 to the left of (j , i) 
         
+        for(int i = 0; i < N; i++) {
+            DP[0][i] = grid[i][0] == '1' ? 1 : 0;
+            for(int j = 1; j < M; j++) 
+                DP[j][i] = grid[i][j] == '1' ? DP[j - 1][i] + 1 : 0;
+        }
         
+        for(int i = 0; i < M; i++)
+            Arrays.sort(DP[i]);
+        
+        int maxArea = 0;
+        for(int i = 0; i < M; i++)
+            for(int j = 0; j < N; j++)
+                maxArea = Math.max(maxArea , (N - j + 1) * DP[i][j]);
+        
+        println(maxArea);
     }
     
     
