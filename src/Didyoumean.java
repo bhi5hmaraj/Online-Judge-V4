@@ -16,24 +16,27 @@ public class Didyoumean {
         ArrayList<String> collect = new ArrayList<>();
         List<Character> vowels = Arrays.asList( 'a', 'e', 'i', 'o' , 'u');
         StringBuilder sb = new StringBuilder();
-        
-        for(int i = 0; i < N; ) {
-            if(vowels.contains(str[i])) 
-                sb.append(str[i++]);
-            else {
-                collect.add(sb.toString());
-                StringBuilder temp = new StringBuilder();
-                char ch = str[i];
-                while(i < N && str[i] == ch) 
-                    temp.append(str[i++]);
-                
-                if(temp.length() <= 2 || (i == N || vowels.contains(str[i]))) 
-                    sb.append(temp);
-                else {
+        int state = 0; // 
+        char prevCh = 0;
+        for(int i = 0; i < N; i++) {
+            boolean isVowel = vowels.contains(str[i]);
+            switch(state)  {
+            case 0:
+                sb.append(str[i]);
+                if(!isVowel){
+                    state = 1;
+                    prevCh = str[i];
                 }
+                break;
+            case 1:
+                sb.append(str[i]);
             }
         }
         
+        if(sb.length() > 0)
+            collect.add(sb.toString());
+        
+        println(String.join(" ", collect));
     }
     
     
