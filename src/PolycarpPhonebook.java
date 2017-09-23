@@ -1,6 +1,6 @@
 import java.util.*;
 import java.io.*;
-public class Didyoumean {
+public class PolycarpPhonebook {
     
     
     
@@ -10,63 +10,10 @@ public class Didyoumean {
     private static void solve() {
         
         
-        char str[] = nextLine().toCharArray();
-        int N = str.length;
         
-        ArrayList<String> collect = new ArrayList<>();
-        List<Character> vowels = Arrays.asList( 'a', 'e', 'i', 'o' , 'u');
-        StringBuilder sb = new StringBuilder();
-        int state = 0; // 
-        char prevCh = 0;
-        for(int i = 0; i < N; i++) {
-            // System.out.println("i " + i + " state "+ state);
-            boolean isVowel = vowels.contains(str[i]);
-            switch(state)  {    // Finite State Machine
-            case 0:
-                sb.append(str[i]);
-                if(!isVowel){
-                    state = 1;
-                    prevCh = str[i];
-                }
-                break;
-            case 1:
-                sb.append(str[i]);
-                if(isVowel)
-                    state = 0;
-                else if(str[i] != prevCh) 
-                    state = 2;
-                else 
-                    state = 3;
-                break;
-            case 2:
-                if(isVowel)
-                    state = 0;
-                else {
-                    state = 1;
-                    collect.add(sb.toString());
-                    sb = new StringBuilder();
-                    prevCh = str[i];
-                }
-                sb.append(str[i]);
-                break;
-            case 3:
-                if(isVowel) 
-                    state = 0;
-                else if(str[i] != prevCh) {
-                    state = 1;
-                    collect.add(sb.toString());
-                    sb = new StringBuilder();
-                    prevCh = str[i];
-                }
-                sb.append(str[i]);
-                break;
-            
-            }
-        }
-        if(sb.length() > 0)
-            collect.add(sb.toString());
         
-        println(String.join(" ", collect));
+        
+        
     }
     
     
