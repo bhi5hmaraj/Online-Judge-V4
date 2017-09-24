@@ -1,37 +1,28 @@
 import java.util.*;
 import java.io.*;
-public class GeneratingSets {
+public class TheHellBoy {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    
+    static final long mod = (int) 1e9 + 7;
     private static void solve() {
         
-        TreeSet<Integer> set = new TreeSet<>();
-        Arrays.stream(nextIntArray(nextInt())).forEach(set::add);
         
-        while(true) {
-            int max = set.last();
-            int min = Integer.MAX_VALUE;
-            println(set);
-            while(max > 0) {
-                if(!set.contains(max))
-                    min = Math.min(min , max);
-                max >>= 1;
+        int T = nextInt();
+        while(T-->0) {
+            int n = nextInt();
+            long sum = 1;
+            while(n-->0) {
+                long a = nextLong();
+                sum = (sum * (a + 1)) % mod;
             }
-            
-            println("max " + set.last() + " min " + min);
-            if(min == Integer.MAX_VALUE)
-                break;
-            else {
-                set.remove(set.last());
-                set.add(min);
-            }
+            sum = (sum - 1 + mod) % mod;    // remove empty set
+            println(sum);
         }
         
-        set.stream().forEach(a -> print(a + " "));
+        
     }
     
     
