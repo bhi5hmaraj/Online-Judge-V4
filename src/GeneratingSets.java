@@ -6,7 +6,7 @@ public class GeneratingSets {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    
+    // Editorial Method
     private static void solve() {
         
         TreeSet<Integer> set = new TreeSet<>();
@@ -14,20 +14,16 @@ public class GeneratingSets {
         
         while(true) {
             int max = set.last();
-            int min = Integer.MAX_VALUE;
-            println(set);
-            while(max > 0) {
-                if(!set.contains(max))
-                    min = Math.min(min , max);
+            // println(set);
+            while(max > 0 && set.contains(max)) 
                 max >>= 1;
-            }
             
-            println("max " + set.last() + " min " + min);
-            if(min == Integer.MAX_VALUE)
+            // println("max " + max);
+            if(max == 0)
                 break;
             else {
                 set.remove(set.last());
-                set.add(min);
+                set.add(max);
             }
         }
         
