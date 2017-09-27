@@ -121,13 +121,45 @@ public class SeregaandFun {
                 int L = Math.min(l , r);
                 int R = Math.max(l , r);
                 int exit = -1;
-                if(L % BLOCK_SIZE != 0) {   // not first
+                
+                if(offset[L / BLOCK_SIZE] != 0) {
+                    for(int i = 0; i < BLOCK_SIZE; i++)
+                        aux[i] = blocks[L / BLOCK_SIZE][(offset[L / BLOCK_SIZE] + i) % BLOCK_SIZE];
+                    System.arraycopy(aux, 0, blocks[L / BLOCK_SIZE], 0, BLOCK_SIZE);
+                    offset[L / BLOCK_SIZE] = 0;
+                }
+                
+                if(L / BLOCK_SIZE == R / BLOCK_SIZE) {
+                    blocks[L / BLOCK_SIZE][L % BLOCK_SIZE] = aux[R % BLOCK_SIZE];
+                    for(int i = L % BLOCK_SIZE + 1; i <= R % BLOCK_SIZE; i++)
+                        blocks[L / BLOCK_SIZE][i] = aux[i - 1];
+                }
+                else {   // move L
                     int qu = L / BLOCK_SIZE;
                     int re = L % BLOCK_SIZE;
-                    for(int i = 0; i < re; i++)
-                        aux[i] = blocks[qu][offset[qu] + i];
-                    aux[re] = blocks[R / BLOCK_SIZE][offset[R / BLOCK_SIZE] + (R % BLOCK_SIZE)];
+                    exit = blocks[qu][BLOCK_SIZE - 1];
+                    for(int i = BLOCK_SIZE - 1; i >= re; i--)
+                        aux[i] = blocks[qu][(offset[qu] + i) % BLOCK_SIZE];
+                    aux[re] = blocks[R / BLOCK_SIZE][(offset[R / BLOCK_SIZE] + (R % BLOCK_SIZE)) % BLOCK_SIZE];
+                    for(int i = re + 1; i < BLOCK_SIZE; i++)
+                        aux[i] = blocks[qu][(offset[qu] + i - 1) % BLOCK_SIZE];
+                    System.arraycopy(aux, 0, blocks[qu], 0, BLOCK_SIZE);
+                    offset[qu] = 0;
                 }
+                
+                for(int i = L / BLOCK_SIZE + 1; i < R / BLOCK_SIZE; i++) {
+                    offset[i] = (offset[i] - 1 + BLOCK_SIZE) % BLOCK_SIZE;
+                    int next = blocks[i][offset[i]];
+                    blocks[i][offset[i]] = exit;
+                    exit = next;
+                }
+                
+                    {
+                    int qu = R / BLOCK_SIZE;
+                    int re = R % BLOCK_SIZE;
+                    
+                }
+                
             }
         }
     }
