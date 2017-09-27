@@ -6,7 +6,7 @@ public class GeneratingSets {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    // Editorial Method
+// Editorial Method     
     private static void solve() {
         
         TreeSet<Integer> set = new TreeSet<>();

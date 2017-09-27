@@ -68,7 +68,7 @@ public class testing {
         int MAX = (int) 5e7;
         long start = System.nanoTime();
 //        int priArr[] = sieve(MAX);
-        modifiedSieve(MAX);
+//        modifiedSieve(MAX);
         // println("total primes = " + priArr.length);
         /*
         for(int i = 0; i < priArr.length; i++)
@@ -77,8 +77,14 @@ public class testing {
                 return;
             }
         */
-        println("AC");
-        System.out.println("N = " + MAX + " Time taken = " + (System.nanoTime() - start) / 1e9);
+//        println("AC");
+//        System.out.println("N = " + MAX + " Time taken = " + (System.nanoTime() - start) / 1e9);
+        List<Integer> li = Arrays.asList(5 , 3 , 6 , 1, 9);
+        ListIterator<Integer> it = li.listIterator(1);
+        println(it.next());
+        println(it.next());
+        println(it.previous());
+        println(it.previous());
     }
     
     

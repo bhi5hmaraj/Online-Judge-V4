@@ -26,7 +26,12 @@ public class SeregaandFun {
             blocks[i / BLOCK_SIZE].add(arr[i]);
             freq[i / BLOCK_SIZE].put(arr[i], freq[i / BLOCK_SIZE].getOrDefault(arr[i] , 0) + 1);
         }
-        
+        System.out.println("Block sz = " + BLOCK_SIZE);
+        for(int i = 0; i < blocks.length; i++) {
+            println("i " + i);
+            println(blocks[i]);
+            println(freq[i]);
+        }
         int ans = 0;
         while(Q-->0) {
             int type = nextInt();
@@ -50,6 +55,29 @@ public class SeregaandFun {
                     freq[R / BLOCK_SIZE].remove(toRem);
                 blocks[L / BLOCK_SIZE].add(L % BLOCK_SIZE, toRem);
                 freq[L / BLOCK_SIZE].put(toRem, freq[L / BLOCK_SIZE].getOrDefault(toRem, 0) + 1);
+                
+                for(int i = 0; i < blocks.length; i++) {
+                    println("i " + i);
+                    println(blocks[i]);
+                    println(freq[i]);
+                }
+                
+            } else {
+                int L = ((nextInt() + ans - 1) % n);
+                int R = ((nextInt() + ans - 1) % n);
+                //System.out.println(blocks[R / BLOCK_SIZE]);
+                //System.out.println(blocks[R / BLOCK_SIZE].listIterator(R % BLOCK_SIZE + 1).previous());
+                int K = ((nextInt() + ans - 1) % n) + 1;
+                int cnt = 0;
+                for(ListIterator<Integer> it =  blocks[L / BLOCK_SIZE].listIterator(L % BLOCK_SIZE); L <= R && L % BLOCK_SIZE != 0; L++)
+                    cnt += it.next().intValue() == K ? 1 : 0;
+                for(ListIterator<Integer> it = blocks[R / BLOCK_SIZE].listIterator(R % BLOCK_SIZE + 1); R >= L && (R + BLOCK_SIZE) % BLOCK_SIZE != BLOCK_SIZE - 1; R--)
+                    cnt += it.previous().intValue() == K ? 1 : 0;
+                
+                for(; L < R; L += BLOCK_SIZE)
+                    cnt += freq[L / BLOCK_SIZE].getOrDefault(K, 0);
+                
+                println(ans = cnt);
             }
         }
             
