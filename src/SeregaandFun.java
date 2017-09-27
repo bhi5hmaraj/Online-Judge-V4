@@ -18,7 +18,6 @@ public class SeregaandFun {
         LinkedList<Integer> blocks[] = new LinkedList[n / BLOCK_SIZE + 1];
         HashMap<Integer , Integer> freq[] = new HashMap[n / BLOCK_SIZE + 1];
         
-        long start = System.nanoTime();
         for(int i = 0; i < blocks.length; i++) {
             blocks[i] = new LinkedList<>();
             freq[i] = new HashMap<>();
@@ -27,9 +26,6 @@ public class SeregaandFun {
             blocks[i / BLOCK_SIZE].add(arr[i]);
             freq[i / BLOCK_SIZE].put(arr[i], freq[i / BLOCK_SIZE].getOrDefault(arr[i] , 0) + 1);
         }
-        long stop = System.nanoTime();
-        if(arr[0] == 65899)
-            System.out.println("Time : " + (stop - start) / 1e9);
         /*
         System.out.println("Block sz = " + BLOCK_SIZE);
         for(int i = 0; i < blocks.length; i++) {
@@ -39,9 +35,12 @@ public class SeregaandFun {
         }
         */
         int ans = 0;
+        double q1T = 0;
+        double q2T = 0;
         while(Q-->0) {
             int type = nextInt();
             if(type == 1) {
+                long start = System.nanoTime();
                 int l = ((nextInt() + ans - 1) % n);
                 int r = ((nextInt() + ans - 1) % n);
                 int L = Math.min(l , r);
@@ -50,9 +49,11 @@ public class SeregaandFun {
                 for(int i = L / BLOCK_SIZE; i < R / BLOCK_SIZE; i++) {
                     add = true;
                     int toRem = blocks[i].pollLast();
-                    freq[i].put(toRem, freq[i].get(toRem) - 1);
-                    if(freq[i].get(toRem).intValue() == 0)
-                        freq[i].remove(toRem);
+                    int f = freq[i].get(toRem);
+                    
+                    if(f == 1) freq[i].remove(toRem);
+                    else freq[i].put(toRem, f - 1);
+                    
                     blocks[i + 1].addFirst(toRem);
                     freq[i + 1].put(toRem, freq[i + 1].getOrDefault(toRem, 0) + 1);
                 }
@@ -60,13 +61,14 @@ public class SeregaandFun {
                 int toRem = blocks[R / BLOCK_SIZE].remove((R % BLOCK_SIZE) + (add ? 1 : 0));
                 int f = freq[R / BLOCK_SIZE].get(toRem);
                 
-                if(f > 1) freq[R / BLOCK_SIZE].remove(toRem);
+                if(f == 1) freq[R / BLOCK_SIZE].remove(toRem);
                 else freq[R / BLOCK_SIZE].put(toRem, f - 1);
 
                 blocks[L / BLOCK_SIZE].add(L % BLOCK_SIZE, toRem);
                 freq[L / BLOCK_SIZE].put(toRem, freq[L / BLOCK_SIZE].getOrDefault(toRem, 0) + 1);
-                
+                q1T += (System.nanoTime() - start) / 1e9;
             } else {
+                long start = System.nanoTime();
                 int l = ((nextInt() + ans - 1) % n);
                 int r = ((nextInt() + ans - 1) % n);
                 int L = Math.min(l , r);
@@ -81,9 +83,13 @@ public class SeregaandFun {
                 for(; L < R; L += BLOCK_SIZE)
                     cnt += freq[L / BLOCK_SIZE].getOrDefault(K, 0);
                 
+                q2T += (System.nanoTime() - start) / 1e9;
                 println(ans = cnt);
             }
         }
+        
+        if(n == 100000)
+            println("Q1T " + q1T + " q2T " + q2T);
             
     }
     
