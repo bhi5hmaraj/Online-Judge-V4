@@ -93,7 +93,44 @@ public class SeregaandFun {
             
     }
     
-    
+    static void solve2() {
+        int n = nextInt();
+        int arr[] = nextIntArray(n);
+        int Q = nextInt();
+
+        final int BLOCK_SIZE = (int) (Math.sqrt(n) + 1); 
+        
+        int blocks[][] = new int[n / BLOCK_SIZE + 1][BLOCK_SIZE];
+        int offset[] = new int[n / BLOCK_SIZE + 1];
+        int aux[] = new int[BLOCK_SIZE];
+        HashMap<Integer , Integer> freq[] = new HashMap[n / BLOCK_SIZE + 1];
+        for(int i = 0; i < blocks.length; i++)
+            freq[i] = new HashMap<>();
+        
+        for(int i = 0; i < n; i++) {
+            blocks[i / BLOCK_SIZE][i % BLOCK_SIZE] = arr[i];
+            freq[i / BLOCK_SIZE].put(arr[i], freq[i / BLOCK_SIZE].getOrDefault(arr[i], 0) + 1);
+        }
+        
+        int ans = 0;
+        while(Q-->0) {
+            int type = nextInt();
+            if(type == 1) {
+                int l = ((nextInt() + ans - 1) % n);
+                int r = ((nextInt() + ans - 1) % n);
+                int L = Math.min(l , r);
+                int R = Math.max(l , r);
+                int exit = -1;
+                if(L % BLOCK_SIZE != 0) {   // not first
+                    int qu = L / BLOCK_SIZE;
+                    int re = L % BLOCK_SIZE;
+                    for(int i = 0; i < re; i++)
+                        aux[i] = blocks[qu][offset[qu] + i];
+                    aux[re] = blocks[R / BLOCK_SIZE][offset[R / BLOCK_SIZE] + (R % BLOCK_SIZE)];
+                }
+            }
+        }
+    }
     
     /************************ SOLUTION ENDS HERE ************************/
     
