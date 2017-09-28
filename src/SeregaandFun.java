@@ -131,9 +131,13 @@ public class SeregaandFun {
                 }
                 
                 if(L / BLOCK_SIZE == R / BLOCK_SIZE) {
-                    blocks[L / BLOCK_SIZE][L % BLOCK_SIZE] = aux[R % BLOCK_SIZE];
-                    for(int i = L % BLOCK_SIZE + 1; i <= R % BLOCK_SIZE; i++)
-                        blocks[L / BLOCK_SIZE][i] = aux[i - 1];
+                    int prev = blocks[L / BLOCK_SIZE][L % BLOCK_SIZE];
+                    for(int i = L % BLOCK_SIZE + 1; i <= R % BLOCK_SIZE; i++) {
+                        int t = blocks[L / BLOCK_SIZE][i];
+                        blocks[L / BLOCK_SIZE][i] = prev;
+                        prev = t;
+                    }
+                    blocks[L / BLOCK_SIZE][L % BLOCK_SIZE] = prev;
                 }
                 else {   // move L
                     int qu = L / BLOCK_SIZE;
@@ -149,7 +153,7 @@ public class SeregaandFun {
                     */
                     for(int i = BLOCK_SIZE - 1; i > re; i--)
                         blocks[qu][i] = blocks[qu][i - 1];
-                    blocks[qu][re] = blocks[R / BLOCK_SIZE][(offset[R / BLOCK_SIZE] + (R % BLOCK_SIZE)) % BLOCK_SIZE];
+                    blocks[qu][re] = blocks[R / BLOCK_SIZE][(offset[R / BLOCK_SIZE] + R) % BLOCK_SIZE];
                     freq[qu].put(blocks[qu][re], freq[qu].getOrDefault(blocks[qu][re], 0) + 1);
                     
                     for(int i = L / BLOCK_SIZE + 1; i < R / BLOCK_SIZE; i++) {
@@ -159,7 +163,8 @@ public class SeregaandFun {
                         freq[i].put(exit, freq[i].getOrDefault(exit, 0) + 1);
                         exit = next;
                         
-                        freq[i].compute(exit, (k , v) -> v == 1 ? freq[qu].remove(k) : freq[qu].put(k , v - 1));
+                        final int wtf = i;
+                        freq[wtf].compute(exit, (k , v) -> v == 1 ? freq[wtf].remove(k) : freq[wtf].put(k , v - 1));
                         
                         /*
                         f = freq[i].get(exit);
@@ -196,6 +201,21 @@ public class SeregaandFun {
                     System.out.println("freq " + freq[i]);
                 }
                 
+            } else {
+                int l = ((nextInt() + ans - 1) % n);
+                int r = ((nextInt() + ans - 1) % n);
+                int L = Math.min(l , r);
+                int R = Math.max(l , r);
+                int K = ((nextInt() + ans - 1) % n) + 1;
+                int cnt = 0;
+                for(int idx = L / BLOCK_SIZE; L <= R && L % BLOCK_SIZE != 0; L++)
+                    cnt += blocks[idx][(offset[idx] + L) % BLOCK_SIZE] == K ? 1 : 0;
+                for(int idx = R / BLOCK_SIZE; R >= L && (R + BLOCK_SIZE) % BLOCK_SIZE != BLOCK_SIZE - 1; R--)
+                    cnt += blocks[idx][(offset[idx] + R) % BLOCK_SIZE] == K ? 1 : 0;
+                for(; L < R; L += BLOCK_SIZE)
+                    cnt += freq[L / BLOCK_SIZE].getOrDefault(K, 0);
+                
+                println(ans = cnt);
             }
         }
     }
