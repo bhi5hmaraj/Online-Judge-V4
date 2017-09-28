@@ -138,7 +138,7 @@ public class SeregaandFun {
                         
                     }
                     
-
+                    
                     if(offset[R / BLOCK_SIZE] != 0) {
                         for(int i = 0; i < BLOCK_SIZE; i++)
                             aux[i] = blocks[R / BLOCK_SIZE][(offset[R / BLOCK_SIZE] + i) % BLOCK_SIZE];
