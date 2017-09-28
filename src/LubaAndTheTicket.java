@@ -9,11 +9,31 @@ public class LubaAndTheTicket {
     
     private static void solve() {
         
-        
         int num[] = nextLine().chars().map(Character::getNumericValue).toArray();
+        int min = Integer.MAX_VALUE;
+        for(int i = 0; i < (int) 1e7; i++) {
+            int temp = i;
+            int s1 = 0 , s2 = 0;
+            for(int j = 0; j < 3; j++) {
+                s1 += temp % 10;
+                temp /= 10;
+            }
+            for(int j = 0; j < 3; j++) {
+                s2 += temp % 10;
+                temp /= 10;
+            }
+            if(s1 == s2) {
+                temp = i;
+                int cnt = 0;
+                for(int j = 5; j >= 0; j--) {
+                    cnt += num[j] != temp % 10 ? 1 : 0;
+                    temp /= 10;
+                }
+                min = Math.min(min , cnt);
+            }
+        }
         
-        
-        
+        println(min);
     }
     
     
