@@ -93,6 +93,7 @@ public class SeregaandFun {
             
     }
     
+    
     static void solve2() {
         int n = nextInt();
         int arr[] = nextIntArray(n);
@@ -138,26 +139,61 @@ public class SeregaandFun {
                     int qu = L / BLOCK_SIZE;
                     int re = L % BLOCK_SIZE;
                     exit = blocks[qu][BLOCK_SIZE - 1];
-                    for(int i = BLOCK_SIZE - 1; i >= re; i--)
-                        aux[i] = blocks[qu][(offset[qu] + i) % BLOCK_SIZE];
-                    aux[re] = blocks[R / BLOCK_SIZE][(offset[R / BLOCK_SIZE] + (R % BLOCK_SIZE)) % BLOCK_SIZE];
-                    for(int i = re + 1; i < BLOCK_SIZE; i++)
-                        aux[i] = blocks[qu][(offset[qu] + i - 1) % BLOCK_SIZE];
-                    System.arraycopy(aux, 0, blocks[qu], 0, BLOCK_SIZE);
-                    offset[qu] = 0;
-                }
-                
-                for(int i = L / BLOCK_SIZE + 1; i < R / BLOCK_SIZE; i++) {
-                    offset[i] = (offset[i] - 1 + BLOCK_SIZE) % BLOCK_SIZE;
-                    int next = blocks[i][offset[i]];
-                    blocks[i][offset[i]] = exit;
-                    exit = next;
-                }
-                
-                    {
-                    int qu = R / BLOCK_SIZE;
-                    int re = R % BLOCK_SIZE;
                     
+                    freq[qu].compute(exit, (k , v) -> v == 1 ? freq[qu].remove(k) : freq[qu].put(k, v - 1));
+                    /*
+                    int f = freq[qu].get(exit);
+                    
+                    if(f == 1) freq[qu].remove(exit);
+                    else freq[qu].put(exit, f - 1);
+                    */
+                    for(int i = BLOCK_SIZE - 1; i > re; i--)
+                        blocks[qu][i] = blocks[qu][i - 1];
+                    blocks[qu][re] = blocks[R / BLOCK_SIZE][(offset[R / BLOCK_SIZE] + (R % BLOCK_SIZE)) % BLOCK_SIZE];
+                    freq[qu].put(blocks[qu][re], freq[qu].getOrDefault(blocks[qu][re], 0) + 1);
+                    
+                    for(int i = L / BLOCK_SIZE + 1; i < R / BLOCK_SIZE; i++) {
+                        offset[i] = (offset[i] - 1 + BLOCK_SIZE) % BLOCK_SIZE;
+                        int next = blocks[i][offset[i]];
+                        blocks[i][offset[i]] = exit;
+                        freq[i].put(exit, freq[i].getOrDefault(exit, 0) + 1);
+                        exit = next;
+                        
+                        freq[i].compute(exit, (k , v) -> v == 1 ? freq[qu].remove(k) : freq[qu].put(k , v - 1));
+                        
+                        /*
+                        f = freq[i].get(exit);
+                        
+                        if(f == 1) freq[i].remove(exit);
+                        else freq[i].put(exit, f - 1);
+                        */
+                    }
+                    
+
+                    if(offset[R / BLOCK_SIZE] != 0) {
+                        for(int i = 0; i < BLOCK_SIZE; i++)
+                            aux[i] = blocks[R / BLOCK_SIZE][(offset[R / BLOCK_SIZE] + i) % BLOCK_SIZE];
+                        System.arraycopy(aux, 0, blocks[R / BLOCK_SIZE], 0, BLOCK_SIZE);
+                        offset[R / BLOCK_SIZE] = 0;
+                    }
+                    
+                    freq[R / BLOCK_SIZE].put(exit, freq[R / BLOCK_SIZE].getOrDefault(exit, 0) + 1);
+                    
+                    int toRem = blocks[R / BLOCK_SIZE][R % BLOCK_SIZE];
+                    freq[R / BLOCK_SIZE].compute(toRem, (k , v) -> v == 1 ? freq[R / BLOCK_SIZE].remove(k) : 
+                                                                            freq[R / BLOCK_SIZE].put(k , v - 1));
+                    
+                    for(int i = R % BLOCK_SIZE; i > 0; i--)
+                        blocks[R / BLOCK_SIZE][i] = blocks[R / BLOCK_SIZE][i - 1];
+                    
+                    blocks[R / BLOCK_SIZE][0] = exit;
+                    
+                }
+                
+                for(int i = 0; i < blocks.length; i++) {
+                    System.out.println("i " + i);
+                    System.out.println("bl " + Arrays.toString(blocks[i]));
+                    System.out.println("freq " + freq[i]);
                 }
                 
             }
@@ -176,7 +212,7 @@ public class SeregaandFun {
         reader = new BufferedReader(new InputStreamReader(System.in));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
-        solve();
+        solve2();
         reader.close();
         writer.close();
     }
