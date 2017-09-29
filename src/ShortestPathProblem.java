@@ -20,7 +20,6 @@ public class ShortestPathProblem {
             edges[i] = nextIntArray(3);
         
         
-        println(dist[V]);
     }
     
     
