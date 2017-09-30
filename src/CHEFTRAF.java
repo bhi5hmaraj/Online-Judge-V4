@@ -109,6 +109,8 @@ class CHEFTRAF {
                 dfs2(ed.v, u, lev + 1, sum + ed.cost);
     }
     
+    
+    
     private static void solve() {
         
         int T = nextInt();
@@ -120,12 +122,6 @@ class CHEFTRAF {
             
             adj1 = new ArrayList[V + 1];
             adj2 = new ArrayList[V + 1];
-            level1 = new int[V + 1];
-            level2 = new int[V + 1];
-            parent1 = new int[V + 1];
-            parent2 = new int[V + 1];
-            prefixSum1 = new int[V + 1];
-            prefixSum2 = new int[V + 1];
             
             for(int i = 1; i <= V; i++) {
                 adj1[i] = new ArrayList<>();
@@ -148,13 +144,20 @@ class CHEFTRAF {
                 for(int j = 0; j < 3; j++)
                     fast &= ed1[i][j] == ed2[i][j];
             
-            allPairSum = 0;
-            dfs1(1, 0, 0, 0);
-            dfs2(1, 0, 0, 0);
-            
-            if(fast)
+            if(fast) {
+                level1 = new int[V + 1];
+                level2 = new int[V + 1];
+                parent1 = new int[V + 1];
+                parent2 = new int[V + 1];
+                prefixSum1 = new int[V + 1];
+                prefixSum2 = new int[V + 1];
+                allPairSum = 0;
+                dfs1(1, 0, 0, 0);
+                dfs2(1, 0, 0, 0);
                 println(allPairSum);
+            }
             else {
+                /*
                 DP1 = new int[log(V) + 1][V + 1];
                 DP2 = new int[log(V) + 1][V + 1];
                 binaryLift();
@@ -165,6 +168,43 @@ class CHEFTRAF {
                         int cost2 = prefixSum2[i] + prefixSum2[j] - 2 * prefixSum2[LCA2(i, j)];
                         sum += Math.min(cost1 , cost2);
                     }
+                
+                println(sum);
+                */
+                long sum = 0;
+                for(int i = 1; i <= V; i++) {
+                    int dist1[] = new int[V + 1];
+                    int dist2[] = new int[V + 1];
+                    ArrayDeque<Integer> queue = new ArrayDeque<>();
+                    queue.add(i);
+                    boolean marked[] = new boolean[V + 1];
+                    marked[i] = true;
+                    while(!queue.isEmpty()) {
+                        int curr = queue.remove();
+                        for(Edge ed : adj1[curr])
+                            if(!marked[ed.v]) {
+                                marked[ed.v] = true;
+                                dist1[ed.v] = dist1[curr] + ed.cost;
+                                queue.add(ed.v);
+                            }
+                    }
+                    Arrays.fill(marked, false);
+                    marked[i] = true;
+                    queue.add(i);
+                    while(!queue.isEmpty()) {
+                        int curr = queue.remove();
+                        for(Edge ed : adj2[curr])
+                            if(!marked[ed.v]) {
+                                marked[ed.v] = true;
+                                dist2[ed.v] = dist2[curr] + ed.cost;
+                                queue.add(ed.v);
+                            }
+                    }
+                    
+                    for(int j = i + 1; j <= V; j++)
+                        sum += Math.min(dist1[j] , dist2[j]);
+                    
+                }
                 
                 println(sum);
             }

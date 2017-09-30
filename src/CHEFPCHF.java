@@ -12,8 +12,29 @@ class CHEFPCHF {
         int T = nextInt();
         while(T-->0) {
             
-            
-            
+            int N = nextInt();
+            int K = nextInt();
+            if(N <= 1000) {
+                int arr[] = new int[N];
+                while(K-->0)
+                    arr[nextInt() - 1] = nextInt();
+                boolean dp[][] = new boolean[N][N];
+                for(int i = 0; i < N; i++)
+                    dp[i][i] = true;
+                for(int len = 3; len <= N; len += 2) 
+                    for(int i = 0; i + len - 1 < N; i++)
+                        dp[i][i + len - 1] = arr[i] == arr[i + len - 1] && dp[i + 1][i + len - 2];
+                
+                int cnt = 0;
+                for(boolean t[] : dp)
+                    for(boolean b : t)
+                        cnt += b ? 1 : 0;
+                
+                println(cnt);
+                
+            }
+            else
+                throw new RuntimeException("work in progress");
         }
         
     }
