@@ -6,6 +6,12 @@ public class poj_2337  {
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    static class Edge implements Comparable<Edge> {
+        int v , key;
+        
+    }
+    
+    static String words[];
     
     private static void solve() {
         
@@ -14,9 +20,9 @@ public class poj_2337  {
         while(T-->0) {
             int n = nextInt();
             HashMap<String , Integer> map = new HashMap<String , Integer>();
-            String words[] = new String[n];
-            while(n-->0)
-                map.put(words[n] = nextLine(), n);
+            words = new String[n];
+            for(int i = 0; i < n; i++)
+                map.put(words[i] = nextLine(), i);
             
             
         }
