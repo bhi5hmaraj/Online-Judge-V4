@@ -8,7 +8,14 @@ public class poj_2337  {
     
     static class Edge implements Comparable<Edge> {
         int v , key;
-        
+        Edge(int v , int k) {
+            this.v = v;
+            this.key = k;
+        }
+        @Override
+        public int compareTo(Edge o) {
+            return words[o.key].compareTo(words[key]);
+        }
     }
     
     static String words[];
