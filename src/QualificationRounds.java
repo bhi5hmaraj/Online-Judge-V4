@@ -1,6 +1,6 @@
 import java.util.*;
 import java.io.*;
-public class RaceAgainstTime {
+public class QualificationRounds {
     
     
     
@@ -10,39 +10,43 @@ public class RaceAgainstTime {
     private static void solve() {
         
         
-        int h = (nextInt() * 5) % 60;
-        int m = nextInt();
-        int s = nextInt();
-        int t1 = (nextInt() * 5) % 60;
-        int t2 = (nextInt() * 5) % 60;
+        int n = nextInt();
+        int k = nextInt();
+        HashSet<Integer> set = new HashSet<>();
+        for(int i = 0; i < n; i++) {
+            int val = 0;
+            for(int j = 0; j < k; j++)
+                val = (val << 1) | nextInt();
+            set.add(val);
+        }
         
-//        List<Integer> times = Arrays.asList(t2 , h , m , s);
-        List<Integer> times = Arrays.asList(h , m , s);
-        int aclock = -1;
-        int clock  = -1;
-        /*
-        for(int i = 1; i < 60; i++)
-            if((aclock = times.indexOf((t1 - i + 60) % 60)) >= 0)
-                break;
-        for(int i = 1; i < 60; i++)
-            if((clock = times.indexOf((t1 + i) % 60)) >= 0)
-                break;
-        */
-        boolean b1 = false , b2 = false;
-        for(int i = 1; i < 60 && (t1 - i + 60) % 60 != t2; i++)
-            if(times.indexOf((t1 - i + 60) % 60) >= 0) {
-                b1 = true;
-                break;
-            }
-                
-        for(int i = 1; i < 60 && (t1 + i) % 60 != t2; i++)
-            if(times.indexOf((t1 + i) % 60 ) >= 0) {
-                b2 = true;
-                break;
+        int unique[] = new int[set.size()];
+        int size = 0;
+        for(int v : set)
+            unique[size++] = v;
+        
+        boolean flag = false;
+        
+        for(int mask = 1; mask < (1 << size); mask++) {
+            int cnt[] = new int[k];
+            int total = 0;
+            boolean poss = true;
+            for(int j = 0; j < size; j++) {
+                if((mask & (1 << j)) != 0) {
+                    total++;
+                    for(int p = 0; p < k; p++)
+                        if((unique[j] & (1 << p)) != 0)
+                            cnt[k - p - 1]++;
+                }
             }
             
-//        println(clock == 0 || aclock == 0 ? "YES" : "NO");
-        println(b1 && b2 ? "NO" : "YES");
+            for(int i = 0; i < k; i++)
+                poss &= cnt[i] <= total / 2;
+            
+            flag |= poss;
+        }
+        
+        println(flag ? "YES" : "NO");
     }
     
     
