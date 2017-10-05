@@ -18,7 +18,6 @@ public class RaceAgainstTime {
         
 //        List<Integer> times = Arrays.asList(t2 , h , m , s);
         List<Integer> times = Arrays.asList(h , m , s);
-            
         int aclock = -1;
         int clock  = -1;
         /*
