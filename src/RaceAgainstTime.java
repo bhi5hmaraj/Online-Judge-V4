@@ -15,8 +15,17 @@ public class RaceAgainstTime {
         double t1 = (nextInt() % 12) * 30.0;
         double t2 = (nextInt() % 12) * 30.0;
         
-        double times[] = {
+        double times[] = {(h * 3600 + m * 60 + s) / 120.0 , (m * 60 + s) / 10.0 , s * 6.0};
+        if(t2 < t1) {
+            double temp = t1;
+            t1 = t2;
+            t2 = temp;
+        }
         
+        int cnt = 0;
+        for(double t : times) cnt += t >= t1 && t <= t2 ? 1 : 0;
+        
+        println(cnt % 3 == 0 ? "yeS" : "nO"); // from satyakiU
         
     }
     
