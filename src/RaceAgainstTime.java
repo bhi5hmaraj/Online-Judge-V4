@@ -9,40 +9,15 @@ public class RaceAgainstTime {
     
     private static void solve() {
         
+        double h = nextInt() % 12;
+        double m = nextInt();
+        double s = nextInt();
+        double t1 = (nextInt() % 12) * 30.0;
+        double t2 = (nextInt() % 12) * 30.0;
         
-        int h = (nextInt() * 5) % 60;
-        int m = nextInt();
-        int s = nextInt();
-        int t1 = (nextInt() * 5) % 60;
-        int t2 = (nextInt() * 5) % 60;
+        double times[] = {
         
-//        List<Integer> times = Arrays.asList(t2 , h , m , s);
-        List<Integer> times = Arrays.asList(h , m , s);
-        int aclock = -1;
-        int clock  = -1;
-        /*
-        for(int i = 1; i < 60; i++)
-            if((aclock = times.indexOf((t1 - i + 60) % 60)) >= 0)
-                break;
-        for(int i = 1; i < 60; i++)
-            if((clock = times.indexOf((t1 + i) % 60)) >= 0)
-                break;
-        */
-        boolean b1 = false , b2 = false;
-        for(int i = 1; i < 60 && (t1 - i + 60) % 60 != t2; i++)
-            if(times.indexOf((t1 - i + 60) % 60) >= 0) {
-                b1 = true;
-                break;
-            }
-                
-        for(int i = 1; i < 60 && (t1 + i) % 60 != t2; i++)
-            if(times.indexOf((t1 + i) % 60 ) >= 0) {
-                b2 = true;
-                break;
-            }
-            
-//        println(clock == 0 || aclock == 0 ? "YES" : "NO");
-        println(b1 && b2 ? "NO" : "YES");
+        
     }
     
     
