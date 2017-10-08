@@ -39,3 +39,8 @@ My Ideas:
 	|---> Can't be done without LCA !!
 	|---> Start from any arbitary vertex and find the distance to all other nodes . Now start from the farthest node and repeat it again.
 	      We will get the 2 end points of the diameter.
+	      
+	Writing a number as sum of consecutive numbers : NT class
+	Lemma any number can be written as a sum of consecutive numbers iff it has atleast 1 odd prime divisor
+	Corollary all powers of 2 can't be written 
+	odd numbers can be written as sum of 2 numbers , n/2 , n/2 + 1
