@@ -1,47 +1,19 @@
 import java.util.*;
 import java.io.*;
-public class ApproximatePaperPlanes {
+public class FacelessArya {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static double distSq(double t) {
-        double dsq = 0;
-        for(int i = 0; i < 3; i++) {
-            double diff = (p1[i] + t * v1[i]) - (p2[i] + t * v2[i]);
-            dsq += diff * diff;
-        }
-        return dsq;
-    }
-    static long p1[] , p2[] , v1[] , v2[];
     
     private static void solve() {
         
-        int t = nextInt();
-        p1 = nextLongArray(3);
-        v1 = nextLongArray(3);
-        p2 = nextLongArray(3);
-        v2 = nextLongArray(3);
-        double minDistSq = Math.min(distSq(0) , distSq(t));
-
-        boolean zero = true;
-        for(int i = 0; i < 3; i++)
-            zero &= v1[i] == v2[i];
         
-        if(!zero) {
-            long nume = 0 , deno = 0;
-            for(int i = 0; i < 3; i++) {
-                nume += (v1[i] - v2[i]) * (p1[i] - p2[i]);  // solution for f'(t) = 0 
-                deno += (v1[i] - v2[i]) * (v1[i] - v2[i]);
-            }
-            
-            double optT = -1.0 * nume / (double) deno;
-            if(optT >= 0 && optT <= t)
-                minDistSq = Math.min(minDistSq , distSq(optT));
-        }
         
-        println(String.format("%.9f", Math.sqrt(minDistSq)));
+        
+        
+        
     }
     
     

@@ -1,47 +1,74 @@
 import java.util.*;
 import java.io.*;
-public class ApproximatePaperPlanes {
+public class BinomialSumofProducts {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static double distSq(double t) {
-        double dsq = 0;
-        for(int i = 0; i < 3; i++) {
-            double diff = (p1[i] + t * v1[i]) - (p2[i] + t * v2[i]);
-            dsq += diff * diff;
+    static final int MAX = 1000;
+    static long table[][];
+    static final long mod = (long) (1e9) + 7; 
+    static class MM {       // MM (Modular Math) class 
+        static long sub(long a, long b) {return (a - b  + mod) % mod;}
+        static long mul(long a, long b) {return ((a % mod) * (b % mod)) % mod;}
+        static long add(long a, long b) {return (a + b) % mod;}
+        static long div(long a, long b) {return mul(a, modInverse(b));}
+        static long modInverse(long n)  {return modPow(n, mod - 2);} // Fermat's little theorem
+        static long modPow(long a , long b) {
+            long pow = 1;
+            while(b > 0) {
+                if((b & 1L) == 1)
+                    pow = ((pow * a) % mod);
+
+                a = ((a * a) % (mod));
+                b >>= 1;
+            }
+            return pow;
         }
-        return dsq;
     }
-    static long p1[] , p2[] , v1[] , v2[];
+    static {
+        table = new long[MAX + 1][MAX + 1];
+        for(int i = 0; i <= MAX; i++)
+            table[i][0] = table[i][i] = 1;
+        
+        for(int i = 1; i <= MAX; i++) {
+            for(int j = 1; j < i; j++)
+                table[i][j] = (table[i - 1][j - 1] + table[i - 1][j]) % mod;    // pascal triangle
+            for(int j = i + 1; j <= MAX; j++)
+                table[i][j] = i * j;
+        }
+        
+        for(int i = 1; i <= MAX; i++) 
+            for(int j = 1; j <= MAX; j++)
+                table[i][j] = MM.mul(table[i][j], table[i][j - 1]);
+        
+    }
+    
+    static long get(int r , int L , int R) {
+        if(r == 0)
+            return L == 0 && R == 0 ? 1 : 0;
+        else 
+            return L == 0 ? table[r][R] : MM.div(table[r][R], table[r][L - 1]);
+    }
     
     private static void solve() {
         
-        int t = nextInt();
-        p1 = nextLongArray(3);
-        v1 = nextLongArray(3);
-        p2 = nextLongArray(3);
-        v2 = nextLongArray(3);
-        double minDistSq = Math.min(distSq(0) , distSq(t));
-
-        boolean zero = true;
-        for(int i = 0; i < 3; i++)
-            zero &= v1[i] == v2[i];
         
-        if(!zero) {
-            long nume = 0 , deno = 0;
-            for(int i = 0; i < 3; i++) {
-                nume += (v1[i] - v2[i]) * (p1[i] - p2[i]);  // solution for f'(t) = 0 
-                deno += (v1[i] - v2[i]) * (v1[i] - v2[i]);
-            }
+        int Q = nextInt();
+        while(Q-->0) {
+            long sum = 0;
+            int a = nextInt();
+            int b = nextInt();
+            int c = nextInt();
+            int d = nextInt();
+            for(int i = a; i <= b; i++)
+                sum = MM.add(sum, get(i, c, d));
             
-            double optT = -1.0 * nume / (double) deno;
-            if(optT >= 0 && optT <= t)
-                minDistSq = Math.min(minDistSq , distSq(optT));
+            println(sum);
         }
         
-        println(String.format("%.9f", Math.sqrt(minDistSq)));
+        
     }
     
     
