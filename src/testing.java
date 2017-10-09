@@ -79,12 +79,21 @@ public class testing {
         */
 //        println("AC");
 //        System.out.println("N = " + MAX + " Time taken = " + (System.nanoTime() - start) / 1e9);
-        List<Integer> li = Arrays.asList(5 , 3 , 6 , 1, 9);
+        /*List<Integer> li = Arrays.asList(5 , 3 , 6 , 1, 9);
         ListIterator<Integer> it = li.listIterator(1);
         println(it.next());
         println(it.next());
         println(it.previous());
         println(it.previous());
+        */
+        Thread t1 = new Thread("asda");
+        try {
+            t1.join();
+        }
+        catch(Exception e) {
+            System.out.println("excep");
+        }
+        
     }
     
     
