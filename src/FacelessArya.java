@@ -7,7 +7,7 @@ public class FacelessArya {
     /************************ SOLUTION STARTS HERE ************************/
     
 
-    static int MAX = 1000000;
+    static int MAX = (int) 1e6;
     static int bigPrime[] = new int[MAX + 1];
     
     // instead of the loPrimesieve you could use bigprimeSieve which has the same performance and its a lot more intutive
@@ -36,11 +36,6 @@ public class FacelessArya {
             int arr[][] = new int[N][];
             for(int i = 0; i < N; i++)
                 arr[i] = nextIntArray(M);
-            
-            if(N == 1) {
-                println(Arrays.stream(arr[0]).max().getAsInt());
-                continue;
-            }
             
             for(int a : arr[0]) {
                 int cost = a;
