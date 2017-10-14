@@ -19,6 +19,7 @@ public class poj_2337  {
     }
     
     static String words[];
+    static ArrayList<Edge> adj[];
     
     private static void solve() {
         
@@ -28,8 +29,21 @@ public class poj_2337  {
             int n = nextInt();
             HashMap<String , Integer> map = new HashMap<String , Integer>();
             words = new String[n];
+            adj = new ArrayList[26];
+            int inDegree[] = new int[26];
+            
+            for(int i = 0; i < 26; i++)
+                adj[i] = new ArrayList<>();
+            
             for(int i = 0; i < n; i++)
                 map.put(words[i] = nextLine(), i);
+            
+            for(int i = 0; i < n; i++) { 
+                adj[words[i].charAt(0) - 'a'].add(new Edge(words[i].charAt(words[i].length() - 1) - 'a', i));
+                inDegree[words[i].charAt(words[i].length() - 1) - 'a']++;
+            }
+            for(int i = 0; i < n; i++)
+                Collections.sort(adj[i]);
             
             
         }
