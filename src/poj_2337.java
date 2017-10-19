@@ -116,7 +116,8 @@ public class poj_2337  {
     
     public static void main(String[] args) throws IOException {
         reader = new BufferedReader(new InputStreamReader(System.in));
-        writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
+        //writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
+        writer = new PrintWriter("out.txt");
         st     = null;
         solve();
         reader.close();
