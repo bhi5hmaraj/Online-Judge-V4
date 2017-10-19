@@ -14,13 +14,18 @@ public class poj_2337  {
         }
         @Override
         public int compareTo(Edge o) {
-            return words[o.key].compareTo(words[key]);
+            return words[key].compareTo(words[o.key]);
         }
     }
     
     static String words[];
     static ArrayList<Edge> adj[];
+    static ArrayList<Integer> stack;
     
+    static void eulerTour(Edge e) {
+        if(adj[e.v].size() > 0)
+            eulerTour(adj[e.v].remove(adj[e.v].size() - 1));
+    }
     
     
     private static void solve() {
@@ -51,11 +56,13 @@ public class poj_2337  {
             boolean equal = true;
             int cntOut = 0;
             int cntIn  = 0;
-            
+            int start = 0;
             for(int i = 0; i < 26; i++) {
                 equal &= inDegree[i] == adj[i].size();
                 cntOut += adj[i].size() == inDegree[i] + 1 ? 1 : 0;
                 cntIn  += inDegree[i] == adj[i].size() + 1 ? 1 : 0;
+                if(inDegree[i] == adj[i].size()) 
+                    start = adj[i].get(0).compareTo(adj[start].get(0)) < 0 ? i : start;
             }
             
             if(equal || cntIn == cntOut) {
