@@ -23,8 +23,9 @@ public class poj_2337  {
     static ArrayList<Integer> stack;
     
     static void eulerTour(Edge e) {
-        if(adj[e.v].size() > 0)
+        while(adj[e.v].size() > 0)
             eulerTour(adj[e.v].remove(adj[e.v].size() - 1));
+        stack.add(e.key);
     }
     
     
@@ -50,7 +51,7 @@ public class poj_2337  {
                 adj[words[i].charAt(0) - 'a'].add(new Edge(words[i].charAt(words[i].length() - 1) - 'a', i));
                 inDegree[words[i].charAt(words[i].length() - 1) - 'a']++;
             }
-            for(int i = 0; i < n; i++)
+            for(int i = 0; i < 26; i++)
                 Collections.sort(adj[i]);
             
             boolean equal = true;
@@ -61,13 +62,34 @@ public class poj_2337  {
                 equal &= inDegree[i] == adj[i].size();
                 cntOut += adj[i].size() == inDegree[i] + 1 ? 1 : 0;
                 cntIn  += inDegree[i] == adj[i].size() + 1 ? 1 : 0;
-                if(inDegree[i] == adj[i].size()) 
-                    start = adj[i].get(0).compareTo(adj[start].get(0)) < 0 ? i : start;
             }
             
-            if(equal || cntIn == cntOut) {
-                
+            if(equal)
+                for(int i = 0; i < 26; i++)
+                    start = adj[i].get(0).compareTo(adj[start].get(0)) < 0 ? i : start;
+            else if(cntIn == cntOut) {
+                for(int i = 0; i < 26; i++)
+                    if(adj[i].size() == inDegree[i] + 1)
+                        start = i;
             }
+            else {
+                println("***");
+                continue;
+            }
+            
+            println("start " + (char)(start + 'a'));
+            
+            stack = new ArrayList<Integer>();
+            stack.add(adj[start].get(adj[start].size() - 1).key);
+            eulerTour(adj[start].remove(adj[start].size() - 1));
+            println(stack);
+//            if(stack.size() != n)
+//                println("***");
+//            else {
+//                for(int i = n - 1; i >= 0; i--)
+//                    print(words[stack.get(i)] + (i > 0 ? "." : ""));
+//                print('\n');
+//            }
         }
         
         
