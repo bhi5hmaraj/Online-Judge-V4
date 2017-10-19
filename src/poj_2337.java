@@ -40,17 +40,16 @@ public class poj_2337  {
         int T = nextInt();
         while(T-->0) {
             int n = nextInt();
-            HashMap<String , Integer> map = new HashMap<String , Integer>();
             words = new String[n];
             adj = new ArrayList[26];
             
             int inDegree[] = new int[26];
             
             for(int i = 0; i < 26; i++)
-                adj[i] = new ArrayList<>();
+                adj[i] = new ArrayList<Edge>();
             
             for(int i = 0; i < n; i++)
-                map.put(words[i] = nextLine(), i);
+                words[i] = nextLine();
             
             for(int i = 0; i < n; i++) { 
                 adj[words[i].charAt(0) - 'a'].add(new Edge(words[i].charAt(words[i].length() - 1) - 'a', i));
@@ -76,7 +75,7 @@ public class poj_2337  {
                     if(adj[i].size() > 0)
                         start = adj[i].get(adj[i].size() - 1).compareTo(adj[start].get(adj[start].size() - 1)) > 0 ? i : start;
             }
-            else if(cntIn == cntOut) {
+            else if(cntIn == cntOut && cntIn == 1) {
                 for(int i = 0; i < 26; i++)
                     if(adj[i].size() == inDegree[i] + 1)
                         start = i;
@@ -116,8 +115,8 @@ public class poj_2337  {
     
     public static void main(String[] args) throws IOException {
         reader = new BufferedReader(new InputStreamReader(System.in));
-        //writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
-        writer = new PrintWriter("out.txt");
+        writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
+//        writer = new PrintWriter("out.txt");
         st     = null;
         solve();
         reader.close();
