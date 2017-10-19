@@ -14,7 +14,7 @@ public class poj_2337  {
         }
         @Override
         public int compareTo(Edge o) {
-            return words[key].compareTo(words[o.key]);
+            return words[o.key].compareTo(words[key]);
         }
     }
     
@@ -23,6 +23,8 @@ public class poj_2337  {
     static ArrayList<Integer> stack;
     
     static void eulerTour(int u , Edge e) {
+//        if(e != null)
+//            System.out.println((char)(u + 'a') + " ed " + words[e.key]);
         while(adj[u].size() > 0) {
             Edge next = adj[u].remove(adj[u].size() - 1);
             eulerTour(next.v , next);
@@ -62,14 +64,18 @@ public class poj_2337  {
             int cntIn  = 0;
             int start = 0;
             for(int i = 0; i < 26; i++) {
+                if(adj[i].size() > 0)
+                    start = i;
                 equal &= inDegree[i] == adj[i].size();
                 cntOut += adj[i].size() == inDegree[i] + 1 ? 1 : 0;
                 cntIn  += inDegree[i] == adj[i].size() + 1 ? 1 : 0;
             }
             
-            if(equal)
+            if(equal) {
                 for(int i = 0; i < 26; i++)
-                    start = adj[i].get(0).compareTo(adj[start].get(0)) < 0 ? i : start;
+                    if(adj[i].size() > 0)
+                        start = adj[i].get(adj[i].size() - 1).compareTo(adj[start].get(adj[start].size() - 1)) > 0 ? i : start;
+            }
             else if(cntIn == cntOut) {
                 for(int i = 0; i < 26; i++)
                     if(adj[i].size() == inDegree[i] + 1)
@@ -80,19 +86,18 @@ public class poj_2337  {
                 continue;
             }
             
-            println("start " + (char)(start + 'a'));
+            //println("start " + (char)(start + 'a'));
             
             stack = new ArrayList<Integer>();
             eulerTour(start, null);
-            println(stack);
             
-//            if(stack.size() != n)
-//                println("***");
-//            else {
-//                for(int i = n - 1; i >= 0; i--)
-//                    print(words[stack.get(i)] + (i > 0 ? "." : ""));
-//                print('\n');
-//            }
+            if(stack.size() != n)
+                println("***");
+            else {
+                for(int i = n - 1; i >= 0; i--)
+                    print(words[stack.get(i)] + (i > 0 ? "." : ""));
+                print('\n');
+            }
         }
         
         
