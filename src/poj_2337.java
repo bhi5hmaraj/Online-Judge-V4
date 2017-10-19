@@ -22,10 +22,13 @@ public class poj_2337  {
     static ArrayList<Edge> adj[];
     static ArrayList<Integer> stack;
     
-    static void eulerTour(Edge e) {
-        while(adj[e.v].size() > 0)
-            eulerTour(adj[e.v].remove(adj[e.v].size() - 1));
-        stack.add(e.key);
+    static void eulerTour(int u , Edge e) {
+        while(adj[u].size() > 0) {
+            Edge next = adj[u].remove(adj[u].size() - 1);
+            eulerTour(next.v , next);
+        }
+        if(e != null)
+            stack.add(e.key);
     }
     
     
@@ -80,9 +83,9 @@ public class poj_2337  {
             println("start " + (char)(start + 'a'));
             
             stack = new ArrayList<Integer>();
-            stack.add(adj[start].get(adj[start].size() - 1).key);
-            eulerTour(adj[start].remove(adj[start].size() - 1));
+            eulerTour(start, null);
             println(stack);
+            
 //            if(stack.size() != n)
 //                println("***");
 //            else {
