@@ -1,0 +1,79 @@
+import java.util.*;
+import java.io.*;
+public class lyaMuromet {
+    
+    
+    
+    /************************ SOLUTION STARTS HERE ************************/
+    
+    static int[] maxSlidingSum(int arr[] , int n , int k) {
+        int sum = 0;
+        int pos = 0;
+        for(int i = 0; i < k; i++)
+            sum += arr[i];
+        
+        int max = sum;
+        for(int i = k; i < n; i++) {
+            sum += arr[i] - arr[i - k];
+            if(sum > max) {
+                max = sum;
+                pos = i - k + 1;
+            }
+        }
+        
+        return new int[]{sum , pos};
+    }
+    
+    private static void solve() {
+        
+        int n = nextInt();
+        int k = Math.min(nextInt() , n);
+        int arr[] = nextIntArray(n);
+        if(2 * k >= n)
+            println(Arrays.stream(arr).sum());
+        else {
+            
+        }
+    }
+    
+    
+    
+    /************************ SOLUTION ENDS HERE ************************/
+    
+    
+    
+    
+    
+    /************************ TEMPLATE STARTS HERE **********************/
+    
+    public static void main(String[] args) throws IOException {
+        reader = new BufferedReader(new InputStreamReader(System.in));
+        writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
+        st     = null;
+        solve();
+        reader.close();
+        writer.close();
+    }
+    
+    static BufferedReader reader;
+    static PrintWriter    writer;
+    static StringTokenizer st;
+    
+    static String next()
+    {while(st == null || !st.hasMoreTokens()){try{String line = reader.readLine();if(line == null){return null;}            
+    st = new StringTokenizer(line);}catch (Exception e){throw new RuntimeException();}}return st.nextToken();}
+    static String nextLine()  {String s=null;try{s=reader.readLine();}catch(IOException e){e.printStackTrace();}return s;}             
+    static int    nextInt()   {return Integer.parseInt(next());}
+    static long   nextLong()  {return Long.parseLong(next());}     
+    static double nextDouble(){return Double.parseDouble(next());}
+    static char   nextChar()  {return next().charAt(0);}
+    static int[]  nextIntArray(int n)         {int[] a= new int[n];   int i=0;while(i<n){a[i++]=nextInt();}  return a;}
+    static long[] nextLongArray(int n)        {long[]a= new long[n];  int i=0;while(i<n){a[i++]=nextLong();} return a;}    
+    static int[]  nextIntArrayOneBased(int n) {int[] a= new int[n+1]; int i=1;while(i<=n){a[i++]=nextInt();} return a;}            
+    static long[] nextLongArrayOneBased(int n){long[]a= new long[n+1];int i=1;while(i<=n){a[i++]=nextLong();}return a;}            
+    static void   print(Object o)  { writer.print(o);  }
+    static void   println(Object o){ writer.println(o);}
+    
+    /************************ TEMPLATE ENDS HERE ************************/
+    
+}
