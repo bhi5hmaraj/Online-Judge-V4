@@ -61,7 +61,12 @@ public class lyaMuromet {
             for(int i = k; i < n; i++) 
                 sum[i - k + 1] = sum[i - k] + arr[i] - arr[i - k];
             
+            int max = 0;
+            SegmentTree segTree = new SegmentTree(sum);
+            for(int i = 0; i < sum.length; i++) 
+                max = Math.max(max , sum[i] + Math.max(segTree.query(0, i - k) , segTree.query(i + k, n - k)));
             
+            println(max);
         }
     }
     
