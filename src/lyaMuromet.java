@@ -6,32 +6,61 @@ public class lyaMuromet {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static int[] maxSlidingSum(int arr[] , int n , int k) {
-        int sum = 0;
-        int pos = 0;
-        for(int i = 0; i < k; i++)
-            sum += arr[i];
-        
-        int max = sum;
-        for(int i = k; i < n; i++) {
-            sum += arr[i] - arr[i - k];
-            if(sum > max) {
-                max = sum;
-                pos = i - k + 1;
+
+    static class SegmentTree  { // Implemented to store min in a range , point update and range query
+        int tree[];
+        int len;
+        int size;
+        SegmentTree(int arr[]) { // arr should be a 1 based array
+            len = arr.length;
+            size = 1 << (32 - Integer.numberOfLeadingZeros(len - 1) + 1);  // ceil(log(len)) + 1
+            tree = new int[size];
+            build(arr, 1, 0, len - 1);
+        }
+        int query(int L , int R){
+            if(L > R) 
+                return 0;
+            return query(1, L, R, 0, len - 1);
+        }
+        int query(int node , int L , int R, int nl, int nr) {
+            int mid = (nl + nr) >> 1;
+            if(nl == L && nr == R)
+                return tree[node];
+            else if(R <= mid)
+                return query(2 * node, L, R, nl, mid);
+            else if(L > mid)
+                return query((2*node)+1, L, R, mid + 1 , nr);
+            else
+                return Math.max(query(2*node, L, mid , nl , mid) ,  query((2*node)+1, mid+1, R , mid+1,nr));
+        }
+        void build(int arr[],int node,int L,int R) {
+            if(L == R)
+                tree[node] = arr[L];
+            else {
+                int mid = (L + R) >> 1;
+                build(arr, 2 * node, L, mid);
+                build(arr, (2 * node) + 1, mid + 1, R);
+                tree[node] = Math.max(tree[2*node] , tree[(2 * node) + 1]);
             }
         }
-        
-        return new int[]{sum , pos};
     }
+
     
     private static void solve() {
         
         int n = nextInt();
-        int k = Math.min(nextInt() , n);
+        int k = nextInt();
         int arr[] = nextIntArray(n);
         if(2 * k >= n)
             println(Arrays.stream(arr).sum());
         else {
+            int sum[] = new int[n - k + 1];
+            for(int i = 0; i < k; i++)
+                sum[0] += arr[i];
+            
+            for(int i = k; i < n; i++) 
+                sum[i - k + 1] = sum[i - k] + arr[i] - arr[i - k];
+            
             
         }
     }
