@@ -14,19 +14,20 @@ public class poj_2337  {
         }
         @Override
         public int compareTo(Edge o) {
-            return words[o.key].compareTo(words[key]);
+            return words[key].compareTo(words[o.key]);
         }
     }
     
     static String words[];
     static ArrayList<Edge> adj[];
     static ArrayList<Integer> stack;
+    static Iterator<Edge>[] iter;
     
     static void eulerTour(int u , Edge e) {
 //        if(e != null)
 //            System.out.println((char)(u + 'a') + " ed " + words[e.key]);
-        while(adj[u].size() > 0) {
-            Edge next = adj[u].remove(adj[u].size() - 1);
+        while(iter[u] != null && iter[u].hasNext()) {
+            Edge next = iter[u].next();
             eulerTour(next.v , next);
         }
         if(e != null)
@@ -42,6 +43,7 @@ public class poj_2337  {
             int n = nextInt();
             words = new String[n];
             adj = new ArrayList[26];
+            iter = new Iterator[26];
             
             int inDegree[] = new int[26];
             
@@ -55,8 +57,11 @@ public class poj_2337  {
                 adj[words[i].charAt(0) - 'a'].add(new Edge(words[i].charAt(words[i].length() - 1) - 'a', i));
                 inDegree[words[i].charAt(words[i].length() - 1) - 'a']++;
             }
-            for(int i = 0; i < 26; i++)
+            for(int i = 0; i < 26; i++) {
                 Collections.sort(adj[i]);
+                if(adj[i].size() > 0)
+                    iter[i] = adj[i].iterator();
+            }
             
             boolean equal = true;
             int cntOut = 0;
@@ -73,7 +78,7 @@ public class poj_2337  {
             if(equal) {
                 for(int i = 0; i < 26; i++)
                     if(adj[i].size() > 0)
-                        start = adj[i].get(adj[i].size() - 1).compareTo(adj[start].get(adj[start].size() - 1)) > 0 ? i : start;
+                        start = adj[i].get(0).compareTo(adj[start].get(0)) < 0 ? i : start;
             }
             else if(cntIn == cntOut && cntIn == 1) {
                 for(int i = 0; i < 26; i++)
