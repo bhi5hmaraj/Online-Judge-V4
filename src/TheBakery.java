@@ -9,86 +9,99 @@ public class TheBakery {
     static int arr[];
     static int dp[][];
     static int n;
-    static int opti[][];
     
     static void divideAndConquer(int lev , int L , int R , int optL , int optR) {
         if(L <= R) {
             int mid = (L + R) >> 1;
-            MyBitSet set = new MyBitSet(n + 1);
             int opt = -1;
             for(int m = Math.min(optR , mid) ; m >= optL; m--) {
-//            for(int m = mid; m >= lev; m--) {
-                set.set(arr[m]);
-                int relax = set.cardinality() + dp[lev - 1][m - 1];
+                int relax = cardinality + dp[lev - 1][m - 1];
                 if(relax > dp[lev][mid]) {
                     dp[lev][mid] = relax;
                     opt = m;
                 }
             }
-            opti[lev][mid] = opt;
-            println("lev = " + lev + " mid = " + mid + " opt " + opt + " L " + L + " R "+ R + " optL " + optL + " optR " + optR);
+            // println("lev = " + lev + " mid = " + mid + " opt " + opt + " L " + L + " R "+ R + " optL " + optL + " optR " + optR);
             divideAndConquer(lev, L, mid - 1, optL, opt);
             divideAndConquer(lev, mid + 1, R, opt, optR);
         }
     }
-    
-    static class MyBitSet {
-        long bits[];
-        int cardinality;
+
+    static class SegTreeNode {
         int size;
-        MyBitSet(int MAX) {
-            size = MAX;
-            bits = new long[((MAX - 1) / 64) + 1];
-            cardinality = 0;
-        }
-
-        void set(int n, boolean f) {
-            int index = n / 64;
-            if (f) {
-                if((bits[index] & (1L << (n % 64))) == 0)
-                    cardinality++;
-                bits[index] |= (1L << (n % 64));
-            }
-            else
-                bits[index] ^= (bits[index] & (1L << (n % 64))) != 0 ? (1L << (n % 64)) : 0;
-        }
-
-        void set(int n) {
-            set(n, true);
+        SegTreeNode left , right;
+        public SegTreeNode(int size) {
+            this.size = size;
         }
         
-        int cardinality() {
-            return cardinality;
+        @Override
+        public String toString() {
+            return String.format("[sz = %d]", size);
         }
-                
-        boolean get(int n) {
-            return ((bits[n / 64]) & (1L << (n % 64))) != 0;
-        }
-        
     }
-
     
+    static SegTreeNode persistent[];
+    static int last[];
+    static SegTreeNode initSegTree(int L , int R) {
+        if(L == R)
+            return new SegTreeNode(last[arr[L]] == L ? 1 : 0);
+        else {
+            SegTreeNode newNode = new SegTreeNode(0);
+            int mid = (L + R) >> 1;
+            newNode.left = initSegTree(L, mid);
+            newNode.right = initSegTree(mid + 1, R);
+            newNode.size = newNode.left.size + newNode.right.size;
+            return newNode;
+        }
+    }
+    static SegTreeNode initSegTree(SegTreeNode prev , int L , int R , int index , int val) {
+        if(L == R) 
+            return new SegTreeNode(val);
+        else {
+            int mid = (L + R) >> 1;
+            SegTreeNode l = prev.left;
+            SegTreeNode r = prev.right;
+            if(index <= mid)
+                l = initSegTree(prev.left , L , mid , index , val);
+            else
+                r = initSegTree(prev.right, mid + 1, R, index , val);
+            SegTreeNode newNode = new SegTreeNode(l.size + r.size);
+            newNode.left = l;
+            newNode.right = r;
+            return newNode;
+        }
+    }
     private static void solve() {
-        
         
         n = nextInt();
         int k = nextInt();
         arr = nextIntArray(n);
         dp = new int[k][n];
-        opti = new int[k][n];
-        MyBitSet set = new MyBitSet(n + 1);
-        for(int i = 0; i < n; i++) {
-            set.set(arr[i]);
-            dp[0][i] = set.cardinality();
+        last = new int[n + 1];
+        int next[] = new int[n];
+        Arrays.fill(last, n);
+        for(int i = n - 1; i >= 0; i--) {
+            next[i] = last[arr[i]];
+            last[arr[i]] = i;
         }
         
-        for(int i = 1; i < k; i++) {
-            divideAndConquer(i, i, n - 1, i, n - 1);
-            println(Arrays.toString(opti[i]));
-            for(int j = 0; j < n - 1; j++)
-                if(opti[i][j] > opti[i][j + 1])
-                    throw new RuntimeException("i = " + i + " j = " + j);
+        persistent = new SegTreeNode[n];
+        persistent[0] = initSegTree(0, n - 1);
+        for(int i = 1; i < n; i++) {
+            persistent[i] = initSegTree(persistent[i - 1], 0, n - 1, i - 1, 0);
+            if(next[i - 1] < n)
+                persistent[i] = initSegTree(persistent[i], 0, n - 1, next[i - 1], 1);
         }
+        
+        HashSet<Integer> set = new HashSet<>();
+        for(int i = 0; i < n; i++) {
+            set.add(arr[i]);
+            dp[0][i] = set.size();
+        }
+        
+        for(int i = 1; i < k; i++) 
+            divideAndConquer(i, i, n - 1, i, n - 1);
+        
         println(dp[k - 1][n - 1]);
     }
     
