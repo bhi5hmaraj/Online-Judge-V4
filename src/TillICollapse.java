@@ -5,6 +5,7 @@ public class TillICollapse {
     
     
     /************************ SOLUTION STARTS HERE ************************/
+    
     static class SegTreeNode {
         int size;
         SegTreeNode left , right;

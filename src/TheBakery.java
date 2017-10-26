@@ -9,13 +9,51 @@ public class TheBakery {
     static int arr[];
     static int dp[][];
     static int n;
-    
+    static HashMap<Query , Integer> memo;
+    static class Query {
+        int l , r;
+        Query(int l , int r) {
+            this.l = l;
+            this.r = r;
+        }
+        @Override
+        public int hashCode() {
+            return Integer.hashCode(l) * 31 + Integer.hashCode(r);
+        }
+        @Override
+        public boolean equals(Object obj) {
+            Query that = (Query) obj;
+            return l == that.l && r == that.r;
+        }
+    }
+    static int cost(int L , int R) {
+        Query q = new Query(L, R);
+        Integer ret = memo.get(q);
+        if(ret != null)
+            return ret;
+        else {
+            int c = query(persistent[R], L, R, 0, n - 1);
+            memo.put(q, c);
+            return c;
+        }
+    }
+    static int query(SegTreeNode node , int L , int R, int nl, int nr) {
+        int mid = (nl + nr) >> 1;
+        if(nl == L && nr == R)
+            return node.size;
+        else if(R <= mid)
+            return query(node.left, L, R, nl, mid);
+        else if(L > mid)
+            return query(node.right, L, R, mid + 1 , nr);
+        else
+            return query(node.left, L, mid , nl , mid) + query(node.right, mid+1, R , mid+1,nr);
+    }
     static void divideAndConquer(int lev , int L , int R , int optL , int optR) {
         if(L <= R) {
             int mid = (L + R) >> 1;
             int opt = -1;
             for(int m = Math.min(optR , mid) ; m >= optL; m--) {
-                int relax = cardinality + dp[lev - 1][m - 1];
+                int relax = cost(m, mid) + dp[lev - 1][m - 1];
                 if(relax > dp[lev][mid]) {
                     dp[lev][mid] = relax;
                     opt = m;
@@ -78,26 +116,25 @@ public class TheBakery {
         arr = nextIntArray(n);
         dp = new int[k][n];
         last = new int[n + 1];
+        memo = new HashMap<>();
         int next[] = new int[n];
-        Arrays.fill(last, n);
-        for(int i = n - 1; i >= 0; i--) {
+        Arrays.fill(last, -1);
+        for(int i = 0; i < n; i++) {
             next[i] = last[arr[i]];
             last[arr[i]] = i;
         }
         
         persistent = new SegTreeNode[n];
-        persistent[0] = initSegTree(0, n - 1);
-        for(int i = 1; i < n; i++) {
-            persistent[i] = initSegTree(persistent[i - 1], 0, n - 1, i - 1, 0);
-            if(next[i - 1] < n)
-                persistent[i] = initSegTree(persistent[i], 0, n - 1, next[i - 1], 1);
+        persistent[n - 1] = initSegTree(0, n - 1);
+        for(int i = n - 2; i >= 0; i--) {
+            persistent[i] = initSegTree(persistent[i + 1], 0, n - 1, i + 1, 0);
+            if(next[i + 1] >= 0)
+                persistent[i] = initSegTree(persistent[i], 0, n - 1, next[i + 1], 1);
         }
         
-        HashSet<Integer> set = new HashSet<>();
-        for(int i = 0; i < n; i++) {
-            set.add(arr[i]);
-            dp[0][i] = set.size();
-        }
+        for(int i = 0; i < n; i++) 
+            dp[0][i] = cost(0 , i);
+        
         
         for(int i = 1; i < k; i++) 
             divideAndConquer(i, i, n - 1, i, n - 1);
