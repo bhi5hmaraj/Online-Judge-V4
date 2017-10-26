@@ -9,17 +9,15 @@ public class TheBakery {
     static int arr[];
     static int dp[][];
     static int n;
-    
-    static int cost(int i , int j) {
-        return (int) Arrays.stream(arr , i , j + 1).distinct().count();
-    }
+    static int opti[][];
     
     static void divideAndConquer(int lev , int L , int R , int optL , int optR) {
         if(L <= R) {
-            int mid = (L + R ) >> 1;
+            int mid = (L + R) >> 1;
             MyBitSet set = new MyBitSet(n + 1);
             int opt = -1;
             for(int m = Math.min(optR , mid) ; m >= optL; m--) {
+//            for(int m = mid; m >= lev; m--) {
                 set.set(arr[m]);
                 int relax = set.cardinality() + dp[lev - 1][m - 1];
                 if(relax > dp[lev][mid]) {
@@ -27,6 +25,10 @@ public class TheBakery {
                     opt = m;
                 }
             }
+            opti[lev][mid] = opt;
+            println("lev = " + lev + " mid = " + mid + " opt " + opt + " L " + L + " R "+ R + " optL " + optL + " optR " + optR);
+            divideAndConquer(lev, L, mid - 1, optL, opt);
+            divideAndConquer(lev, mid + 1, R, opt, optR);
         }
     }
     
@@ -73,14 +75,20 @@ public class TheBakery {
         int k = nextInt();
         arr = nextIntArray(n);
         dp = new int[k][n];
-        for(int i = 0; i < n; i++)
-            dp[0][i] = cost(0, i);
-        for(int i = 1; i < k; i++) 
-            for(int j = i; j < n; j++) 
-                for(int m = i; m <= j; m++)
-                    dp[i][j] = Math.max(dp[i][j] , cost(m , j) + dp[i - 1][m - 1]);
-            
+        opti = new int[k][n];
+        MyBitSet set = new MyBitSet(n + 1);
+        for(int i = 0; i < n; i++) {
+            set.set(arr[i]);
+            dp[0][i] = set.cardinality();
+        }
         
+        for(int i = 1; i < k; i++) {
+            divideAndConquer(i, i, n - 1, i, n - 1);
+            println(Arrays.toString(opti[i]));
+            for(int j = 0; j < n - 1; j++)
+                if(opti[i][j] > opti[i][j + 1])
+                    throw new RuntimeException("i = " + i + " j = " + j);
+        }
         println(dp[k - 1][n - 1]);
     }
     
