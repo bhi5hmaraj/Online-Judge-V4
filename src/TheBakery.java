@@ -6,14 +6,82 @@ public class TheBakery {
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    static int arr[];
+    static int dp[][];
+    static int n;
+    
+    static int cost(int i , int j) {
+        return (int) Arrays.stream(arr , i , j + 1).distinct().count();
+    }
+    
+    static void divideAndConquer(int lev , int L , int R , int optL , int optR) {
+        if(L <= R) {
+            int mid = (L + R ) >> 1;
+            MyBitSet set = new MyBitSet(n + 1);
+            int opt = -1;
+            for(int m = Math.min(optR , mid) ; m >= optL; m--) {
+                set.set(arr[m]);
+                int relax = set.cardinality() + dp[lev - 1][m - 1];
+                if(relax > dp[lev][mid]) {
+                    dp[lev][mid] = relax;
+                    opt = m;
+                }
+            }
+        }
+    }
+    
+    static class MyBitSet {
+        long bits[];
+        int cardinality;
+        int size;
+        MyBitSet(int MAX) {
+            size = MAX;
+            bits = new long[((MAX - 1) / 64) + 1];
+            cardinality = 0;
+        }
+
+        void set(int n, boolean f) {
+            int index = n / 64;
+            if (f) {
+                if((bits[index] & (1L << (n % 64))) == 0)
+                    cardinality++;
+                bits[index] |= (1L << (n % 64));
+            }
+            else
+                bits[index] ^= (bits[index] & (1L << (n % 64))) != 0 ? (1L << (n % 64)) : 0;
+        }
+
+        void set(int n) {
+            set(n, true);
+        }
+        
+        int cardinality() {
+            return cardinality;
+        }
+                
+        boolean get(int n) {
+            return ((bits[n / 64]) & (1L << (n % 64))) != 0;
+        }
+        
+    }
+
     
     private static void solve() {
         
         
+        n = nextInt();
+        int k = nextInt();
+        arr = nextIntArray(n);
+        dp = new int[k][n];
+        for(int i = 0; i < n; i++)
+            dp[0][i] = cost(0, i);
+        for(int i = 1; i < k; i++) 
+            for(int j = i; j < n; j++) 
+                for(int m = i; m <= j; m++)
+                    dp[i][j] = Math.max(dp[i][j] , cost(m , j) + dp[i - 1][m - 1]);
+            
         
-        
-        
-        
+        println(dp[k - 1][n - 1]);
     }
     
     
