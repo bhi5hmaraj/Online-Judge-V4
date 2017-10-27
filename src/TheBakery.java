@@ -10,6 +10,7 @@ public class TheBakery {
     static int dp[][];
     static int n;
     static HashMap<Query , Integer> memo;
+    static int[] next;
     static class Query {
         int l , r;
         Query(int l , int r) {
@@ -26,13 +27,20 @@ public class TheBakery {
             return l == that.l && r == that.r;
         }
     }
+    
+    /*
+     * Idea inspiration : Lewin
+     */
+    
     static int cost(int L , int R) {
+        if(L > R) 
+            return 0;
         Query q = new Query(L, R);
         Integer ret = memo.get(q);
         if(ret != null)
             return ret;
         else {
-            int c = query(persistent[R], L, R, 0, n - 1);
+            int c = query(persistent[L], L, R, 0, n - 1);
             memo.put(q, c);
             return c;
         }
@@ -52,14 +60,15 @@ public class TheBakery {
         if(L <= R) {
             int mid = (L + R) >> 1;
             int opt = -1;
+            int cost = cost(Math.min(optR , mid) + 1, mid);
             for(int m = Math.min(optR , mid) ; m >= optL; m--) {
-                int relax = cost(m, mid) + dp[lev - 1][m - 1];
+                cost += next[m] > mid ? 1 : 0;  // Idea : ilyakor
+                int relax = cost + dp[lev - 1][m - 1];
                 if(relax > dp[lev][mid]) {
                     dp[lev][mid] = relax;
                     opt = m;
                 }
             }
-            // println("lev = " + lev + " mid = " + mid + " opt " + opt + " L " + L + " R "+ R + " optL " + optL + " optR " + optR);
             divideAndConquer(lev, L, mid - 1, optL, opt);
             divideAndConquer(lev, mid + 1, R, opt, optR);
         }
@@ -117,19 +126,19 @@ public class TheBakery {
         dp = new int[k][n];
         last = new int[n + 1];
         memo = new HashMap<>();
-        int next[] = new int[n];
-        Arrays.fill(last, -1);
-        for(int i = 0; i < n; i++) {
+        next  = new int[n];
+        Arrays.fill(last, n);
+        for(int i = n - 1; i >= 0; i--) {
             next[i] = last[arr[i]];
             last[arr[i]] = i;
         }
         
         persistent = new SegTreeNode[n];
-        persistent[n - 1] = initSegTree(0, n - 1);
-        for(int i = n - 2; i >= 0; i--) {
-            persistent[i] = initSegTree(persistent[i + 1], 0, n - 1, i + 1, 0);
-            if(next[i + 1] >= 0)
-                persistent[i] = initSegTree(persistent[i], 0, n - 1, next[i + 1], 1);
+        persistent[0] = initSegTree(0, n - 1);
+        for(int i = 1; i < n - 1; i++) {
+            persistent[i] = initSegTree(persistent[i - 1], 0, n - 1, i - 1, 0);
+            if(next[i - 1] < n)
+                persistent[i] = initSegTree(persistent[i], 0, n - 1, next[i - 1], 1);
         }
         
         for(int i = 0; i < n; i++) 
