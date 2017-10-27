@@ -54,7 +54,7 @@ public class Strip {
                 build(arr, 2 * node, L, mid);
                 build(arr, (2 * node) + 1, mid + 1, R);
                 treeMin[node] = Math.min(treeMin[2*node] , treeMin[(2 * node) + 1]);
-                treeMax[node] = Math.min(treeMax[2*node] , treeMax[(2 * node) + 1]);
+                treeMax[node] = Math.max(treeMax[2*node] , treeMax[(2 * node) + 1]);
             }
         }
     }
@@ -83,10 +83,10 @@ public class Strip {
             }
         }
         void update(int idx , int val){
-            update(1, idx, val, 1, len);
+            update(1, idx, val, 0, len - 1);
         }
         int query(int L , int R){
-            return L > R ? 0 : query(1, L, R, 1, len);
+            return query(1, L, R, 0, len - 1);
         }
         int query(int node , int L , int R, int nl, int nr) {
             int mid = (nl + nr) >> 1;
@@ -110,10 +110,18 @@ public class Strip {
         int l = nextInt();
         int arr[] = nextIntArray(n);
         
-        SegmentTree segTreeDP = new SegmentTree(n + 1);
+        if(l > n) {
+            println(-1); 
+            return;
+        }
+        
+        SegmentTree segTreeDP = new SegmentTree(n);
         SegmentTreeDiff segTreeDiff = new SegmentTreeDiff(arr);
         
-        for(int i = 0; i < n; i++) {
+        if(segTreeDiff.query(0, l - 1) <= s) 
+            segTreeDP.update(l - 1, 1); 
+        
+        for(int i = l; i < n; i++) {
             int lo = 0 , hi = i - l + 1;
             int pos = -1;
             while(lo <= hi) {
@@ -125,10 +133,14 @@ public class Strip {
                 else 
                     hi = mid - 1;
             }
-            
-            
+            if(pos == -1)
+                segTreeDP.update(i, 1);
+            else if(i - pos >= l) 
+                segTreeDP.update(i, Math.min(segTreeDP.query(pos, i - l) + 1 , INF));
         }
         
+        int ans = segTreeDP.query(n - 1, n - 1);
+        println(ans == INF ? -1 : ans);
     }
     
     
