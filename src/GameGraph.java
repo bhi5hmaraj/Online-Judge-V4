@@ -17,28 +17,37 @@ public class GameGraph {
             {0,3,2,1}
     };
     static int cost[][] = {
+            {0,0,0,0},
             {0,0,1,2},
             {0,2,0,1},
             {0,1,2,0}
     };
+    
+    static int memo[][];
+    
     static int rec(int lev , int prev) {
         if(lev >= cnt.length)
             return 0;
+        else if(memo[lev][prev] != -1) 
+            return memo[lev][prev];
         else {
             int min = (int) 1e6; 
+            int initPrev = prev;
+            println("init " + initPrev);
             for(int p[] : perm) {
                 int c = 0;
                 int sz = nonzero[lev];
+                println(Arrays.toString(p));
                 for(int i = 1; i <= 3 && sz > 0; i++) {
                     c += cost[prev][p[i]];
                     prev = p[i];
                     sz -= cnt[lev][p[i]] > 0 ? 1 : 0;
                 }
-                
-                min = Math.min(min , c + rec(lev + 1, p[3]));
+                println("prev " + prev);
+                min = Math.min(min , c + rec(lev + 1, prev));
             }
             
-            return min;
+            return memo[lev][initPrev] = min;
         }
     }
     
@@ -58,7 +67,7 @@ public class GameGraph {
             if(inDeg[i] == 0)
                 queue.add(i);
             for(int j = 0; j < inDeg[i]; j++)
-                adj[nextInt()].add(i);
+                adj[nextInt() - 1].add(i);
         }
         
         int level[] = new int[n];
@@ -73,16 +82,21 @@ public class GameGraph {
             }
         }
         
-        int cnt[][] = new int[Arrays.stream(level).max().getAsInt()][4];
-        
+        System.out.println(Arrays.toString(level));
+        cnt = new int[Arrays.stream(level).max().getAsInt() + 1][4];
+        nonzero = new int[cnt.length];
         for(int i = 0; i < n; i++)
             cnt[level[i]][comp[i]]++;
         
-        for(int i = 0; i < n; i++) {
+        for(int i = 0; i < cnt.length; i++) {
+            println(Arrays.toString(cnt[i]));
             for(int j = 0; j < 4; j++)
                 nonzero[i] += cnt[i][j] > 0 ? 1 : 0;
         }
-        
+        memo = new int[cnt.length][4];
+        for(int t[] : memo)
+            Arrays.fill(t, -1);
+        println(Math.min(Math.min(rec(0, 1) , rec(0, 2)) , rec(0, 3)) + n);
     }
     
     
