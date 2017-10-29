@@ -53,7 +53,6 @@ public class GameGraph {
     
     private static void solve() {
         
-        
         int n = nextInt();
         int comp[] = nextIntArray(n);
         ArrayList<Integer> adj[] = new ArrayList[n];
@@ -99,6 +98,54 @@ public class GameGraph {
         println(Math.min(Math.min(rec(0, 1) , rec(0, 2)) , rec(0, 3)) + n);
     }
     
+    /************************ The above is a wrong approach *************/
+    
+    
+    static void solve2() {
+        
+        int n = nextInt();
+        int computer[] = Arrays.stream(nextIntArray(n)).map(Math::decrementExact).toArray();
+        ArrayList<Integer> adj[] = new ArrayList[n];
+        for(int i = 0; i < n; i++)
+            adj[i] = new ArrayList<>();
+        
+        int inDeg[][] = new int[3][n];
+        ArrayDeque<Integer>[][] queue = new ArrayDeque[3][3];
+        for(int i = 0; i < 3; i++)
+            for(int j = 0; j < 3; j++)
+                queue[i][j] = new ArrayDeque<>();
+        
+        for(int i = 0; i < n; i++) {
+            inDeg[0][i] = inDeg[1][i] = inDeg[2][i] = nextInt();
+            if(inDeg[0][i] == 0) {
+                for(int j = 0; j < 3; j++)
+                    queue[j][computer[i]].add(i);
+            }
+            for(int j = 0; j < inDeg[0][i]; j++)
+                adj[nextInt() - 1].add(i);
+        }
+        
+        int cost[] = new int[3];
+        Arrays.fill(cost, -1);
+        for(int i = 0; i < 3; i++) {
+            int comp = i;
+            while(!(queue[i][0].isEmpty() && queue[i][1].isEmpty() && queue[i][2].isEmpty())) {
+                cost[i]++;
+                while(!queue[i][comp].isEmpty()) {
+                    int curr = queue[i][comp].remove();
+                    cost[i]++;
+                    for(int v : adj[curr]) {
+                        inDeg[i][v]--;
+                        if(inDeg[i][v] == 0)
+                            queue[i][computer[v]].add(v);
+                    }
+                }
+                comp = (comp + 1) % 3;
+            }
+        }
+        
+        println(Arrays.stream(cost).filter(c -> c > 0).min().getAsInt());
+    }
     
     
     /************************ SOLUTION ENDS HERE ************************/
@@ -113,7 +160,7 @@ public class GameGraph {
         reader = new BufferedReader(new InputStreamReader(System.in));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
-        solve();
+        solve2();
         reader.close();
         writer.close();
     }
