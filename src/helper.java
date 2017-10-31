@@ -1467,6 +1467,7 @@ class helper {
 	private static long nCr(int n, int r) { // Precompute inv Factorials (Dont compute every time) 
 		return MM.mul(fact[n], MM.mul(invFact[r], invFact[n - r]));
 	}
+	
 	static class SparseTable2D  // <O (MNlog(M)log(N)) , O(1) >  
 	{		
 		/*
