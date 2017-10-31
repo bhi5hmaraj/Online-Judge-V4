@@ -43,18 +43,22 @@ public class Numbers {
         }
     }
     
+    static long memo[][];
+    
     static long rec(int n , int digit) {
         if(digit > 9)
             return n == 0 ? 1 : 0;
         else if((digit != 0 && n < a[digit]) || (digit == 0 && a[digit] > n - 1))
             return 0;
+        else if(memo[n][digit] != -1)
+            return memo[n][digit];
         else {
             long ways = 0;
             for(int k = a[digit] , end = n - (digit == 0 ? 1 : 0); k <= end; k++)
                 ways = MM.add(ways, MM.mul(nCr(end, k), rec(n - k, digit + 1)));
             
-            println("digit " + digit + " n " + n + " ways " + ways);
-            return ways;
+            // println("digit " + digit + " n " + n + " ways " + ways);
+            return memo[n][digit] = ways;
         }
     }
     
@@ -62,6 +66,10 @@ public class Numbers {
         
         int n = nextInt();
         a = nextIntArray(10);
+        memo = new long[n + 1][10];
+        for(long t[] : memo)
+            Arrays.fill(t, -1);
+        
         long total = 0;
         for(int i = Arrays.stream(a).sum(); i <= n; i++)
             total = MM.add(total, rec(i, 0));
