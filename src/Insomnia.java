@@ -13,9 +13,11 @@ public class Insomnia  {
         int k = nextInt();
         int ways[] = new int[k + 1];
         ways[1] = 1;
+        for(int i = 1; i <= k; i++)
+            for(int j = 2 * i; j <= k; j += i)
+                ways[j] += ways[i];
         
-        
-        
+        println(ways[k]);
     }
     
     
