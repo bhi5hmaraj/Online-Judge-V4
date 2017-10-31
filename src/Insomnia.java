@@ -1,6 +1,6 @@
 import java.util.*;
 import java.io.*;
-public class BusPass {
+public class Insomnia  {
     
     
     
@@ -10,57 +10,10 @@ public class BusPass {
     private static void solve() {
         
         
-        int T = nextInt();
-        while(T-->0) {
-            int V = nextInt();
-            int id[] = new int[V];
-            int adj[][] = new int[V][];
-            int path = nextInt();
-            HashMap<Integer , Integer> map = new HashMap<>();
-            for(int i = 0; i < V; i++) {
-                id[i] = nextInt();
-                adj[i] = nextIntArray(nextInt());
-                map.put(id[i], i);
-            }
-            
-            for(int i = 0; i < V; i++)
-                adj[i] = Arrays.stream(adj[i]).map(map::get).toArray();
-            
-            HashSet<Integer> set = new HashSet<>();
-            while(path-->0) {
-                int mr = nextInt();
-                while(mr-->0)
-                    set.add(map.get(nextInt()));
-            }
-            
-            int maxDist[] = new int[V];
-            Arrays.fill(maxDist, 1);
-            for(int start : set) {
-                boolean marked[] = new boolean[V];
-                int dist[] = new int[V];
-                ArrayDeque<Integer> queue = new ArrayDeque<>();
-                queue.add(start);
-                marked[start] = true;
-                dist[start] = 1;
-                while(!queue.isEmpty()) {
-                    int curr = queue.remove();
-                    for(int v : adj[curr])
-                        if(!marked[v]) {
-                            marked[v] = true;
-                            dist[v] = dist[curr] + 1;
-                            maxDist[v] = Math.max(maxDist[v] , dist[v]);
-                            queue.add(v);
-                        }
-                }
-            }
-            
-            int minPos = 0; 
-            for(int i = 0; i < V; i++) 
-                minPos = (maxDist[i] < maxDist[minPos] || maxDist[i] == maxDist[minPos] && id[i] < id[minPos]) ? i : minPos;
-            
-            println(maxDist[minPos] + " " + id[minPos]); 
-        }
-              
+        int k = nextInt();
+        int ways[] = new int[k + 1];
+        ways[1] = 1;
+        
         
         
     }
