@@ -93,7 +93,7 @@ public class testing {
         catch(Exception e) {
             System.out.println("excep");
         }
-        
+        new HashMap<>().keySet();
     }
     
     
