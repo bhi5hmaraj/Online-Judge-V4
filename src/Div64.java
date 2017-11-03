@@ -10,10 +10,12 @@ public class Div64 {
     private static void solve() {
         
         String line = nextLine();
-        line = line.substring(line.indexOf('1'));
-        println(line.chars().filter(ch -> ch == '0').count() >= 6 ? "yes" : "no");
-        
-        
+        if(line.indexOf('1') >= 0) {
+            line = line.substring(line.indexOf('1'));
+            println(line.chars().filter(ch -> ch == '0').count() >= 6 ? "yes" : "no");
+        }
+        else 
+            println("No");
     }
     
     
