@@ -6,31 +6,53 @@ public class SolutionforCube {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static int cube[];
-    
-    static boolean check() {
-        for(int i = 0; i < 6; i++) {
-            int col = cube[4 * i + 1];
-            for(int j = 2; j <= 4; j++)
-                if(cube[4 * i + j] != col)
-                    return false;
-        }
-        return true;
-    }
-    
-    static void s(int i , int j) {
-        int t = cube[i];
-        cube[i] = cube[j];
-        cube[j] = t;
-    }
     
     private static void solve() {
         
+        int[] cube = nextIntArrayOneBased(24);
+        int inv[] = {2,5,0,4,3,1};
+        boolean filled[] = new boolean[6];
+        int cnt = 0;
+        for(int i = 0; i < 6; i++) {
+            int col = cube[4 * i + 1];
+            boolean flag = true;
+            for(int j = 2; j <= 4; j++)
+                flag &= (cube[4 * i + j] != col);
+            
+            filled[i] = flag;
+            cnt += flag ? 1 : 0;
+        }        
         
-        
-        
-        
-        
+        if(cnt != 2)
+            println("NO");
+        else {
+            for(int i = 0; i < 6; i++)
+                if(filled[i] && !filled[inv[i]]) {
+                    println("NO");
+                    return;
+                }
+            
+            int pos = -1;
+            for(int i = 0; i < 6; i++)
+                if(filled[i]) {
+                    pos = i;
+                    break;
+                }
+            
+            int a[] , b[];
+            switch(pos) {
+            case 0:
+                a = new int[]{13,14,5,6,17,18,21,22};
+                b = new int[]{15,16,7,8,19,20,23,24};
+                break;
+            case 1:
+                break;
+            case 3:
+                a = new int[]{24,22,1,3,5,7,9,11};
+                b = new int[]{23,21,2,4,6,8,10,12};
+                break;
+            }
+        }
     }
     
     
