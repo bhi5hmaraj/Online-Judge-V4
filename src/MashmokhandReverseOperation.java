@@ -19,6 +19,8 @@ public class MashmokhandReverseOperation {
         int q = nextInt();
         while(q-->0) {
             
+            
+            
         }
     }
     
