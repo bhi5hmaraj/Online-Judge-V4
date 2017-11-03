@@ -6,6 +6,22 @@ public class SolutionforCube {
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    static boolean check(int a[] , int b[] , int cube[]) {
+        int aux1[] = new int[8];
+        int aux2[] = new int[8];
+        for(int i = 0; i < 8; i++)
+            aux1[(i + 2) % 8] = a[i];
+        for(int i = 0; i < 8; i++)
+            aux2[(i - 2 + 8) % 8] = a[i];
+        
+        boolean f1 = true , f2 = true;
+        for(int i = 0; i < 8; i += 2) {
+            f1 &= cube[aux1[i + 1]] == cube[aux1[i]] && cube[b[i]] == cube[aux1[i]] && cube[b[i + 1]] == cube[aux1[i]];
+            f2 &= cube[aux2[i + 1]] == cube[aux2[i]] && cube[b[i]] == cube[aux2[i]] && cube[b[i + 1]] == cube[aux2[i]];
+        }
+        
+        return f1 | f2;
+    }
     
     private static void solve() {
         
@@ -17,12 +33,12 @@ public class SolutionforCube {
             int col = cube[4 * i + 1];
             boolean flag = true;
             for(int j = 2; j <= 4; j++)
-                flag &= (cube[4 * i + j] != col);
+                flag &= (cube[4 * i + j] == col);
             
             filled[i] = flag;
             cnt += flag ? 1 : 0;
         }        
-        
+        // println("cnt " + cnt + " filled " + Arrays.toString(filled));
         if(cnt != 2)
             println("NO");
         else {
@@ -40,18 +56,23 @@ public class SolutionforCube {
                 }
             
             int a[] , b[];
+            a = b = null;
             switch(pos) {
             case 0:
                 a = new int[]{13,14,5,6,17,18,21,22};
                 b = new int[]{15,16,7,8,19,20,23,24};
                 break;
             case 1:
+                a = new int[]{16,14,3,4,17,19,10,9};
+                b = new int[]{15,13,1,2,18,20,12,11};
                 break;
             case 3:
                 a = new int[]{24,22,1,3,5,7,9,11};
                 b = new int[]{23,21,2,4,6,8,10,12};
                 break;
             }
+            
+            println(check(a, b, cube) ? "YES" : "NO");
         }
     }
     
