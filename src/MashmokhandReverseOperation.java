@@ -69,10 +69,10 @@ public class MashmokhandReverseOperation {
         fill(0, 0, m - 1, b, inv[1]);
         for(int i = 0; i < n; i++)
             rem[i] /= 2;
+        println("rem " + Arrays.toString(rem));
         /*
         println("inv 0 " + Arrays.toString(inv[0]));
         println("inv 1 " + Arrays.toString(inv[1]));
-        println("rem " + Arrays.toString(rem));
         println(Arrays.toString(a));
         */
         int q = nextInt();
