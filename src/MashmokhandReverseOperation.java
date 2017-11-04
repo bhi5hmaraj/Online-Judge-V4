@@ -7,6 +7,7 @@ public class MashmokhandReverseOperation {
     /************************ SOLUTION STARTS HERE ************************/
     
     static int aux[];
+    static long rem[];
     static long fill(int depth , int L , int R , int arr[] , long inv[]) {
         if(L < R) {
             int mid = (L + R) >> 1;
@@ -29,6 +30,16 @@ public class MashmokhandReverseOperation {
                 }
             }
             // System.out.println("inv " + (left + right + cross));
+            long cnt = 0;
+            for(int i = L; i <= R; ) {
+                int val = arr[i];
+                while(i <= R && arr[i] == val) {
+                    i++;
+                    cnt++;
+                }
+                rem[depth] += nC2(cnt);
+                cnt = 0;
+            }
             inv[depth] += left + right + cross;
             return left + right + cross;
         }
@@ -46,21 +57,24 @@ public class MashmokhandReverseOperation {
         int n = nextInt();
         int m = 1 << n;
         int a[] = nextIntArray(m);
-        HashMap<Integer , Long> freq = new HashMap<>();
-        for(int val : a)
-            freq.merge(val, 1L, Long::sum);
-        long rem = freq.values().stream().map(x -> ((x * (x - 1)) >> 1)).reduce(0L, Long::sum);
-        println(freq + " rem " + rem);
+
         int b[] = new int[m];
         for(int i = 0; i < m; i++)
             b[i] = a[m - i - 1];
         
         long inv[][] = new long[2][n];
         aux = new int[m];
+        rem = new long[n];
         fill(0, 0, m - 1, a, inv[0]);
         fill(0, 0, m - 1, b, inv[1]);
+        for(int i = 0; i < n; i++)
+            rem[i] /= 2;
+        /*
         println("inv 0 " + Arrays.toString(inv[0]));
         println("inv 1 " + Arrays.toString(inv[1]));
+        println("rem " + Arrays.toString(rem));
+        println(Arrays.toString(a));
+        */
         int q = nextInt();
         long curr[] = Arrays.copyOf(inv[0], n);
         int turn = 0;
@@ -73,20 +87,18 @@ public class MashmokhandReverseOperation {
                 for(int i = l + 1; i < n; i++)
                     curr[i] = inv[next][i];
                 
-                if(l == 0) 
-                    curr[0] = nC2(1L << n) - rem - curr[0];
-                else {
-                    long old = curr[l];
-                    curr[l] = inv[next][l];
-                    for(int i = l; i > 0; i--) {
-                        long temp = curr[i - 1];
-                        curr[i - 1] += curr[i] - old;
-                        old = temp;
-                    }
+                long old = curr[l];
+                curr[l] = ((1L << l) * nC2(1L << (n - l))) - rem[l] - curr[l];
+                
+                for(int i = l; i > 0; i--) {
+                    long temp = curr[i - 1];
+                    curr[i - 1] += curr[i] - old;
+                    old = temp;
                 }
+
                 turn = next;
             }
-            println(Arrays.toString(curr));
+            //println(Arrays.toString(curr));
             println(curr[0]);
         }
         
