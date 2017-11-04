@@ -46,6 +46,11 @@ public class MashmokhandReverseOperation {
         int n = nextInt();
         int m = 1 << n;
         int a[] = nextIntArray(m);
+        HashMap<Integer , Long> freq = new HashMap<>();
+        for(int val : a)
+            freq.merge(val, 1L, Long::sum);
+        long rem = freq.values().stream().map(x -> ((x * (x - 1)) >> 1)).reduce(0L, Long::sum);
+        println(freq + " rem " + rem);
         int b[] = new int[m];
         for(int i = 0; i < m; i++)
             b[i] = a[m - i - 1];
@@ -54,7 +59,8 @@ public class MashmokhandReverseOperation {
         aux = new int[m];
         fill(0, 0, m - 1, a, inv[0]);
         fill(0, 0, m - 1, b, inv[1]);
-        
+        println("inv 0 " + Arrays.toString(inv[0]));
+        println("inv 1 " + Arrays.toString(inv[1]));
         int q = nextInt();
         long curr[] = Arrays.copyOf(inv[0], n);
         int turn = 0;
@@ -62,21 +68,25 @@ public class MashmokhandReverseOperation {
         while(q-->0) {
             int l = nextInt();
             if(l > 0) {
+                l = n - l;
                 int next = turn ^ 1;
                 for(int i = l + 1; i < n; i++)
                     curr[i] = inv[next][i];
                 
-                long old = curr[l];
-                curr[l] = ((1L << l) * nC2(1L << (n - l))) - curr[l];
-                
-                for(int i = l; i > 0; i--) {
-                    long temp = curr[i + 1];
-                    curr[i + 1] += curr[i] - old;
-                    old = temp;
+                if(l == 0) 
+                    curr[0] = nC2(1L << n) - rem - curr[0];
+                else {
+                    long old = curr[l];
+                    curr[l] = inv[next][l];
+                    for(int i = l; i > 0; i--) {
+                        long temp = curr[i - 1];
+                        curr[i - 1] += curr[i] - old;
+                        old = temp;
+                    }
                 }
-                
                 turn = next;
             }
+            println(Arrays.toString(curr));
             println(curr[0]);
         }
         
