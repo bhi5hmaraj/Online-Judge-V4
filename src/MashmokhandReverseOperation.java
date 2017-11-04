@@ -6,7 +6,9 @@ public class MashmokhandReverseOperation {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    
+    static void fill(int depth , int L , int R) {
+        
+    }
     
     
     private static void solve() {
