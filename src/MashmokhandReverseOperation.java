@@ -14,7 +14,7 @@ public class MashmokhandReverseOperation {
             long right = fill(depth + 1, mid + 1, R, arr, inv);
             System.arraycopy(arr, L, aux, L, R - L + 1);
             long cross = 0;
-            System.out.println("L " + L + " R " + R + " arr " + Arrays.toString(Arrays.copyOfRange(arr, L, R + 1)));
+            // System.out.println("L " + L + " R " + R + " arr " + Arrays.toString(Arrays.copyOfRange(arr, L, R + 1)));
             for(int ptrL = L , ptrR = mid + 1 , ptr = L; ptrL <= mid || ptrR <= R; ) {
                 // System.out.println("ptrL " + ptrL + " ptrR " + ptrR);
                 if(ptrL > mid)
@@ -28,7 +28,7 @@ public class MashmokhandReverseOperation {
                     cross += mid - ptrL + 1;
                 }
             }
-            System.out.println("inv " + (left + right + cross));
+            // System.out.println("inv " + (left + right + cross));
             inv[depth] += left + right + cross;
             return left + right + cross;
         }
@@ -36,6 +36,9 @@ public class MashmokhandReverseOperation {
         return 0;
     }
     
+    static long nC2(long n) {
+        return (n * (n - 1)) >> 1;
+    }
     
     private static void solve() {
         
@@ -50,15 +53,33 @@ public class MashmokhandReverseOperation {
         long inv[][] = new long[2][n];
         aux = new int[m];
         fill(0, 0, m - 1, a, inv[0]);
-        // fill(0, 0, m - 1, b, inv[1]);
-        println(Arrays.toString(inv[0]));
-        /*
+        fill(0, 0, m - 1, b, inv[1]);
+        
         int q = nextInt();
+        long curr[] = Arrays.copyOf(inv[0], n);
+        int turn = 0;
+        
         while(q-->0) {
-            
-            
-            
-        }*/
+            int l = nextInt();
+            if(l > 0) {
+                int next = turn ^ 1;
+                for(int i = l + 1; i < n; i++)
+                    curr[i] = inv[next][i];
+                
+                long old = curr[l];
+                curr[l] = ((1L << l) * nC2(1L << (n - l))) - curr[l];
+                
+                for(int i = l; i > 0; i--) {
+                    long temp = curr[i + 1];
+                    curr[i + 1] += curr[i] - old;
+                    old = temp;
+                }
+                
+                turn = next;
+            }
+            println(curr[0]);
+        }
+        
     }
     
     
