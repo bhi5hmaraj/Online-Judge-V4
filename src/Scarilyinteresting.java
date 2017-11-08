@@ -12,18 +12,27 @@ public class Scarilyinteresting  {
         
         int n = nextInt();
         int A[][] = new int[n][2]; 
+        int sumA = 0 , sumB = 0;
         for(int i = 0; i < n; i++) {
             A[i][0] = nextInt();
             A[i][1] = i + 1;
+            sumA += A[i][0];
         }
         int B[][] = new int[n][2]; 
         for(int i = 0; i < n; i++) {
             B[i][0] = nextInt();
             B[i][1] = i + 1;
+            sumB += B[i][0];
         }
         
-        Arrays.sort(A , (p1 , p2) -> Integer.compare(p1[0], p2[0]));
-        Arrays.sort(B , (p1 , p2) -> Integer.compare(p1[0], p2[0]));
+        int[][] win = A , lose = B;
+        if(sumB > sumA) {
+            int temp[][] = win;
+            win = lose;
+            lose = temp;
+        }
+        Arrays.sort(win , (p1 , p2) -> Integer.compare(p1[0], p2[0]));
+        Arrays.sort(lose , (p1 , p2) -> Integer.compare(p2[0], p1[0]));
         
         while(n-->0) 
             println(A[n][1] + " " + B[n][1]);
