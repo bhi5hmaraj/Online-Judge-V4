@@ -34,8 +34,8 @@ public class Scarilyinteresting  {
         Arrays.sort(win , (p1 , p2) -> Integer.compare(p1[0], p2[0]));
         Arrays.sort(lose , (p1 , p2) -> Integer.compare(p2[0], p1[0]));
         
-        while(n-->0) 
-            println(A[n][1] + " " + B[n][1]);
+        for(int i = 0; i < n; i++) 
+            println(A[i][1] + " " + B[i][1]);
     }
     
     
