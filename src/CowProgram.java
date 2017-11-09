@@ -1,50 +1,55 @@
 import java.util.*;
 import java.io.*;
-public class LA_5116 {
+public class CowProgram {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static int P;
-
-    static class MyBitSet {
-        long bits[];
-        int cardinality;
-        int size;
-        MyBitSet(int MAX) {
-            size = MAX;
-            bits = new long[((MAX - 1) / 64) + 1];
-            cardinality = 0;
-        }
-
-        void set(int n, boolean f) {
-            int index = n / 64;
-            if((bits[index] & (1L << (n % 64))) == 0)
-                cardinality++;
-            bits[index] |= (1L << (n % 64));
-        }
-
-        void set(int n) {
-            set(n, true);
-        }
-        
-        int cardinality() {
-            return cardinality;
+    static final int CYCLE = -1;
+    
+    static boolean marked[];
+    static boolean inStack[];
+    
+    static int arr[];
+    static int memo[];
+    static int n;
+    static int dfs(int x , int y) {
+        if(marked[x] && !inStack[x])
+            return memo[x];
+        else if((marked[x] && inStack[x]) || x == 1) // cycle detected
+            return CYCLE;
+        else {
+            marked[x] = inStack[x] = true;
+            int nx = x + arr[x];
+            int ny = y + arr[x];
+            int ans = -9999;
+            if(nx >= 1 && nx <= n) {
+                ny += arr[nx];
+                nx -= arr[nx];
+                if(nx >= 1 && nx <= n) 
+                    ans = dfs(nx, ny);
+                else
+                    ans = ny;
+            }
+            else
+                ans = ny;
+            
+            inStack[x] = false;
+            return memo[x] = ans;
         }
     }
-
+    
     private static void solve() {
         
+        n = nextInt();
+        arr = new int[n + 1];
+        System.arraycopy(nextIntArray(n), 0, arr, 2, n);
+        memo = new int[n + 1];
+        marked = new boolean[n + 1];
+        inStack = new boolean[n + 1];
         
-        int T = nextInt();
-        while(T-->0) {
-            int N = nextInt();
-            P = nextInt();
-            
-        }
-        
-        
+    
     }
     
     
