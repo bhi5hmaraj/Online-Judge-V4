@@ -14,21 +14,24 @@ public class CowProgram {
     static int arr[];
     static int memo[];
     static int n;
-    static int dfs(int x , int y) {
+    static int dfs(int x) {
         if(marked[x] && !inStack[x])
             return memo[x];
         else if((marked[x] && inStack[x]) || x == 1) // cycle detected
             return CYCLE;
         else {
             marked[x] = inStack[x] = true;
+            int y = 0;
             int nx = x + arr[x];
             int ny = y + arr[x];
             int ans = -9999;
             if(nx >= 1 && nx <= n) {
                 ny += arr[nx];
                 nx -= arr[nx];
-                if(nx >= 1 && nx <= n) 
-                    ans = dfs(nx, ny);
+                if(nx >= 1 && nx <= n) {
+                    int ret = dfs(nx);
+                    ans = ret == CYCLE ? CYCLE : ny + ret;
+                }
                 else
                     ans = ny;
             }
@@ -48,6 +51,7 @@ public class CowProgram {
         memo = new int[n + 1];
         marked = new boolean[n + 1];
         inStack = new boolean[n + 1];
+        
         
     
     }
