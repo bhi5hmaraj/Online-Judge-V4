@@ -12,29 +12,28 @@ public class CowProgram {
     static boolean inStack[];
     
     static int arr[];
-    static int memo[];
+    static long memo[];
     static int n;
-    static int dfs(int x) {
-        
+    static long dfs(int x) {
         if(marked[x] && !inStack[x]) {
-            println("cached");
+            // System.out.println("cached " + x + " " + memo[x]);
             return memo[x];
         }
-        else if((marked[x] && inStack[x]) || x == 1) { // cycle detected 
-            println("cycle");
+        else if((marked[x] && inStack[x])) { // cycle detected 
+            // System.out.println("cycle");
             return CYCLE;
         }
         else {
             marked[x] = inStack[x] = true;
             int y = 0;
             int nx = x + arr[x];
-            int ny = y + arr[x];
-            int ans = -9999;
+            long ny = y + arr[x];
+            long ans = 0;
             if(nx >= 1 && nx <= n) {
                 ny += arr[nx];
                 nx -= arr[nx];
                 if(nx >= 1 && nx <= n) {
-                    int ret = dfs(nx);
+                    long ret = dfs(nx);
                     ans = ret == CYCLE ? CYCLE : ny + ret;
                 }
                 else
@@ -44,6 +43,7 @@ public class CowProgram {
                 ans = ny;
             
             inStack[x] = false;
+            // System.out.println(x + " ans " + ans);
             return memo[x] = ans;
         }
     }
@@ -52,8 +52,8 @@ public class CowProgram {
         
         n = nextInt();
         arr = new int[n + 1];
-        System.arraycopy(nextIntArray(n), 0, arr, 2, n);
-        memo = new int[n + 1];
+        System.arraycopy(nextIntArray(n - 1), 0, arr, 2, n - 1);
+        memo = new long[n + 1];
         marked = new boolean[n + 1];
         inStack = new boolean[n + 1];
         
