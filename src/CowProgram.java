@@ -15,10 +15,15 @@ public class CowProgram {
     static int memo[];
     static int n;
     static int dfs(int x) {
-        if(marked[x] && !inStack[x])
+        
+        if(marked[x] && !inStack[x]) {
+            println("cached");
             return memo[x];
-        else if((marked[x] && inStack[x]) || x == 1) // cycle detected
+        }
+        else if((marked[x] && inStack[x]) || x == 1) { // cycle detected 
+            println("cycle");
             return CYCLE;
+        }
         else {
             marked[x] = inStack[x] = true;
             int y = 0;
@@ -52,7 +57,11 @@ public class CowProgram {
         marked = new boolean[n + 1];
         inStack = new boolean[n + 1];
         
-        
+        for(int i = 1; i <= n - 1; i++) {
+            marked[1] = false;
+            arr[1] = i;
+            println(dfs(1));
+        }
     
     }
     
