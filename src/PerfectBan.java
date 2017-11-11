@@ -94,7 +94,99 @@ public class PerfectBan {
         println(r + " " + c);
         
     }
+
+    static class SegmentTree  { // Implemented to store min in a range , point update and range query
+        int tree[];
+        int len;
+        int size;
+        SegmentTree(int arr[]) { // arr should be a 1 based array
+            len = arr.length;
+            size = 1 << (32 - Integer.numberOfLeadingZeros(len - 1) + 1);  // ceil(log(len)) + 1
+            tree = new int[size];
+            build(arr, 1, 0, len - 1);
+        }
+        int query(int L , int R){
+            if(L > R)
+                return 0;
+            return query(1, L, R, 0, len - 1);
+        }
+        int query(int node , int L , int R, int nl, int nr) {
+            int mid = (nl + nr) >> 1;
+            if(nl == L && nr == R)
+                return tree[node];
+            else if(R <= mid)
+                return query(2 * node, L, R, nl, mid);
+            else if(L > mid)
+                return query((2*node)+1, L, R, mid + 1 , nr);
+            else
+                return Math.max(query(2*node, L, mid , nl , mid) ,  query((2*node)+1, mid+1, R , mid+1,nr));
+        }
+        void build(int arr[],int node,int L,int R) {
+            if(L == R)
+                tree[node] = arr[L];
+            else
+            {
+                int mid = (L + R) >> 1;
+                build(arr, 2 * node, L, mid);
+                build(arr, (2 * node) + 1, mid + 1, R);
+                tree[node] = Math.max(tree[2*node] , tree[(2 * node) + 1]);
+            }
+        }
+    }
+
+    static int[] find(int arr[][] , int n , int m , int remRow) {
+        
+        int maxCol[] = new int[m];
+        for(int i = 0; i < n; i++)
+            if(i != remRow)
+                for(int j = 0; j < m; j++)
+                    maxCol[j] = Math.max(maxCol[j] , arr[i][j]);
+            
+        SegmentTree segTree = new SegmentTree(maxCol);
+        int min = Integer.MAX_VALUE;
+        int remCol = -1;
+        for(int i = 0; i < m; i++) { 
+            int cost = Math.max(segTree.query(0, i - 1) , segTree.query(i + 1, m - 1));
+            if(cost < min) {
+                min = cost;
+                remCol = i;
+            }
+        }
+        return new int[]{min , remCol};
+    }
     
+    
+    static void solve2() {
+        
+        int n = nextInt();
+        int m = nextInt();
+        
+        int arr[][] = new int[n][];
+        for(int i = 0; i < n; i++)
+            arr[i] = nextIntArray(m);
+        
+        int trans[][] = new int[m][n];
+        for(int i = 0; i < n; i++)
+            for(int j = 0; j < m; j++)
+                trans[j][i] = arr[i][j];
+        
+        int maxVal = 0 , r = -1 , c = -1;
+        for(int i = 0; i < n; i++)
+            for(int j = 0; j < m; j++)
+                if(arr[i][j] > maxVal) {
+                    maxVal = arr[i][j];
+                    r = i;
+                    c = j;
+                }
+        
+        int way1[] = find(arr, n, m, r);
+        int way2[] = find(trans, m, n, c);
+        if(way1[0] < way2[0])
+            println((r + 1) + " " + (way1[1] + 1));
+        else
+            println((way2[1] + 1) + " " + (c + 1));
+        
+    }
     
     
     /************************ SOLUTION ENDS HERE ************************/
@@ -109,7 +201,7 @@ public class PerfectBan {
         reader = new BufferedReader(new InputStreamReader(System.in));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
-        solve();
+        solve2();
         reader.close();
         writer.close();
     }
