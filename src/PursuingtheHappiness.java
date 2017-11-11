@@ -51,20 +51,10 @@ public class PursuingtheHappiness {
             println("YES");
             println((pos.get(0) + 1) + " " + (pos.get(0) + 2));
         }
-/*
-        else if(index(str, "ahppiness") == 0) 
-            println("YES\n2 3");*/
-        else {
-            println("YES");
-            Random rand = new Random();
-            int a = rand.nextInt(str.length()) + 1;
-            int b = rand.nextInt(str.length()) + 1;
-            while(a == b) {
-                a = rand.nextInt(str.length()) + 1;
-                b = rand.nextInt(str.length()) + 1;
-            }
-            println(a + " " + b);
-        }
+        else if(index(str, "ahppiness") == 0 || index(str, "appiness") == 2) 
+            println("YES\n2 3");
+        else
+            println("YES\n1 2");
             
             
         
