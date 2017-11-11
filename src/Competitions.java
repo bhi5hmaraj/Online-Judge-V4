@@ -6,13 +6,84 @@ public class Competitions {
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    static class Pair implements Comparable<Pair> {
+        int s , e , c , idx;
+        Pair(int ss , int ee ,int cc , int id) {
+            s = ss;
+            e = ee;
+            c = cc;
+            idx = id;
+        }
+        @Override
+        public int compareTo(Pair o) {
+            if(e != o.e)
+                return e - o.e;
+            else
+                return s - o.s;
+        }
+        @Override
+        public String toString() {
+            return String.format("(%d , %d) c = %d", s , e , c);
+        }
+    }
     
     private static void solve() {
         
+        int n = nextInt();
+        Pair arr[] = new Pair[n];
         
+        for(int i = 0; i < n; i++)
+            arr[i] = new Pair(nextInt(), nextInt(), nextInt() , i + 1);
         
+        Arrays.sort(arr);
         
+        long DPcost[] = new long[n + 1];
+        long DPtime[] = new long[n + 1];
+        int prev[] = new int[n + 1];
         
+        for(int i = 1; i <= n; i++) {
+            DPcost[i] = DPcost[i - 1];
+            DPtime[i] = DPtime[i - 1];
+            prev[i] = i - 1;
+            int l = 0 , r = i - 2;
+            int opt = -1;
+            while(l <= r) {
+                int mid = (l + r) >> 1;
+                if(arr[mid].e <= arr[i - 1].s) {
+                    l = mid + 1;
+                    opt = mid;
+                }
+                else
+                    r = mid - 1;
+            }
+            long newCost = DPcost[opt + 1] + arr[i - 1].c;
+            long newDur  = DPtime[opt + 1] + arr[i - 1].e - arr[i - 1].s;
+            if(newCost > DPcost[i] || newCost == DPcost[i] && newDur < DPtime[i]) {
+                DPcost[i] = newCost;
+                DPtime[i] = newDur;
+                prev[i] = opt + 1;
+            }
+        }
+        /*
+        println(Arrays.toString(arr));
+        println(Arrays.toString(DPcost));
+        println(Arrays.toString(DPtime));
+       */
+        ArrayList<Pair> soln = new ArrayList<>();
+        int curr = n;
+        long totalCost = 0;
+        long duration = 0;
+        while(curr > 0) {
+            if(DPcost[curr] - DPcost[prev[curr]] == arr[curr - 1].c) { // taken 
+                soln.add(arr[curr - 1]);
+                totalCost += arr[curr - 1].c;
+                duration += arr[curr - 1].e - arr[curr - 1].s;
+            }
+            curr = prev[curr];
+        }
+        
+        println(soln.size() + " " + totalCost + " " + duration);
+        soln.stream().forEach(p -> print(p.idx + " "));
         
     }
     
