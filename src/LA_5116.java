@@ -7,40 +7,16 @@ public class LA_5116 {
     /************************ SOLUTION STARTS HERE ************************/
     
     static int P;
-
-    static class MyBitSet {
-        long bits[];
-        int cardinality;
-        int size;
-        MyBitSet(int MAX) {
-            size = MAX;
-            bits = new long[((MAX - 1) / 64) + 1];
-            cardinality = 0;
-        }
-
-        void set(int n) {
-            int index = n / 64;
-            if((bits[index] & (1L << (n % 64))) == 0)
-                cardinality++;
-            bits[index] |= (1L << (n % 64));
-        }
-
-        
-        int cardinality() {
-            return cardinality;
-        }
-    }
-    
     static int primes[] = {2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67};
-    static MyBitSet bitset;
+    static HashSet<Integer> set;
 
     static void rec(int idx , int n , int val) {
-        if(idx < primes.length && n >= 0) {
-            bitset.set(val);
+        set.add(val);
+        if(val > 0 && idx < primes.length && n >= 0) {
             int curr = 1;
             for(int i = 0; n - primes[idx] * i >= 0; i++) {
-                rec(idx + 1, n - primes[idx] * i, (int) ((1L * val * curr) % (long) P));
-                curr = (int) ((1L * curr * primes[idx]) % (long) P);
+                rec(idx + 1, n - primes[idx] * i, (int) ((1L * val * curr) % P));
+                curr = (int) ((1L * curr * primes[idx]) % P);
             }
         }
     }
@@ -52,10 +28,9 @@ public class LA_5116 {
         while(T-->0) {
             int N = nextInt();
             P = nextInt();
-            bitset = new MyBitSet(P);
+            set = new HashSet<>();
             rec(0, N, 1);
-            bitset.set(N % P);
-            println(bitset.cardinality());
+            println(set.size());
         }
         
         
