@@ -48,6 +48,7 @@ public class MatrixGod {
         }
         
         println(correct ? "YES" : "NO");
+        
     }
     
     
