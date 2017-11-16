@@ -6,13 +6,14 @@ public class PolycarpPhonebook {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-
+    static final int FULL_MATCH = (int) 1e7;
+    
     static class Trie {
         static class Node {
             int size;
             Node adj[];
             Node() {
-                size = 1;   // Take this into consideration
+                size = 0;   
                 adj = new Node[10];
             }
         }
@@ -30,6 +31,7 @@ public class PolycarpPhonebook {
         }
         
         Node insert(Node curr , int num , int len){
+//            System.out.println("num " + num + " len " + len);
             if(curr == null)
                 curr = new Node();
             curr.size++;
@@ -45,24 +47,76 @@ public class PolycarpPhonebook {
         }
         
         void remove(Node curr , int num , int len){
+//            System.out.println("remove num " + num + " len " + len);
             if(len > 0)
                 remove(curr.adj[num % 10], num / 10, len - 1);
             curr.size--;
         }
         
-        int search(Node curr , int num) {
-            return curr == null ? 0 : 1 + search(curr.adj[num % 10], num / 10);
+        int search(int num , int len) {
+            return search(root, num, len);
+        }
+        
+        int search(Node curr , int num , int len) {
+            if(len == 0)
+                return FULL_MATCH;
+            return curr == null || curr.size == 0 ? 0 : 1 + search(curr.adj[num % 10], num / 10 , len - 1);
+        }
+        
+        void print(Node curr , int depth , int dig) {
+            if(curr != null) {
+                System.out.println("dig " + dig + " depth " + depth + " size " + curr.size);
+                for(int i = 0; i < 10; i++)
+                    print(curr.adj[i], depth + 1, i);
+            }
         }
     }
     
     
     private static void solve() {
         
+        int n = nextInt();
+        int arr[] = new int[n];
+        for(int i = 0; i < n; i++)
+            arr[i] = Integer.parseInt(new StringBuilder(nextLine()).reverse().toString());
         
+        Trie trie = new Trie();
+        for(int i = 0; i < n; i++) 
+            for(int num = arr[i] , len = 9; len > 0; len-- , num /= 10) 
+                trie.insert(num, len);
         
-        
-        
-        
+        //trie.print(trie.root, 0, -1);
+        for(int i = 0; i < n; i++) {
+            int min = Integer.MAX_VALUE;
+            int minNum = 0;
+
+            for(int num = arr[i] , len = 9; len > 0; len-- , num /= 10) 
+                trie.remove(num, len);
+            // System.out.println("after remove");
+            //trie.print(trie.root, 0, -1);
+            for(int num = arr[i] , len = 9; len > 0; len-- , num /= 10) {
+                int diff = trie.search(num, len);
+                System.out.println("num " + num + " len " + len + " diff " + diff);
+                if(diff < min) {
+                    min = diff;
+                    minNum = num;
+                }
+            }
+            for(int num = arr[i] , len = 9; len > 0; len-- , num /= 10) 
+                trie.insert(num, len);
+            //System.out.println("after adding");
+            //trie.print(trie.root, 0, -1);
+            StringBuilder ans = new StringBuilder(String.valueOf(minNum));
+            ans = ans.reverse();
+            
+            if(min >= FULL_MATCH)
+                throw new RuntimeException("halt");
+            
+            while(ans.length() < min)
+                ans.append('0');
+            
+            println(ans.substring(0, min));
+        }
     }
     
     
