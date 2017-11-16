@@ -20,11 +20,12 @@ public class RoadsinBerland {
             int u = nextInt() - 1;
             int v = nextInt() - 1;
             int c = nextInt();
-            int sum = 0;
+            long sum = 0;
             int relax[][] = new int[n][n];
             for(int i = 0; i < n; i++)
                 for(int j = 0; j < n; j++) {
                     relax[i][j] = Math.min(d[i][j] , d[i][u] + c + d[v][j]);
+                    relax[i][j] = Math.min(relax[i][j] , d[i][v] + c + d[u][j]);
                     sum += relax[i][j];
                 }
             
