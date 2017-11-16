@@ -2275,9 +2275,9 @@ class helper {
             return this.toString(new StringBuilder(), true, new StringBuilder(), root).toString();
         }
     }
-    
-    static class BinaryTrie {
 
+    // General impl http://codeforces.com/contest/858/submission/32363725
+    static class BinaryTrie {
         static class Node {
             int size;
             Node zero;

@@ -31,7 +31,6 @@ public class PolycarpPhonebook {
         }
         
         Node insert(Node curr , int num , int len){
-//            System.out.println("num " + num + " len " + len);
             if(curr == null)
                 curr = new Node();
             curr.size++;
@@ -47,7 +46,6 @@ public class PolycarpPhonebook {
         }
         
         void remove(Node curr , int num , int len){
-//            System.out.println("remove num " + num + " len " + len);
             if(len > 0)
                 remove(curr.adj[num % 10], num / 10, len - 1);
             curr.size--;
@@ -58,9 +56,12 @@ public class PolycarpPhonebook {
         }
         
         int search(Node curr , int num , int len) {
-            if(len == 0)
+            if(curr == null || curr.size == 0 )
+                return 0;
+            else if(len == 0)
                 return FULL_MATCH;
-            return curr == null || curr.size == 0 ? 0 : 1 + search(curr.adj[num % 10], num / 10 , len - 1);
+            else 
+                return 1 + search(curr.adj[num % 10], num / 10 , len - 1);
         }
         
         void print(Node curr , int depth , int dig) {
@@ -80,23 +81,24 @@ public class PolycarpPhonebook {
         for(int i = 0; i < n; i++)
             arr[i] = Integer.parseInt(new StringBuilder(nextLine()).reverse().toString());
         
+        if(n == 1) {
+            println(arr[0] % 10);
+            return;
+        }
+        
         Trie trie = new Trie();
         for(int i = 0; i < n; i++) 
             for(int num = arr[i] , len = 9; len > 0; len-- , num /= 10) 
                 trie.insert(num, len);
         
-        //trie.print(trie.root, 0, -1);
         for(int i = 0; i < n; i++) {
             int min = Integer.MAX_VALUE;
             int minNum = 0;
 
             for(int num = arr[i] , len = 9; len > 0; len-- , num /= 10) 
                 trie.remove(num, len);
-            // System.out.println("after remove");
-            //trie.print(trie.root, 0, -1);
             for(int num = arr[i] , len = 9; len > 0; len-- , num /= 10) {
                 int diff = trie.search(num, len);
-                System.out.println("num " + num + " len " + len + " diff " + diff);
                 if(diff < min) {
                     min = diff;
                     minNum = num;
@@ -104,13 +106,8 @@ public class PolycarpPhonebook {
             }
             for(int num = arr[i] , len = 9; len > 0; len-- , num /= 10) 
                 trie.insert(num, len);
-            //System.out.println("after adding");
-            //trie.print(trie.root, 0, -1);
             StringBuilder ans = new StringBuilder(String.valueOf(minNum));
             ans = ans.reverse();
-            
-            if(min >= FULL_MATCH)
-                throw new RuntimeException("halt");
             
             while(ans.length() < min)
                 ans.append('0');
