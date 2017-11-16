@@ -21,47 +21,37 @@ public class PolycarpPhonebook {
             root = new Node();
         }
 
-        void insert(int num){
-            root = insert(root, num, offset);
+        void insert(int num , int len){
+            root = insert(root, num , len);
         }
         
         int size(Node n) {
             return n == null ? 0 : n.size;
         }
         
-        Node insert(Node curr , int num , int idx){
-            if(idx < 0) {
-                if(curr != null)
-                    curr.size++;
-                else
-                    curr = new Node();
-                return curr;
+        Node insert(Node curr , int num , int len){
+            if(curr == null)
+                curr = new Node();
+            curr.size++;
+            if(len > 0) {
+                int d = num % 10;
+                curr.adj[d] = insert(curr.adj[d], num / 10, len - 1);
             }
-            else{
-                if(curr == null)
-                    curr = new Node();
-                if((num & (1 << idx)) == 0)
-                    curr.zero = insert(curr.zero, num, idx - 1);
-                else
-                    curr.one = insert(curr.one, num, idx - 1);
-                
-                curr.size = size(curr.zero) + size(curr.one);
-                return curr;
-            }
+            return curr;
         }
         
-        void remove(int num){
-            remove(root, null, num, offset);
+        void remove(int num , int len){
+            remove(root, num, len);
         }
         
-        void remove(Node curr , Node parent , int num , int idx){
-            if(idx >= 0){
-                if((num & (1 << idx)) == 0)
-                    remove(curr.zero, curr, num, idx - 1);
-                else
-                    remove(curr.one, curr, num, idx - 1);
-            }
+        void remove(Node curr , int num , int len){
+            if(len > 0)
+                remove(curr.adj[num % 10], num / 10, len - 1);
             curr.size--;
+        }
+        
+        int search(Node curr , int num) {
+            return curr == null ? 0 : 1 + search(curr.adj[num % 10], num / 10);
         }
     }
     
