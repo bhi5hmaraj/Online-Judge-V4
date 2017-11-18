@@ -12,7 +12,7 @@ public class Wrath {
         
         int n = nextInt();
         int arr[] = nextIntArray(n);
-        int cuts[] = new int[n + 1];
+        int cuts[] = new int[n];
         
         for(int i = 1; i < n; i++)
             if(arr[i] > 0) {
