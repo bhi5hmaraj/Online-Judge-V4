@@ -64,16 +64,17 @@ public class VitalyandCycle  {
         }
         
         ArrayList<int[]> comp = isBipartite(V);
-        if(comp  == null)
+        if(comp == null)
             println("0 1");
         else if(comp.stream().anyMatch(size -> size[0] + size[1] > 2))
                println("1 " + comp.stream().map(size -> nc2(size[0]) + nc2(size[1])).reduce(0L, Long::sum));
         else if(comp.stream().anyMatch(size -> size[0] + size[1] == 2)) {
             long size2 = comp.stream().filter(size -> size[0] + size[1] == 2).count();
             long size1 = comp.stream().filter(size -> size[0] + size[1] == 1).count();
-            
+            println("2 " + (nc2(size2) * 4L + size2 * size1));  // 2 cycle with len 3 and 2 with len 5
         }
-
+        else
+            println("3 " + (1L * V * (V - 1) * (V - 2)) / 6L);
         
         
         
