@@ -13,8 +13,9 @@ public class HardRefactoring  {
         String line;
         int segment[] = new int[1 << 16 + 1];
         while((line = nextLine()) != null) {
+            
             Arrays.fill(segment, 0);
-            boolean possible = true;
+
             while(true) {
                 String spl[] = line.split(" ");
                 int lo = -(1 << 15);
@@ -70,7 +71,7 @@ public class HardRefactoring  {
                 
                 
                 for(int i = 0; i < collect.size(); i++)
-                    print(collect.get(i) + (i < collect.size() - 1 ? " ||" : ""));
+                    println(collect.get(i) + (i < collect.size() - 1 ? " ||" : ""));
             }
         }
         
@@ -89,8 +90,10 @@ public class HardRefactoring  {
     /************************ TEMPLATE STARTS HERE **********************/
     
     public static void main(String[] args) throws IOException {
-        reader = new BufferedReader(new InputStreamReader(System.in));
-        writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
+//        reader = new BufferedReader(new InputStreamReader(System.in));
+//        writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
+        reader = new BufferedReader(new FileReader("hard.in"));
+        writer = new PrintWriter("hard.out");
         st     = null;
         solve();
         reader.close();
