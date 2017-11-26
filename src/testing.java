@@ -57,43 +57,7 @@ public class testing {
     }
     
     private static void solve() {
-        /*
-        long s = System.nanoTime();
-        BigDecimal bigDecimal = new BigDecimal("1e4000");
-        bigDecimal = bigDecimal.multiply(bigDecimal).add(bigDecimal);
-        bigDecimal.toBigInteger();
-        System.out.println("Time : " + ((System.nanoTime() - s) / 1e9));
-        Long.bitCount(2141231232L);
-        */
-        int MAX = (int) 5e7;
-        long start = System.nanoTime();
-//        int priArr[] = sieve(MAX);
-//        modifiedSieve(MAX);
-        // println("total primes = " + priArr.length);
-        /*
-        for(int i = 0; i < priArr.length; i++)
-            if(priArr[i] != primes.get(i)) {
-                println("WA");
-                return;
-            }
-        */
-//        println("AC");
-//        System.out.println("N = " + MAX + " Time taken = " + (System.nanoTime() - start) / 1e9);
-        /*List<Integer> li = Arrays.asList(5 , 3 , 6 , 1, 9);
-        ListIterator<Integer> it = li.listIterator(1);
-        println(it.next());
-        println(it.next());
-        println(it.previous());
-        println(it.previous());
-        */
-        Thread t1 = new Thread("asda");
-        try {
-            t1.join();
-        }
-        catch(Exception e) {
-            System.out.println("excep");
-        }
-        new HashMap<>().keySet();
+        System.out.println(Arrays.toString("asbcas   asdasd ".split(" ")));
     }
     
     

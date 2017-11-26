@@ -10,7 +10,14 @@ public class Abbreviation  {
     private static void solve() {
         
         
-        
+        String line;
+        while((line = nextLine()) != null) {
+            String sentences[] = line.split(",|.");
+            StringBuilder ans = new StringBuilder();
+            for(String str : sentences) {
+                String words[] = str.split(" ");
+            }
+        }
         
         
         
