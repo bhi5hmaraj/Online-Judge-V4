@@ -16,6 +16,7 @@ public class Abbreviation  {
             StringBuilder ans = new StringBuilder();
             for(String str : sentences) {
                 String words[] = str.split(" ");
+                
             }
         }
         
