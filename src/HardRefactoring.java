@@ -90,10 +90,10 @@ public class HardRefactoring  {
     /************************ TEMPLATE STARTS HERE **********************/
     
     public static void main(String[] args) throws IOException {
-//        reader = new BufferedReader(new InputStreamReader(System.in));
-//        writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
-        reader = new BufferedReader(new FileReader("hard.in"));
-        writer = new PrintWriter("hard.out");
+        reader = new BufferedReader(new InputStreamReader(System.in));
+        writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
+//        reader = new BufferedReader(new FileReader("hard.in"));
+//        writer = new PrintWriter("hard.out");
         st     = null;
         solve();
         reader.close();
