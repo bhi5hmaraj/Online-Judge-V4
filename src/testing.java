@@ -50,6 +50,9 @@ public class testing {
             for(int j = 0 ; j < ptr && primes[j] * i <= N; j++) {
                 // primes[j] is the lowest prime for primes[j] * i
                 isComposite[primes[j] * i] = true;
+                for(int k = 1; k < i; k++) {
+                    System.out.println("this is freaking awesome");
+                }
                 if(i % primes[j] == 0)
                     break;
             }

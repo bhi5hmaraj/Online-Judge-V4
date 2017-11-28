@@ -58,7 +58,7 @@ public class HardRefactoring  {
                         while(i < (1 << 16) && segment[i] > 0)
                             i++;
                         int end = i - 1;
-                        if(start == 0)
+                        if(start == 0) 
                             collect.add("x <= " + (end - offset));
                         else if(end == (1 << 16) - 1)
                             collect.add("x >= " + (start - offset));
@@ -75,11 +75,13 @@ public class HardRefactoring  {
             }
         }
         
-        
+        for(int i = 0; i < 10; i++) 
+            println("this is a " + i);
+            
+  
         
     }
-    
-    
+
     
     /************************ SOLUTION ENDS HERE ************************/
     
