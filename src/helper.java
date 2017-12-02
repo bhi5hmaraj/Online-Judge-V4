@@ -2619,7 +2619,7 @@ class helper {
     }
     
     static double pt[][];   // array of coordinates 
-    
+
     static double areaOfTri(int a , int b , int c) {
         double t1 = pt[a][0] * (pt[b][1] - pt[c][1]);
         double t2 = pt[b][0] * (pt[c][1] - pt[a][1]);
