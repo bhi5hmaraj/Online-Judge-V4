@@ -6,6 +6,27 @@ public class LA_5117  {
     
     /************************ SOLUTION STARTS HERE ************************/
     
+
+    static class MM {       // MM (Modular Math) class 
+        static final long mod = (long) (1e9) + 7; // Default
+        static long sub(long a, long b) {return (a - b  + mod) % mod;}
+        static long mul(long a, long b) {return ((a % mod) * (b % mod)) % mod;}
+        static long add(long a, long b) {return (a + b) % mod;}
+        static long div(long a, long b) {return mul(a, modInverse(b));}
+        static long modInverse(long n)  {return modPow(n, mod - 2);} // Fermat's little theorem
+        static long modPow(long a , long b) {
+            long pow = 1;
+            while(b > 0) {
+                if((b & 1L) == 1)
+                    pow = ((pow * a) % mod);
+
+                a = ((a * a) % (mod));
+                b >>= 1;
+            }
+            return pow;
+        }
+    }
+
     
     private static void solve() {
         
@@ -15,8 +36,45 @@ public class LA_5117  {
             
             int N = nextInt();
             int K = nextInt();
+            int to[] = nextIntArray(N);
             
+            long DP[] = new long[N + 1];
+            DP[2] = K * (K - 1);
+            for(int i = 3; i <= N; i++)
+                DP[i] = MM.add(MM.mul(K - 2, DP[i - 1]), MM.mul(K - 1, DP[i - 2]));
             
+            int marked[] = new int[N];
+            int timeIn[] = new int[N];
+            
+            long ways = 1;
+            int comp = 0;
+            for(int i = 0; i < N; i++)
+                if(marked[i] == 0) {
+                    comp++;
+                    int time = 0;
+                    int curr = i;
+                    boolean cycle = false;
+                    while(true) {
+                        if(marked[curr] == 0) {
+                            marked[curr] = comp;
+                            timeIn[curr] = ++time;
+                            curr = to[curr];
+                        } else {
+                            cycle = marked[curr] == comp;
+                            break;
+                        }
+                    }
+                    
+                    if(cycle) {
+                        int len = time - timeIn[curr] + 1;
+                        time = timeIn[curr] - 1;
+                        ways = MM.mul(ways, DP[len]);
+                    }
+                    
+                    ways = MM.mul(ways, MM.modPow(K - 1, time));
+                }
+            
+            println(ways);
         }
         
         
