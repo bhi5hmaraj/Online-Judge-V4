@@ -27,7 +27,7 @@ public class LA_5117  {
         }
     }
 
-    
+
     private static void solve() {
         
         
