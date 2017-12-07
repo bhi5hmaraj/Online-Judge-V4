@@ -28,6 +28,12 @@ public class TreeRequests  {
     }
     
     static void dfs(int u) {
+        
+        if(marked[u])
+            throw new RuntimeException("Cycle found");
+        
+        marked[u] = true;
+        
         int maxPos = adj[u].size() > 0 ? adj[u].get(0) : -1;
         for(int i = 0; i < adj[u].size(); i++) {
             int v = adj[u].get(i);
@@ -46,12 +52,21 @@ public class TreeRequests  {
         map[u] = maxPos < 0 ? new ArrayList<>() : map[maxPos];
         map[u].add(1 << (alph[u] - 'a'));
 
+        sizeCnt++;
+        if(map[u].size() == 0)
+            newARL++;    
+        
         for(int q[] : queries[u]) 
             ans[q[1]] = !(q[0] >= depth[u] && q[0] < depth[u] + map[u].size()) || 
                         Integer.bitCount(map[u].get(map[u].size() - (q[0] - depth[u]) - 1)) <= 1;
         
     }
-
+    
+    static int MAX = (int) 5e5 ;
+    static boolean flag = false;
+    static boolean marked[];
+    static int sizeCnt = 0 , newARL = 0;
+    
     private static void solve() {
         
         FasterScanner scan = new FasterScanner();
@@ -61,11 +76,13 @@ public class TreeRequests  {
         queries = new ArrayList[V];
         adj = new ArrayList[V];
         map = new ArrayList[V];
+        marked = new boolean[V];
+        
         for(int i = 0; i < V; i++) {
             adj[i] = new ArrayList<>();
             queries[i] = new ArrayList<>();
         }
-        
+
         for(int i = 1; i < V; i++) 
             adj[scan.nextInt() - 1].add(i);
         
