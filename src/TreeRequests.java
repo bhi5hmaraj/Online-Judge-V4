@@ -8,7 +8,7 @@ public class TreeRequests  {
     
     static ArrayList<Integer>[] adj;
     static ArrayList<int[]>[] queries;
-    static HashMap<Integer , Integer>[] map;
+    static ArrayList<Integer>[] map;
     
     static char alph[];
     static boolean ans[];
@@ -20,6 +20,8 @@ public class TreeRequests  {
             preprocess(v, lev + 1);
     }
     
+    static int sizeCnt = 0 , newARL = 0;
+    
     static void dfs(int u) {
         int maxPos = adj[u].size() > 0 ? adj[u].get(0) : -1;
         for(int i = 0; i < adj[u].size(); i++) {
@@ -28,23 +30,32 @@ public class TreeRequests  {
             maxPos = map[v].size() > map[maxPos].size() ? v : maxPos;
         }
         
-        final HashMap<Integer, Integer> next = maxPos >= 0 ? map[maxPos] : new HashMap<>();
         
         for(int i = 0; i < adj[u].size(); i++) {
             int v = adj[u].get(i);
+            int offset = map[maxPos].size() - map[v].size();
             if(v != maxPos) 
-                map[v].forEach((key , val) -> next.merge(key, val, (a , b) -> a ^ b));   
+                for(int j = 0; j < map[v].size(); j++)
+                    map[maxPos].set(offset + j, map[maxPos].get(offset + j) ^ map[v].get(j));
         }
+        map[u] = maxPos < 0 ? new ArrayList<>() : map[maxPos];
+        map[u].add(1 << (alph[u] - 'a'));
+        sizeCnt++;
+        if(map[u].size() == 0)
+            newARL++;
         
-        next.put(depth[u], 1 << (alph[u] - 'a'));
-        map[u] = next;
+        if(depth.length == MAX && depth[MAX - 1] == MAX && newARL % 5000 == 0) {
+            System.out.println("number of adds " + sizeCnt + " new arls " + newARL);
+        }
+            
         // System.out.println("u " + u);
         // map[u].forEach((key , val) -> System.out.println(key + " " + Integer.toBinaryString(val)));
         for(int q[] : queries[u]) 
-            ans[q[1]] = !map[u].containsKey(q[0]) || Integer.bitCount(map[u].get(q[0])) <= 1;
+            ans[q[1]] = !(q[0] >= depth[u] && q[0] < depth[u] + map[u].size()) || 
+                        Integer.bitCount(map[u].get(map[u].size() - (q[0] - depth[u]) - 1)) <= 1;
         
     }
-    
+    static int MAX = (int) 5e5 ;
     private static void solve() {
         
         FasterScanner scan = new FasterScanner();
@@ -54,7 +65,7 @@ public class TreeRequests  {
         
         queries = new ArrayList[V];
         adj = new ArrayList[V];
-        map = new HashMap[V];
+        map = new ArrayList[V];
         for(int i = 0; i < V; i++) {
             adj[i] = new ArrayList<>();
             queries[i] = new ArrayList<>();
