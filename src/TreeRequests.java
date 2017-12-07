@@ -11,16 +11,13 @@ public class TreeRequests  {
     static HashMap<Integer , Integer>[] map;
     
     static char alph[];
-    static int ans[];
-    static int height[];
+    static boolean ans[];
+    static int depth[];
     
-    static int preprocess(int u) {
-        
+    static void preprocess(int u , int lev) {
+        depth[u] = lev;
         for(int v : adj[u])
-            height[u] = Math.max(height[u] , preprocess(v));
-        
-        return ++height[u];
-
+            preprocess(v, lev + 1);
     }
     
     static void dfs(int u) {
@@ -31,31 +28,52 @@ public class TreeRequests  {
             maxPos = map[v].size() > map[maxPos].size() ? v : maxPos;
         }
         
+        final HashMap<Integer, Integer> next = maxPos >= 0 ? map[maxPos] : new HashMap<>();
+        
+        for(int i = 0; i < adj[u].size(); i++) {
+            int v = adj[u].get(i);
+            if(v != maxPos) 
+                map[v].forEach((key , val) -> next.merge(key, val, (a , b) -> a ^ b));   
+        }
+        
+        next.put(depth[u], 1 << (alph[u] - 'a'));
+        map[u] = next;
+        // System.out.println("u " + u);
+        // map[u].forEach((key , val) -> System.out.println(key + " " + Integer.toBinaryString(val)));
+        for(int q[] : queries[u]) 
+            ans[q[1]] = !map[u].containsKey(q[0]) || Integer.bitCount(map[u].get(q[0])) <= 1;
         
     }
     
     private static void solve() {
         
+        FasterScanner scan = new FasterScanner();
         
-        int V = nextInt();
-        int Q = nextInt();
+        int V = scan.nextInt();
+        int Q = scan.nextInt();
         
         queries = new ArrayList[V];
         adj = new ArrayList[V];
-        
+        map = new HashMap[V];
         for(int i = 0; i < V; i++) {
             adj[i] = new ArrayList<>();
             queries[i] = new ArrayList<>();
         }
         
         for(int i = 1; i < V; i++)
-            adj[nextInt()].add(i);
+            adj[scan.nextInt() - 1].add(i);
         
-        alph = nextLine().toCharArray();
-        ans = new int[Q];
-        height = new int[V];
+        alph = scan.nextLine().toCharArray();
+        ans = new boolean[Q];
+        depth = new int[V];
+        preprocess(0, 1);
+
         while(Q-->0)
-            queries[nextInt() - 1].add(new int[]{nextInt() , Q});   // height , qNo
+            queries[scan.nextInt() - 1].add(new int[]{scan.nextInt() , Q});   // height , qNo
+        
+        dfs(0);
+        for(int i = ans.length - 1; i >= 0; i--)
+            println(ans[i] ? "Yes" : "No");
     }
     
     
@@ -69,11 +87,11 @@ public class TreeRequests  {
     /************************ TEMPLATE STARTS HERE **********************/
     
     public static void main(String[] args) throws IOException {
-        reader = new BufferedReader(new InputStreamReader(System.in));
+        // reader = new BufferedReader(new InputStreamReader(System.in));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
-        st     = null;
+        // st     = null;
         solve();
-        reader.close();
+        // reader.close();
         writer.close();
     }
     
@@ -95,7 +113,116 @@ public class TreeRequests  {
     static long[] nextLongArrayOneBased(int n){long[]a= new long[n+1];int i=1;while(i<=n){a[i++]=nextLong();}return a;}            
     static void   print(Object o)  { writer.print(o);  }
     static void   println(Object o){ writer.println(o);}
-    
+    static class FasterScanner {
+        private byte[] buf = new byte[1024];
+        private int tmp_curChar;
+        private int tmp_numChars;
+
+        public int read() {
+            if (tmp_numChars == -1)
+                throw new InputMismatchException();
+            if (tmp_curChar >= tmp_numChars) {
+                tmp_curChar = 0;
+                try {
+                    tmp_numChars = System.in.read(buf);
+                } catch (IOException e) {
+                    throw new InputMismatchException();
+                }
+                if (tmp_numChars <= 0)
+                    return -1;
+            }
+            return buf[tmp_curChar++];
+        }
+
+        public String nextLine() {
+            int c = read();
+            while (isSpaceChar(c))
+                c = read();
+            StringBuilder res = new StringBuilder();
+            do {
+                res.appendCodePoint(c);
+                c = read();
+            } while (!isEndOfLine(c));
+            return res.toString();
+        }
+
+        public String next() {
+            int c = read();
+            while (isSpaceChar(c))
+                c = read();
+            StringBuilder res = new StringBuilder();
+            do {
+                res.appendCodePoint(c);
+                c = read();
+            } while (!isSpaceChar(c));
+            return res.toString();
+        }
+
+        public long nextLong() {
+            int c = read();
+            while (isSpaceChar(c))
+                c = read();
+            int sgn = 1;
+            if (c == '-') {
+                sgn = -1;
+                c = read();
+            }
+            long res = 0;
+            do {
+                if (c < '0' || c > '9')
+                    throw new InputMismatchException();
+                res *= 10;
+                res += c - '0';
+                c = read();
+            } while (!isSpaceChar(c));
+            return res * sgn;
+        }
+
+        public int nextInt() {
+            int c = read();
+            while (isSpaceChar(c))
+                c = read();
+            int sgn = 1;
+            if (c == '-') {
+                sgn = -1;
+                c = read();
+            }
+            int res = 0;
+            do {
+                if (c < '0' || c > '9')
+                    throw new InputMismatchException();
+                res *= 10;
+                res += c - '0';
+                c = read();
+            } while (!isSpaceChar(c));
+            return res * sgn;
+        }
+
+        public int[] nextIntArray(int n) {
+            int[] arr = new int[n];
+            for (int i = 0; i < n; i++) {
+                arr[i] = nextInt();
+            }
+            return arr;
+        }
+
+        public long[] nextLongArray(int n) {
+            long[] arr = new long[n];
+            for (int i = 0; i < n; i++) {
+                arr[i] = nextLong();
+            }
+            return arr;
+        }
+
+        private boolean isSpaceChar(int c) {
+            return c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == -1;
+        }
+
+        private boolean isEndOfLine(int c) {
+            return c == '\n' || c == '\r' || c == -1;
+        }
+    }
+
     /************************ TEMPLATE ENDS HERE ************************/
     
 }

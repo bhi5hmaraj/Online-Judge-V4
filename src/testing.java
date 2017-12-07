@@ -60,7 +60,10 @@ public class testing {
     }
     
     private static void solve() {
-        System.out.println(Arrays.toString("asbcas   asdasd ".split(" ")));
+        HashMap<Integer , Integer> map = new HashMap<>();
+        map.put(2, 10);
+        map.merge(1, 15, Integer::sum);
+        System.out.println(map);
     }
     
     
