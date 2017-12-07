@@ -14,13 +14,18 @@ public class TreeRequests  {
     static boolean ans[];
     static int depth[];
     
-    static void preprocess(int u , int lev) {
-        depth[u] = lev;
-        for(int v : adj[u])
-            preprocess(v, lev + 1);
+    static void preprocess(int u) {
+        depth[u] = 1;
+        ArrayDeque<Integer> queue = new ArrayDeque<>();
+        queue.add(u);
+        while(!queue.isEmpty()) {
+            int curr = queue.remove();
+            for(int v : adj[curr]) {
+                depth[v] = depth[curr] + 1;
+                queue.add(v);
+            }
+        }
     }
-    
-    static int sizeCnt = 0 , newARL = 0;
     
     static void dfs(int u) {
         int maxPos = adj[u].size() > 0 ? adj[u].get(0) : -1;
@@ -40,29 +45,19 @@ public class TreeRequests  {
         }
         map[u] = maxPos < 0 ? new ArrayList<>() : map[maxPos];
         map[u].add(1 << (alph[u] - 'a'));
-        sizeCnt++;
-        if(map[u].size() == 0)
-            newARL++;
-        
-        if(depth.length == MAX && depth[MAX - 1] == MAX && sizeCnt % 10000 == 0) {
-            System.out.println("number of adds " + sizeCnt + " new arls " + newARL);
-        }
-            
-        // System.out.println("u " + u);
-        // map[u].forEach((key , val) -> System.out.println(key + " " + Integer.toBinaryString(val)));
+
         for(int q[] : queries[u]) 
             ans[q[1]] = !(q[0] >= depth[u] && q[0] < depth[u] + map[u].size()) || 
                         Integer.bitCount(map[u].get(map[u].size() - (q[0] - depth[u]) - 1)) <= 1;
         
     }
-    static int MAX = (int) 5e5 ;
+
     private static void solve() {
         
         FasterScanner scan = new FasterScanner();
         
         int V = scan.nextInt();
         int Q = scan.nextInt();
-        
         queries = new ArrayList[V];
         adj = new ArrayList[V];
         map = new ArrayList[V];
@@ -71,17 +66,18 @@ public class TreeRequests  {
             queries[i] = new ArrayList<>();
         }
         
-        for(int i = 1; i < V; i++)
+        for(int i = 1; i < V; i++) 
             adj[scan.nextInt() - 1].add(i);
         
         alph = scan.nextLine().toCharArray();
         ans = new boolean[Q];
         depth = new int[V];
-        preprocess(0, 1);
-
+        
+        preprocess(0);
+        
         while(Q-->0)
             queries[scan.nextInt() - 1].add(new int[]{scan.nextInt() , Q});   // height , qNo
-        
+
         dfs(0);
         for(int i = ans.length - 1; i >= 0; i--)
             println(ans[i] ? "Yes" : "No");
@@ -96,27 +92,21 @@ public class TreeRequests  {
     
     
     /************************ TEMPLATE STARTS HERE **********************/
-    /*
-    public static void main(String[] args) throws IOException {
-        // reader = new BufferedReader(new InputStreamReader(System.in));
-        writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
-        // st     = null;
-        solve();
-        // reader.close();
-        writer.close();
-    }
-    */
+
     public static void main(String[] args) throws IOException {
         new Thread(null, new Runnable() {
             public void run() {
                 new TreeRequests().run();
             }
-        }, "Increase Stack", 1 << 25).start();
+        }, "Increase Stack", 1 << 27).start();
 
     }
 
     void run(){ 
-     // reader = new BufferedReader(new InputStreamReader(System.in));
+        /*
+         * You failed me fast scanner :(
+         */
+        // reader = new BufferedReader(new InputStreamReader(System.in));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         // st     = null;
         solve();
