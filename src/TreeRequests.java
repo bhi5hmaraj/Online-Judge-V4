@@ -44,7 +44,7 @@ public class TreeRequests  {
         if(map[u].size() == 0)
             newARL++;
         
-        if(depth.length == MAX && depth[MAX - 1] == MAX && newARL % 5000 == 0) {
+        if(depth.length == MAX && depth[MAX - 1] == MAX && sizeCnt % 10000 == 0) {
             System.out.println("number of adds " + sizeCnt + " new arls " + newARL);
         }
             
@@ -96,7 +96,7 @@ public class TreeRequests  {
     
     
     /************************ TEMPLATE STARTS HERE **********************/
-    
+    /*
     public static void main(String[] args) throws IOException {
         // reader = new BufferedReader(new InputStreamReader(System.in));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
@@ -105,6 +105,25 @@ public class TreeRequests  {
         // reader.close();
         writer.close();
     }
+    */
+    public static void main(String[] args) throws IOException {
+        new Thread(null, new Runnable() {
+            public void run() {
+                new TreeRequests().run();
+            }
+        }, "Increase Stack", 1 << 25).start();
+
+    }
+
+    void run(){ 
+     // reader = new BufferedReader(new InputStreamReader(System.in));
+        writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
+        // st     = null;
+        solve();
+        // reader.close();
+        writer.close();
+    }
+    
     
     static BufferedReader reader;
     static PrintWriter    writer;
