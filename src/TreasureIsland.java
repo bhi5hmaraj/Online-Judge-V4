@@ -53,10 +53,9 @@ public class TreasureIsland {
         C = nextInt();
         
         grid = new char[R][];
-        for(int i = 0; i < R; i++) {
-//            nextLine();
+        for(int i = 0; i < R; i++) 
             grid[i] = nextLine().toCharArray();
-        }
+
         char gg[][] = new char[R][];
         for(int i = 0; i < R; i++)
             gg[i] = Arrays.copyOf(grid[i], C);
@@ -89,7 +88,7 @@ public class TreasureIsland {
         for(int i = 0; i < R; i++) {
             for(int j = 0; j < C; j++)
                 print(grid[i][j] == '?' ? (inIsland[i][j] ? '.' : '#') : grid[i][j]);
-            println('\n');
+            print('\n');
         }
     }
     
