@@ -6,14 +6,39 @@ public class uva_12160  {
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    static final int INF = (int) 1e8;
+    static final int MAX = (int) 1e4;
     
     private static void solve() {
         
-        int L , U , R;
-        while((L = nextInt()) != 0 && (U = nextInt()) != 0 && (R = nextInt()) != 0) {
-
+        int L = nextInt(), U = nextInt(), R = nextInt();
+        
+        for(int caseNum = 1; R > 0; L = nextInt(), U = nextInt(), R = nextInt() , caseNum++) {
             
+            int options[] = nextIntArray(R);
+            int dist[] = new int[MAX];
+            boolean marked[] = new boolean[MAX];
             
+            Arrays.fill(dist, INF);
+            ArrayDeque<Integer> queue = new ArrayDeque<>();
+            queue.add(L);
+            marked[L] = true;
+            dist[L] = 0;
+            
+            while(!queue.isEmpty()) {
+                int curr = queue.remove();
+                for(int opt : options) {
+                    int next = (curr + opt) % MAX;
+                    if(!marked[next]) {
+                        marked[next] = true;
+                        dist[next] = dist[curr] + 1;
+                        queue.add(next);
+                    }
+                }
+            }
+            
+            println("Case " + caseNum + ": " + (dist[U] == INF ? "Permanently Locked" : dist[U]));
+        
         }
         
     }
