@@ -1,7 +1,7 @@
 import java.util.*;
 import java.util.stream.IntStream;
 import java.io.*;
-public class uva_10990  {
+public class Main  {
     
     
     
