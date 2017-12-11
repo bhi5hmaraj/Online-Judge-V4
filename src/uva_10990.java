@@ -1,46 +1,35 @@
 import java.util.*;
+import java.util.stream.IntStream;
 import java.io.*;
-public class uva_12160    {
+public class uva_10990  {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static final int INF = (int) 1e8;
-    static final int MAX = (int) 1e4;
+    static final int MAX = (int) 2e2;
     
     private static void solve() {
         
-        int L = nextInt(), U = nextInt(), R = nextInt();
-        
-        for(int caseNum = 1; R > 0; L = nextInt(), U = nextInt(), R = nextInt() , caseNum++) {
-            
-            int options[] = nextIntArray(R);
-            int dist[] = new int[MAX];
-            boolean marked[] = new boolean[MAX];
-            
-            Arrays.fill(dist, INF);
-            ArrayDeque<Integer> queue = new ArrayDeque<>();
-            queue.add(L);
-            marked[L] = true;
-            dist[L] = 0;
-            
-            while(!queue.isEmpty()) {
-                int curr = queue.remove();
-                for(int opt : options) {
-                    int next = (curr + opt) % MAX;
-                    if(!marked[next]) {
-                        marked[next] = true;
-                        dist[next] = dist[curr] + 1;
-                        queue.add(next);
-                    }
-                }
+        int totient[] = IntStream.range(0, MAX + 1).toArray();
+        for(int i = 2; i <= MAX; i++)
+            if(totient[i] == i) {   // i is a prime
+                for(int j = i; j <= MAX; j += i)
+                    totient[j] = totient[j] - totient[j] / i;
             }
-            
-            println("Case " + caseNum + ": " + (dist[U] == INF ? "Permanently Locked" : dist[U]));
         
-        }
+        int depthPhi[] = Arrays.stream(totient)
+                         .map(phi -> {
+                             if(phi == 0) return 0;
+                             int cnt = 0;
+                             while(phi != 1) {
+                                 phi = totient[phi];
+                                 cnt++;
+                             }
+                             return cnt;
+                         }).toArray();
         
+        System.out.println(Arrays.toString(depthPhi));
     }
     
     
