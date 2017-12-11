@@ -1,21 +1,39 @@
 import java.util.*;
 import java.io.*;
-public class LazySecurityGuard {
+public class PieRules {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    static int slice[];
+    static int memo[][];
+    static int rec(int idx , int turn) {    // 0 - Bob , 1 - Alice    
+        if(idx == slice.length)
+            return 0;
+        else if(memo[idx][turn] != -1)
+            return memo[idx][turn];
+        else {
+            if (turn == 0)
+                return memo[idx][turn] = Math.max(rec(idx + 1, 0) , slice[idx] + rec(idx + 1, 1));
+            else 
+                return memo[idx][turn] = Math.min(slice[idx] + rec(idx + 1, 1), rec(idx + 1, 0));
+        }
+    }
     
     private static void solve() {
         
         
         int N = nextInt();
-        int block = (int) Math.sqrt(N);
+        slice = nextIntArray(N);
         
-        long peri = (N % block == 0 ? 0 : 2) + 2L * (block + N / block);
+        memo = new int[N][2];
+        for(int t[] : memo) Arrays.fill(t, -1);
         
-        println(peri);
+        int bobScore = rec(0, 0);
+        int aliceScore = Arrays.stream(slice).sum() - bobScore;
+        
+        println(aliceScore + " " + bobScore);
         
     }
     
