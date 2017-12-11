@@ -7,7 +7,7 @@ public class uva_10990  {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static final int MAX = (int) 2e2;
+    static final int MAX = (int) 2e6;
     
     private static void solve() {
         
@@ -20,8 +20,8 @@ public class uva_10990  {
         
         int depthPhi[] = Arrays.stream(totient)
                          .map(phi -> {
-                             if(phi == 0) return 0;
-                             int cnt = 0;
+                             if(phi <= 1) return 0;
+                             int cnt = 1;
                              while(phi != 1) {
                                  phi = totient[phi];
                                  cnt++;
@@ -29,7 +29,16 @@ public class uva_10990  {
                              return cnt;
                          }).toArray();
         
-        System.out.println(Arrays.toString(depthPhi));
+        depthPhi[1] = 0;
+        depthPhi[2] = 1;
+        
+        
+        for(int i = 1; i <= MAX; i++)
+            depthPhi[i] += depthPhi[i - 1];
+        
+        int Q = nextInt();
+        while(Q-->0)
+            println(-(depthPhi[nextInt() - 1] - depthPhi[nextInt()]));
     }
     
     
