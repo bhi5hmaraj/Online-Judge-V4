@@ -6,7 +6,7 @@ public class TreeRequests  {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static ArrayList<Integer>[] adj;
+    static int[][] adj;
     static ArrayList<int[]>[] queries;
     static ArrayList<Integer>[] map;
     
@@ -38,15 +38,15 @@ public class TreeRequests  {
     
     static void processNode(int u) {
 
-        int maxPos = adj[u].size() > 0 ? adj[u].get(0) : -1;
+        int maxPos = adj[u].length > 0 ? adj[u][0] : -1;
         
-        for(int i = 0; i < adj[u].size(); i++) {
-            int v = adj[u].get(i);
+        for(int i = 0; i < adj[u].length; i++) {
+            int v = adj[u][i];
             maxPos = map[v].size() > map[maxPos].size() ? v : maxPos;
         }
         
-        for(int i = 0; i < adj[u].size(); i++) {
-            int v = adj[u].get(i);
+        for(int i = 0; i < adj[u].length; i++) {
+            int v = adj[u][i];
             int offset = map[maxPos].size() - map[v].size();
             if(v != maxPos) 
                 for(int j = 0; j < map[v].size(); j++)
@@ -55,10 +55,6 @@ public class TreeRequests  {
         map[u] = maxPos < 0 ? new ArrayList<>() : map[maxPos];
         map[u].add(1 << (alph[u] - 'a'));
 
-        sizeCnt++;
-        if(map[u].size() == 0)
-            newARL++;    
-        
         for(int q[] : queries[u]) 
             ans[q[1]] = !(q[0] >= depth[u] && q[0] < depth[u] + map[u].size()) || 
                         Integer.bitCount(map[u].get(map[u].size() - (q[0] - depth[u]) - 1)) <= 1;
@@ -67,7 +63,7 @@ public class TreeRequests  {
     
     static void iterativeDfs(int start) {
     
-        ArrayDeque<NodeStatus> stack = new ArrayDeque<>();
+        ArrayDeque<NodeStatus> stack = new ArrayDeque<>();  // Dont use stack (TLEs)
         stack.push(new NodeStatus(start));
         
         while(!stack.isEmpty()) {
@@ -78,8 +74,8 @@ public class TreeRequests  {
             else {
                 curr.explored = true;
                 stack.push(curr);
-                for(int i = 0; i < adj[u].size(); i++) {
-                    int v = adj[u].get(i);
+                for(int i = 0; i < adj[u].length; i++) {
+                    int v = adj[u][i];
                     stack.push(new NodeStatus(v));
                 }
             }
@@ -87,60 +83,46 @@ public class TreeRequests  {
 
     }
     
-    static void dfs(int u) {
+    // Courtesy : UWI ( adjacency list using Jagged Arrays )
+    static int[][] packU(int n, int[] from, int[] to) {   
+        int[][] g = new int[n][];
+        int[] p = new int[n];
+        for (int f : from)
+            p[f]++;
+        for (int i = 0; i < n; i++)
+            g[i] = new int[p[i]];
+        for (int i = 0; i < from.length; i++) 
+            g[from[i]][--p[from[i]]] = to[i];
         
-        int maxPos = adj[u].size() > 0 ? adj[u].get(0) : -1;
-        for(int i = 0; i < adj[u].size(); i++) {
-            int v = adj[u].get(i);
-            dfs(v);
-            maxPos = map[v].size() > map[maxPos].size() ? v : maxPos;
-        }
-        
-        
-        for(int i = 0; i < adj[u].size(); i++) {
-            int v = adj[u].get(i);
-            int offset = map[maxPos].size() - map[v].size();
-            if(v != maxPos) 
-                for(int j = 0; j < map[v].size(); j++)
-                    map[maxPos].set(offset + j, map[maxPos].get(offset + j) ^ map[v].get(j));
-        }
-        map[u] = maxPos < 0 ? new ArrayList<>() : map[maxPos];
-        map[u].add(1 << (alph[u] - 'a'));
-
-        sizeCnt++;
-        if(map[u].size() == 0)
-            newARL++;    
-        
-        for(int q[] : queries[u]) 
-            ans[q[1]] = !(q[0] >= depth[u] && q[0] < depth[u] + map[u].size()) || 
-                        Integer.bitCount(map[u].get(map[u].size() - (q[0] - depth[u]) - 1)) <= 1;
-        
+        return g;
     }
     
-    static int MAX = (int) 5e5 ;
-    static boolean flag = false;
-    static boolean marked[];
-    static int sizeCnt = 0 , newARL = 0;
     
-    private static void solve() {
+    public static void main(String[] args) throws IOException {
         
+        PrintWriter writer = 
+                new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         FasterScanner scan = new FasterScanner();
         
         int V = scan.nextInt();
         int Q = scan.nextInt();
         queries = new ArrayList[V];
-        adj = new ArrayList[V];
         map = new ArrayList[V];
-        marked = new boolean[V];
         
-        for(int i = 0; i < V; i++) {
-            adj[i] = new ArrayList<>();
+        for(int i = 0; i < V; i++) 
             queries[i] = new ArrayList<>();
-        }
-
-        for(int i = 1; i < V; i++) 
-            adj[scan.nextInt() - 1].add(i);
         
+        
+        int from[] = new int[V - 1];
+        int to[] = new int[V - 1];
+        
+        for(int i = 0; i < V - 1; i++) { 
+            from[i] = scan.nextInt() - 1;
+            to[i] = i + 1;
+        }
+        
+        adj = packU(V, from, to);
+
         alph = scan.nextLine().toCharArray();
         ans = new boolean[Q];
         depth = new int[V];
@@ -150,13 +132,14 @@ public class TreeRequests  {
         while(Q-->0)
             queries[scan.nextInt() - 1].add(new int[]{scan.nextInt() , Q});   // height , qNo
 
-//        dfs(0);
         iterativeDfs(0);
         
         for(int i = ans.length - 1; i >= 0; i--)
-            println(ans[i] ? "Yes" : "No");
-    }
+            writer.println(ans[i] ? "Yes" : "No");
+       
+        writer.close();
     
+    }
     
     
     /************************ SOLUTION ENDS HERE ************************/
@@ -166,56 +149,14 @@ public class TreeRequests  {
     
     
     /************************ TEMPLATE STARTS HERE **********************/
-//
-//    public static void main(String[] args) throws IOException {
-//        new Thread(null, new Runnable() {
-//            public void run() {
-//                new TreeRequests().run();
-//            }
-//        }, "Increase Stack", 1 << 27).start();
-//
-//    }
-//
-//    void run(){ 
-//        /*
-//         * You failed me fast scanner :(
-//         */
-//        // reader = new BufferedReader(new InputStreamReader(System.in));
-//        writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
-//        // st     = null;
-//        solve();
-//        // reader.close();
-//        writer.close();
-//    }
-    
-    
-    static BufferedReader reader;
-    static PrintWriter    writer;
-    static StringTokenizer st;
-    
-    static String next()
-    {while(st == null || !st.hasMoreTokens()){try{String line = reader.readLine();if(line == null){return null;}            
-    st = new StringTokenizer(line);}catch (Exception e){throw new RuntimeException();}}return st.nextToken();}
-    static String nextLine()  {String s=null;try{s=reader.readLine();}catch(IOException e){e.printStackTrace();}return s;}             
-    static int    nextInt()   {return Integer.parseInt(next());}
-    static long   nextLong()  {return Long.parseLong(next());}     
-    static double nextDouble(){return Double.parseDouble(next());}
-    static char   nextChar()  {return next().charAt(0);}
-    static int[]  nextIntArray(int n)         {int[] a= new int[n];   int i=0;while(i<n){a[i++]=nextInt();}  return a;}
-    static long[] nextLongArray(int n)        {long[]a= new long[n];  int i=0;while(i<n){a[i++]=nextLong();} return a;}    
-    static int[]  nextIntArrayOneBased(int n) {int[] a= new int[n+1]; int i=1;while(i<=n){a[i++]=nextInt();} return a;}            
-    static long[] nextLongArrayOneBased(int n){long[]a= new long[n+1];int i=1;while(i<=n){a[i++]=nextLong();}return a;}            
-    static void   print(Object o)  { writer.print(o);  }
-    static void   println(Object o){ writer.println(o);}
-    
+
+
     static class FasterScanner {
-        private byte[] buf = new byte[1024];
+        private byte[] buf = new byte[4096];
         private int tmp_curChar;
         private int tmp_numChars;
 
-        public int read() {
-            if (tmp_numChars == -1)
-                throw new InputMismatchException();
+        public int read() { // Removed safety checks ! 
             if (tmp_curChar >= tmp_numChars) {
                 tmp_curChar = 0;
                 try {
@@ -241,38 +182,6 @@ public class TreeRequests  {
             return res.toString();
         }
 
-        public String next() {
-            int c = read();
-            while (isSpaceChar(c))
-                c = read();
-            StringBuilder res = new StringBuilder();
-            do {
-                res.appendCodePoint(c);
-                c = read();
-            } while (!isSpaceChar(c));
-            return res.toString();
-        }
-
-        public long nextLong() {
-            int c = read();
-            while (isSpaceChar(c))
-                c = read();
-            int sgn = 1;
-            if (c == '-') {
-                sgn = -1;
-                c = read();
-            }
-            long res = 0;
-            do {
-                if (c < '0' || c > '9')
-                    throw new InputMismatchException();
-                res *= 10;
-                res += c - '0';
-                c = read();
-            } while (!isSpaceChar(c));
-            return res * sgn;
-        }
-
         public int nextInt() {
             int c = read();
             while (isSpaceChar(c))
@@ -284,29 +193,11 @@ public class TreeRequests  {
             }
             int res = 0;
             do {
-                if (c < '0' || c > '9')
-                    throw new InputMismatchException();
                 res *= 10;
                 res += c - '0';
                 c = read();
             } while (!isSpaceChar(c));
             return res * sgn;
-        }
-
-        public int[] nextIntArray(int n) {
-            int[] arr = new int[n];
-            for (int i = 0; i < n; i++) {
-                arr[i] = nextInt();
-            }
-            return arr;
-        }
-
-        public long[] nextLongArray(int n) {
-            long[] arr = new long[n];
-            for (int i = 0; i < n; i++) {
-                arr[i] = nextLong();
-            }
-            return arr;
         }
 
         private boolean isSpaceChar(int c) {
@@ -318,6 +209,7 @@ public class TreeRequests  {
         }
     }
 
+    
     /************************ TEMPLATE ENDS HERE ************************/
     
 }
