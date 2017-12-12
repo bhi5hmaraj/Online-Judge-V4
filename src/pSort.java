@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.stream.IntStream;
 import java.io.*;
 public class pSort {
     
@@ -70,7 +71,8 @@ public class pSort {
                 heavyMachinery.union(i, i + d[i]);
         }
         
-        
+        println(IntStream.range(1, n + 1)
+                .allMatch(index -> heavyMachinery.connected(perm[index], index)) ? "YES" : "NO");
         
     }
     
