@@ -27,8 +27,67 @@ public class TreeRequests  {
         }
     }
     
+    static class NodeStatus {
+        int index;
+        boolean explored;
+        public NodeStatus(int u) {
+            index = u;
+            explored = false;
+        }
+    }
+    
+    static void processNode(int u) {
+
+        int maxPos = adj[u].size() > 0 ? adj[u].get(0) : -1;
+        
+        for(int i = 0; i < adj[u].size(); i++) {
+            int v = adj[u].get(i);
+            maxPos = map[v].size() > map[maxPos].size() ? v : maxPos;
+        }
+        
+        for(int i = 0; i < adj[u].size(); i++) {
+            int v = adj[u].get(i);
+            int offset = map[maxPos].size() - map[v].size();
+            if(v != maxPos) 
+                for(int j = 0; j < map[v].size(); j++)
+                    map[maxPos].set(offset + j, map[maxPos].get(offset + j) ^ map[v].get(j));
+        }
+        map[u] = maxPos < 0 ? new ArrayList<>() : map[maxPos];
+        map[u].add(1 << (alph[u] - 'a'));
+
+        sizeCnt++;
+        if(map[u].size() == 0)
+            newARL++;    
+        
+        for(int q[] : queries[u]) 
+            ans[q[1]] = !(q[0] >= depth[u] && q[0] < depth[u] + map[u].size()) || 
+                        Integer.bitCount(map[u].get(map[u].size() - (q[0] - depth[u]) - 1)) <= 1;
+     
+    }
+    
+    static void iterativeDfs(int start) {
+    
+        ArrayDeque<NodeStatus> stack = new ArrayDeque<>();
+        stack.push(new NodeStatus(start));
+        
+        while(!stack.isEmpty()) {
+            NodeStatus curr = stack.pop();
+            int u = curr.index;
+            if(curr.explored)
+                processNode(u);
+            else {
+                curr.explored = true;
+                stack.push(curr);
+                for(int i = 0; i < adj[u].size(); i++) {
+                    int v = adj[u].get(i);
+                    stack.push(new NodeStatus(v));
+                }
+            }
+        }
+
+    }
+    
     static void dfs(int u) {
-        marked[u] = true;
         
         int maxPos = adj[u].size() > 0 ? adj[u].get(0) : -1;
         for(int i = 0; i < adj[u].size(); i++) {
@@ -91,7 +150,9 @@ public class TreeRequests  {
         while(Q-->0)
             queries[scan.nextInt() - 1].add(new int[]{scan.nextInt() , Q});   // height , qNo
 
-        dfs(0);
+//        dfs(0);
+        iterativeDfs(0);
+        
         for(int i = ans.length - 1; i >= 0; i--)
             println(ans[i] ? "Yes" : "No");
     }
@@ -105,27 +166,27 @@ public class TreeRequests  {
     
     
     /************************ TEMPLATE STARTS HERE **********************/
-
-    public static void main(String[] args) throws IOException {
-        new Thread(null, new Runnable() {
-            public void run() {
-                new TreeRequests().run();
-            }
-        }, "Increase Stack", 1 << 27).start();
-
-    }
-
-    void run(){ 
-        /*
-         * You failed me fast scanner :(
-         */
-        // reader = new BufferedReader(new InputStreamReader(System.in));
-        writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
-        // st     = null;
-        solve();
-        // reader.close();
-        writer.close();
-    }
+//
+//    public static void main(String[] args) throws IOException {
+//        new Thread(null, new Runnable() {
+//            public void run() {
+//                new TreeRequests().run();
+//            }
+//        }, "Increase Stack", 1 << 27).start();
+//
+//    }
+//
+//    void run(){ 
+//        /*
+//         * You failed me fast scanner :(
+//         */
+//        // reader = new BufferedReader(new InputStreamReader(System.in));
+//        writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
+//        // st     = null;
+//        solve();
+//        // reader.close();
+//        writer.close();
+//    }
     
     
     static BufferedReader reader;
@@ -146,6 +207,7 @@ public class TreeRequests  {
     static long[] nextLongArrayOneBased(int n){long[]a= new long[n+1];int i=1;while(i<=n){a[i++]=nextLong();}return a;}            
     static void   print(Object o)  { writer.print(o);  }
     static void   println(Object o){ writer.println(o);}
+    
     static class FasterScanner {
         private byte[] buf = new byte[1024];
         private int tmp_curChar;
