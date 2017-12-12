@@ -28,10 +28,6 @@ public class TreeRequests  {
     }
     
     static void dfs(int u) {
-        
-        if(marked[u])
-            throw new RuntimeException("Cycle found");
-        
         marked[u] = true;
         
         int maxPos = adj[u].size() > 0 ? adj[u].get(0) : -1;
