@@ -6,6 +6,30 @@ class KGP14F {
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    // https://sites.google.com/site/indy256/algo/kuhn_matching
+    public static int maxMatching(boolean[][] graph) {
+        int n1 = graph.length;
+        int n2 = n1 == 0 ? 0 : graph[0].length;
+        int[] matching = new int[n2];
+        Arrays.fill(matching, -1);
+        int matches = 0;
+        for (int u = 0; u < n1; u++)
+            if (findPath(graph, u, matching, new boolean[n1]))
+                ++matches;
+        return matches;
+    }
+
+    static boolean findPath(boolean[][] graph, int u1, int[] matching, boolean[] vis) {
+        vis[u1] = true;
+        for (int v = 0; v < matching.length; ++v) {
+            int u2 = matching[v];
+            if (graph[u1][v] && (u2 == -1 || !vis[u2] && findPath(graph, u2, matching, vis))) {
+                matching[v] = u1;
+                return true;
+            }
+        }
+        return false;
+    }
     
     private static void solve() {
         
@@ -26,15 +50,15 @@ class KGP14F {
             for(int i = 0; i < G; i++)
                 guests[i] = nextIntArray(2);
             
-            boolean graph[][] = new boolean[H + G][H + G];
+            boolean graph[][] = new boolean[H][G];
             for(int i = 0; i < H; i++)
                 for(int j = 0; j < G; j++)
                     if(Math.abs(hosts[i][0] - guests[j][0]) + Math.abs(hosts[i][1] - guests[j][1]) + 
                        Math.abs(guests[j][0] - K) + Math.abs(guests[j][1] - K) <= C) 
-                        graph[i][j] = graph[j][i] = true;
+                        graph[i][j] = true;
                     
             
-            
+            println("Case " + tc + ": " + maxMatching(graph));
         }
         
     }
