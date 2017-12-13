@@ -1,67 +1,18 @@
 import java.util.*;
 import java.io.*;
-class KGP14H {
+class KGP14J {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static long cost[][];
-    static long distRange[];
-    
-    static long memo[][];
-    static long INF = (long) 1e15;
-    
-    static long rec(int from , int last) {
-        if(from == distRange.length - 1)
-            return cost[from][last];
-        else if(memo[from][last] != -1)
-            return memo[from][last];
-        else {
-            long min = INF;
-            for(int to = from + 1; to < distRange.length; to++) {
-                long returnDist = to - from - 2 > 0 ? distRange[to - 1] - distRange[from + 1] : 0; 
-                long costToLast = to == from + 1 ? 0 : cost[from + 1][last];
-                min = Math.min(min , cost[from][to] + returnDist + costToLast + rec(to, to == from + 1 ? last : to - 1));
-            }
-            
-            return memo[from][last] = min;
-        }
-    }
     
     private static void solve() {
         
         int T = nextInt();
         for(int tc = 1; tc <= T; tc++) {
             
-            int K = nextInt();
-            int R = nextInt();
-            
-            distRange = new long[K + 2];
-            cost = new long[K + 2][K + 2];
-            
-            
-            for(int i = 0; i < K + 2; i++) {
-                int from = nextInt();
-                for(int j = 0; j < K + 1; j++) {
-                    int to = nextInt();
-                    cost[from][to] = nextInt();
-                }
-            }
-
-            for(int i = K + 1; i > 0; i--)
-                distRange[i] = cost[i][i - 1];
-            
-            for(int i = 1; i < distRange.length; i++)
-                distRange[i] += distRange[i - 1];
-            
-            memo = new long[K + 2][K + 2];
-            for(long t[] : memo) Arrays.fill(t, -1);
-            
-            println("Case " + tc + ": " + ((1L * (K + 1) * R) + rec(0, 0)) );
-            
         }
-
     }
     
     
