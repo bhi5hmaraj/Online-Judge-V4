@@ -1,7 +1,6 @@
 import java.util.*;
 import java.io.*;
-import java.math.BigInteger;
-class KGP14J {
+class KGP14F {
     
     
     
@@ -12,21 +11,32 @@ class KGP14J {
         
         int T = nextInt();
         for(int tc = 1; tc <= T; tc++) {
-            BigInteger X = BigInteger.valueOf(nextLong());
-            String Y = next();
-            int E = 0;
-            BigInteger curr = BigInteger.ONE;
-            while(true) {
-                String currStr = curr.toString();
-                if(currStr.length() >= Y.length() && currStr.substring(0, Y.length()).equals(Y))
-                    break;
-                
-                curr = curr.multiply(X);
-                E++;
-            }
             
-            println("Case " + tc + ": " + E);
+            int H = nextInt();
+            int G = nextInt();
+            int K = nextInt();
+            int C = nextInt();
+            
+            int hosts[][] = new int[H][];
+            int guests[][] = new int[G][];
+            
+            for(int i = 0; i < H; i++)
+                hosts[i] = nextIntArray(2);
+            
+            for(int i = 0; i < G; i++)
+                guests[i] = nextIntArray(2);
+            
+            boolean graph[][] = new boolean[H + G][H + G];
+            for(int i = 0; i < H; i++)
+                for(int j = 0; j < G; j++)
+                    if(Math.abs(hosts[i][0] - guests[j][0]) + Math.abs(hosts[i][1] - guests[j][1]) + 
+                       Math.abs(guests[j][0] - K) + Math.abs(guests[j][1] - K) <= C) 
+                        graph[i][j] = graph[j][i] = true;
+                    
+            
+            
         }
+        
     }
     
     
