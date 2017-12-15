@@ -1,6 +1,7 @@
 import java.util.*;
 import java.io.*;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 public class testing {
     
     
@@ -64,6 +65,7 @@ public class testing {
         map.put(2, 10);
         map.merge(1, 15, Integer::sum);
         System.out.println(map);
+        BigInteger b = new BigInteger("sasd");
     }
     
     
