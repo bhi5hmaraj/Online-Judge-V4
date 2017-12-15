@@ -1566,6 +1566,7 @@ class helper {
 		}
 
 	}
+	
 	static class Vector {
         double         x, y;
         private double norm;
