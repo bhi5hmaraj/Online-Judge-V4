@@ -45,6 +45,7 @@ public class TheBakery {
             return c;
         }
     }
+    
     static int query(SegTreeNode node , int L , int R, int nl, int nr) {
         int mid = (nl + nr) >> 1;
         if(nl == L && nr == R)
