@@ -18,12 +18,14 @@ public class ProperNutrition {
         if(n % gcd(a, b) != 0)
             println("NO");
         else {
-            println("YES");
-            for(long x = 0; x <= n; x++) 
+            for(long x = 0; x <= n; x++)  {
                 if(n >= 1L * x * a && (n - 1L * x * a) % b == 0) {
+                    println("YES");
                     println(x + " " + (n - 1L * x * a) / b);
                     return;
                 }
+            }
+            println("NO");
             
         }
         
