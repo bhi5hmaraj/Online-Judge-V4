@@ -2369,13 +2369,9 @@ class helper {
     
     static final double EPS = 1e-8;
     static int compare(double a , double b) {
-        if(a <= b - EPS)
-            return -1;
-        else if(a >= b + EPS)
-            return 1;
-        else
-            return 0;
+        return a <= b - EPS ? -1 : a >= b + EPS ? 1 : 0;
     }
+    
     static class Line implements Comparable<Line> {
         int sNum , sDen , yInNum , yInDen;
         int x; // for lines parallel to y axis
@@ -2637,5 +2633,75 @@ class helper {
         }
         return Math.abs(area / 2.0);
     }
+    
+    /* Used to get count of distinct elements in a range . 
+     * “Next” array stores the next index  such that arr[next[i]] == arr[i] . 
+     * “last” stores the last index from end which has the particular value.
+     */
+    static class SegTreeNode {
+        int         size;
+        SegTreeNode left, right;
+
+        public SegTreeNode(int size) {
+            this.size = size;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("[sz = %d]", size);
+        }
+    }
+
+    static SegTreeNode persistent[];
+    static int         last[];
+    
+    static SegTreeNode initSegTree(int L, int R , int arr[]) {
+        if (L == R)
+            return new SegTreeNode(last[arr[L]] == L ? 1 : 0);
+        else {
+            SegTreeNode newNode = new SegTreeNode(0);
+            int mid = (L + R) >> 1;
+            newNode.left = initSegTree(L, mid , arr);
+            newNode.right = initSegTree(mid + 1, R , arr);
+            newNode.size = newNode.left.size + newNode.right.size;
+            return newNode;
+        }
+    }
+
+    static SegTreeNode initSegTree(SegTreeNode prev, int L, int R, int index, int val) {
+        if (L == R)
+            return new SegTreeNode(val);
+
+        else {
+            int mid = (L + R) >> 1;
+            SegTreeNode l = prev.left;
+            SegTreeNode r = prev.right;
+            if (index <= mid)
+                l = initSegTree(prev.left, L, mid, index, val);
+            else
+                r = initSegTree(prev.right, mid + 1, R, index, val);
+            SegTreeNode newNode = new SegTreeNode(l.size + r.size);
+            newNode.left = l;
+            newNode.right = r;
+            return newNode;
+        }
+    }
+
+    // Usage of Persistent Segment Tree
+    /*
+    Arrays.fill(last, n);
+     for(int i = n - 1; i >= 0; i--) {
+         next[i] = last[arr[i]];
+         last[arr[i]] = i;   
+     }
+     persistent = new SegTreeNode[n];
+     persistent[0] = initSegTree(0, n - 1);
+     for(int i = 1; i < n - 1; i++) {
+         persistent[i] = initSegTree(persistent[i - 1], 0, n - 1, i - 1, 0);
+         if(next[i - 1] < n)
+             persistent[i] = initSegTree(persistent[i], 0, n - 1, next[i - 1], 1);
+     }
+     */
+              
     
 }
