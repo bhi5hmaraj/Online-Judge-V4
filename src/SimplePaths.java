@@ -6,7 +6,7 @@ public class SimplePaths {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static ArrayList<Integer> tree[];
+    static ArrayList<int[]> tree[];
     static ArrayList<Integer>[] adj;
     static boolean marked[];
     static int biConnected[];
@@ -48,12 +48,11 @@ public class SimplePaths {
     static int parent[];
     
     static void treeDfs(int u , int par , int lev) {
-        System.out.println("u " + u);
         parent[u] = par;
         treeLevel[u] = lev;
-        for(int v : tree[u])
-            if(v != par)
-                dfs(v, u , lev + 1);
+        for(int v[] : tree[u])
+            if(v[0] != par)
+                treeDfs(v[0], u , lev + 1);
         
     }
     static int DP[][]; // One based vertices
@@ -119,19 +118,17 @@ public class SimplePaths {
         treeLevel = new int[biComp];
         for(int i = 0; i < biComp; i++)
             tree[i] = new ArrayList<Integer>();
-        for(int i = 1; i <= V; i++)
+        for(int i = 1; i <= V; i++) {
             for(int j : adj[i]) { 
                 if(biConnected[i] != biConnected[j]) {
                     tree[biConnected[i]].add(biConnected[j]);
-                    tree[biConnected[j]].add(biConnected[i]);
                 }
-                else
-                    treeCompSize[biConnected[i]]++;
             }
+        }
         
-        for(int i = 0; i < biComp; i++) 
-            treeCompSize[i] = treeCompSize[i] / 2 + 1;
-        
+        for(int i = 1; i <= V; i++) {
+            treeCompSize[biConnected[i]]++;
+        }
         treeDfs(0, 0, 0);
         DP = new int[log(biComp) + 1][biComp + 1];
         System.out.println(Arrays.toString(biConnected));
@@ -154,6 +151,7 @@ public class SimplePaths {
             x = biConnected[x];
             y = biConnected[y];
             int lca = LCA(x, y);
+            System.out.println(x + " " + y + " " + lca);
             boolean moreThanOne = treeCompSize[lca] > 1;
             for(int curr = x; curr != lca; curr = parent[curr])
                 moreThanOne |= treeCompSize[curr] > 1;
