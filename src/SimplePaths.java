@@ -46,13 +46,15 @@ public class SimplePaths {
     }
     
     static int parent[];
-    
-    static void treeDfs(int u , int par , int lev) {
+    static int entryPoint[];
+
+    static void treeDfs(int u , int par , int lev , int entry) {
         parent[u] = par;
+        entryPoint[u] = entry;
         treeLevel[u] = lev;
         for(int v[] : tree[u])
-            if(v[0] != par)
-                treeDfs(v[0], u , lev + 1);
+            if(biConnected[v[0]] != biConnected[par])
+                treeDfs(biConnected[v[1]], biConnected[v[0]] , lev + 1 , v[1]);
         
     }
     static int DP[][]; // One based vertices
@@ -113,26 +115,21 @@ public class SimplePaths {
         findBiconnected(1);
         biComp++;
         tree = new ArrayList[biComp];
-        int treeCompSize[] = new int[biComp];
         parent = new int[biComp];
+        entryPoint = new int[biComp];
         treeLevel = new int[biComp];
         for(int i = 0; i < biComp; i++)
-            tree[i] = new ArrayList<Integer>();
-        for(int i = 1; i <= V; i++) {
-            for(int j : adj[i]) { 
-                if(biConnected[i] != biConnected[j]) {
-                    tree[biConnected[i]].add(biConnected[j]);
-                }
-            }
-        }
+            tree[i] = new ArrayList<>();
         
-        for(int i = 1; i <= V; i++) {
-            treeCompSize[biConnected[i]]++;
-        }
-        treeDfs(0, 0, 0);
+        for(int i = 1; i <= V; i++) 
+            for(int j : adj[i]) 
+                if(biConnected[i] != biConnected[j]) 
+                    tree[biConnected[i]].add(new int[]{i , j});
+        
+
+        treeDfs(0, 0, 0, 0);
         DP = new int[log(biComp) + 1][biComp + 1];
         System.out.println(Arrays.toString(biConnected));
-        System.out.println(Arrays.toString(treeCompSize));
         System.out.println(Arrays.toString(parent));
         
         for(int i=0;i<biComp;i++)
@@ -148,16 +145,23 @@ public class SimplePaths {
             if(x == y)
                 throw new RuntimeException();
             
-            x = biConnected[x];
-            y = biConnected[y];
-            int lca = LCA(x, y);
+            int lca = LCA(biConnected[x], biConnected[y]);
             System.out.println(x + " " + y + " " + lca);
-            boolean moreThanOne = treeCompSize[lca] > 1;
-            for(int curr = x; curr != lca; curr = parent[curr])
-                moreThanOne |= treeCompSize[curr] > 1;
-            for(int curr = y; curr != lca; curr = parent[curr])
-                moreThanOne |= treeCompSize[curr] > 1;
-                
+            boolean moreThanOne = false;
+            for(int curr = biConnected[x]; curr != lca; curr = parent[curr]) {
+                System.out.println("x from " + x);
+                moreThanOne |= x != entryPoint[curr];
+                x = parent[curr];
+                System.out.println("x to" + x);
+            }
+            for(int curr = biConnected[y]; curr != lca; curr = parent[curr]) {
+                System.out.println("y from " + y);
+                moreThanOne |= y != entryPoint[curr];
+                y = parent[curr];
+                System.out.println("y to" + y);
+            }    
+            moreThanOne |= x != y;
+
             println(moreThanOne ? "0" : "1");
         }
         
