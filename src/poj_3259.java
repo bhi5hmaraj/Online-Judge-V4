@@ -64,9 +64,10 @@ public class poj_3259 {
     
 
     static class Edge { // Take this Edge class to the outer class
-        int v;
-        long cost;
-        Edge(int vv, long wt) {
+        int u , v;
+        int cost;
+        Edge(int u , int vv, int wt) {
+            this.u = u;
             v = vv;
             cost = wt;
         }
@@ -79,7 +80,32 @@ public class poj_3259 {
             int N = nextInt();
             int E = nextInt();
             int W = nextInt();
-    
+            Edge edges[] = new Edge[2 * E + W];
+            int ptr = 0;
+            while(E-->0) {
+                int from = nextInt();
+                int to = nextInt();
+                int c = nextInt();
+                edges[ptr++] = new Edge(from, to, c);
+                edges[ptr++] = new Edge(to, from, c); 
+            }
+            while(W-->0) {
+                int from = nextInt();
+                int to = nextInt();
+                int c = nextInt();
+                edges[ptr++] = new Edge(from, to, -c);
+            }
+            
+            int dist[] = new int[N + 1];
+            for(int runs = 1; runs <= N - 1; runs++)
+                for(Edge e : edges)
+                    dist[e.v] = Math.min(dist[e.v] , dist[e.u] + e.cost);
+            
+            boolean flag = false;
+            for(Edge e : edges)
+                flag |= dist[e.u] + e.cost < dist[e.v];
+            
+            println(flag ? "YES" : "NO");
         }
     }
     
@@ -94,13 +120,13 @@ public class poj_3259 {
     
     
     public static void main(String[] args) throws IOException {
-//        reader = new BufferedReader(new InputStreamReader(System.in));
-        reader = new BufferedReader(new FileReader("/home/bhishmaraj/Downloads/wormhole_files/wormhole.8.in"));
+        reader = new BufferedReader(new InputStreamReader(System.in));
+//        reader = new BufferedReader(new FileReader("/home/bhishmaraj/Downloads/wormhole_files/wormhole.8.in"));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
-        long start = System.nanoTime();
-        solve();
-        System.out.println("Time " + (System.nanoTime() - start) / 1e9);
+//        long start = System.nanoTime();
+        solve2();
+//        System.out.println("Time " + (System.nanoTime() - start) / 1e9);
         reader.close();
         writer.close();
     }
