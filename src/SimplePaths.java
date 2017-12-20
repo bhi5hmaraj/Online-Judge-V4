@@ -49,7 +49,6 @@ public class SimplePaths {
     static int entryPoint[];
 
     static void treeDfs(int u , int par , int lev , int entry) {
-        System.out.println("u " + u);
         parent[u] = par;
         entryPoint[u] = entry;
         treeLevel[u] = lev;
@@ -130,11 +129,8 @@ public class SimplePaths {
 
         treeDfs(0, 0, 0, 0);
         DP = new int[log(biComp) + 1][biComp + 1];
-        System.out.println(Arrays.toString(biConnected));
-        System.out.println(Arrays.toString(parent));
-        System.out.println(Arrays.toString(entryPoint));
         for(int i=0;i<biComp;i++)
-            DP[0][i] = parent[i];
+            DP[0][i] = biConnected[parent[i]];
         
         for (int i = 1; i < DP.length; i++) 
             for (int j = 0; j < biComp; j++) 
@@ -147,19 +143,14 @@ public class SimplePaths {
                 throw new RuntimeException();
             
             int lca = LCA(biConnected[x], biConnected[y]);
-            System.out.println(x + " " + y + " " + lca);
             boolean moreThanOne = false;
             for(int curr = biConnected[x]; curr != lca; curr = biConnected[parent[curr]]) {
-                System.out.println("x from " + x);
                 moreThanOne |= x != entryPoint[curr];
                 x = parent[curr];
-                System.out.println("x to " + x);
             }
             for(int curr = biConnected[y]; curr != lca; curr = biConnected[parent[curr]]) {
-                System.out.println("y from " + y);
                 moreThanOne |= y != entryPoint[curr];
                 y = parent[curr];
-                System.out.println("y to " + y);
             }    
             moreThanOne |= x != y;
 
