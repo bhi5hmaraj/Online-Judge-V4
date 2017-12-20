@@ -49,12 +49,13 @@ public class SimplePaths {
     static int entryPoint[];
 
     static void treeDfs(int u , int par , int lev , int entry) {
+        System.out.println("u " + u);
         parent[u] = par;
         entryPoint[u] = entry;
         treeLevel[u] = lev;
         for(int v[] : tree[u])
-            if(biConnected[v[0]] != biConnected[par])
-                treeDfs(biConnected[v[1]], biConnected[v[0]] , lev + 1 , v[1]);
+            if(biConnected[v[1]] != biConnected[par])
+                treeDfs(biConnected[v[1]], v[0] , lev + 1 , v[1]);
         
     }
     static int DP[][]; // One based vertices
@@ -131,7 +132,7 @@ public class SimplePaths {
         DP = new int[log(biComp) + 1][biComp + 1];
         System.out.println(Arrays.toString(biConnected));
         System.out.println(Arrays.toString(parent));
-        
+        System.out.println(Arrays.toString(entryPoint));
         for(int i=0;i<biComp;i++)
             DP[0][i] = parent[i];
         
@@ -148,17 +149,17 @@ public class SimplePaths {
             int lca = LCA(biConnected[x], biConnected[y]);
             System.out.println(x + " " + y + " " + lca);
             boolean moreThanOne = false;
-            for(int curr = biConnected[x]; curr != lca; curr = parent[curr]) {
+            for(int curr = biConnected[x]; curr != lca; curr = biConnected[parent[curr]]) {
                 System.out.println("x from " + x);
                 moreThanOne |= x != entryPoint[curr];
                 x = parent[curr];
-                System.out.println("x to" + x);
+                System.out.println("x to " + x);
             }
-            for(int curr = biConnected[y]; curr != lca; curr = parent[curr]) {
+            for(int curr = biConnected[y]; curr != lca; curr = biConnected[parent[curr]]) {
                 System.out.println("y from " + y);
                 moreThanOne |= y != entryPoint[curr];
                 y = parent[curr];
-                System.out.println("y to" + y);
+                System.out.println("y to " + y);
             }    
             moreThanOne |= x != y;
 
