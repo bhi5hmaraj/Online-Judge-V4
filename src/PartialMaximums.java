@@ -17,6 +17,12 @@ public class PartialMaximums {
             tree = new int[size];
             build(arr, 1, 0, len - 1);
         }
+        SegmentTree(int len) { 
+            this.len = len;
+            size = 1 << (32 - Integer.numberOfLeadingZeros(len - 1) + 1);  // ceil(log(len)) + 1
+            tree = new int[size];
+        }
+        
         int query(int L , int R){
             if(L > R) return 0;
             return query(1, L, R, 0, len - 1);
@@ -42,32 +48,80 @@ public class PartialMaximums {
                 tree[node] = Math.max(tree[2*node] , tree[(2 * node) + 1]);
             }
         }
-    }
+        void update(int node,int idx,int val,int nl,int nr) {
+            if(nl == nr && nl == idx)
+                tree[node] = val;
+            else {
+                int mid = (nl + nr) >> 1;
+                if(idx <= mid)
+                    update(2*node, idx , val ,nl , mid);
+                else
+                    update((2*node) + 1, idx ,val , mid + 1, nr);
 
+                tree[node] = Math.max(tree[2*node],tree[(2 * node) + 1]);
+            }
+        }
+        void update(int idx , int val){
+            update(1, idx, val, 0, len - 1);
+        }
+    }
+    
+
+
+    
+    static void compress(int arr[]) {
+        TreeSet<Integer> set = new TreeSet<>();
+        Arrays.stream(arr).forEach(set::add);
+        inv = new int[set.size()];
+        int ptr = 0;
+        for(int a : set) inv[ptr++] = a;
+        
+        for(int i = 0; i < arr.length; i++)
+            arr[i] = Arrays.binarySearch(inv, arr[i]);
+        
+    }
+    
+    static int inv[];
     
     private static void solve() {
         
         
         int N = nextInt();
         int arr[] = nextIntArray(N);
+        compress(arr);
         
-        TreeMap<Integer , Integer> map = new TreeMap<>();
         SegmentTree segTree = new SegmentTree(arr);
+        SegmentTree posTree = new SegmentTree(inv.length);
         
         boolean isPartial[] = new boolean[N];
         int ifRemove[] = new int[N];
         
         isPartial[0] = true;
         int max = arr[0];
-        map.put(arr[0], 0);
+        posTree.update(arr[0], 0);
+        
+        int maxPartial = 0;
+        int currPartial = 1;
         
         for(int i = 1; i < N; i++) {
             isPartial[i] = arr[i] > max;
             max = Math.max(max , arr[i]);
             if(!isPartial[i]) {
-                
+                int pos = posTree.query(arr[i], inv.length - 1);
+                if(Math.max(segTree.query(0, pos - 1) , segTree.query(pos + 1, i - 1)) < arr[i]) 
+                    ifRemove[pos]++;
             }
+            else
+                currPartial++;
+            
+            posTree.update(arr[i], i);
         }
+        
+        for(int i = 0; i < N; i++) 
+            maxPartial = Math.max(maxPartial , currPartial + (isPartial[i] ? -1 : 0) + ifRemove[i]);
+        
+        
+        println(maxPartial);
     }
     
     
