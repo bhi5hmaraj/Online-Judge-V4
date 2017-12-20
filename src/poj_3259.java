@@ -62,6 +62,26 @@ public class poj_3259 {
         
     }
     
+
+    static class Edge { // Take this Edge class to the outer class
+        int v;
+        long cost;
+        Edge(int vv, long wt) {
+            v = vv;
+            cost = wt;
+        }
+    }
+    
+    private static void solve2() {
+            
+        int T = nextInt();
+        while(T-->0) {
+            int N = nextInt();
+            int E = nextInt();
+            int W = nextInt();
+    
+        }
+    }
     
     /************************ SOLUTION ENDS HERE ************************/
     

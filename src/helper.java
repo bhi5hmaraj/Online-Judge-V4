@@ -2026,8 +2026,8 @@ class helper {
 			
 		}
 		
-		// Checks wether the graph contains a negative cycle or not
-		
+		// Checks wether the graph contains a negative cycle rechable from start or not
+		// Disclaimer !! it does not find wether the graph contains a -ve cycle in general 
 		boolean containsNegativeCycle() {
 			for(int u=st;u<V+st;u++)
 				for(Edge e : adj[u])
