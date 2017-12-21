@@ -47,21 +47,28 @@ class ETFS  {
         long L = nextLong();
         long R = nextLong();
         
+//        long start = System.nanoTime();
         int len = (int) (R - L + 1);
         long phi[] = new long[len];
         long factorize[] = new long[len];
         for(int i = 0; i < len; i++)
-            phi[i] = factorize[i] = i + L;
+            phi[i] = factorize[i] = L + i;
+        
         for(long p : primes)
-            for(long i = L % p == 0 ? L : L + (p - (L % p));i <= R;i += p)
-                if(i != p)
-                    bitSet.set((int) (i - L) , false);
+            for(long i = L % p == 0 ? L : L + (p - (L % p));i <= R;i += p) {
+                int pos = (int) (i - L);
+                phi[pos] -= phi[pos] / p;
+                while(factorize[pos] % p == 0)
+                    factorize[pos] /= p;
+            }
         
-        if(L == 1)
-            bitSet.set(0, false);
+        for(int i = 0; i < len; i++)
+            if(factorize[i] > 1)
+                phi[i] -= phi[i] / factorize[i];
         
-        return bitSet;
         
+        Arrays.stream(phi).forEach(writer::println);
+//        System.out.println("Time "  + (System.nanoTime() - start) / 1e9);
     }
     
     
