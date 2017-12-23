@@ -12,14 +12,16 @@ public class Shockers {
         
         int Q = nextInt();
         HashSet<Integer> set = new HashSet<>();
+        HashSet<Integer> noProb = new HashSet<>();
         int prevent = 0;
-        
+        boolean found = false;
         while (Q-->0) {
+            found |= set.size() == 1 || noProb.size() == 25;
             char ch = nextChar();
             String str = next();
             switch(ch) {
             case '!':
-                if(set.size() == 1)
+                if(found)
                     prevent++;
                 else if(set.size() == 0) 
                     str.chars().forEach(set::add);
@@ -28,13 +30,20 @@ public class Shockers {
                     str.chars().filter(set::contains).forEach(ns::add);
                     set = ns;
                 }
+                noProb.stream().forEach(set::remove);
                 break;
+            case '?':   // first use of fall through
+                if(found)
+                    prevent++; 
             case '.':
-                String str = next();
-                
+                str.chars().forEach(set::remove);
+                str.chars().forEach(noProb::add);
+                break;
             }
-            
         }
+        
+
+        println(Math.max(0 , prevent - 1));
         
         
         
