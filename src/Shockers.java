@@ -1,6 +1,6 @@
 import java.util.*;
 import java.io.*;
-public class TicTacToeBurden {
+public class Shockers {
     
     
     
@@ -10,55 +10,34 @@ public class TicTacToeBurden {
     private static void solve() {
         
         
-        char grid[][][][] = new char[3][3][3][3];
+        int Q = nextInt();
+        HashSet<Integer> set = new HashSet<>();
+        int prevent = 0;
         
-        for(int i = 0; i < 11; i++) {
-            String line = nextLine();
-            if(i == 3 || i == 7)
-                continue;
-            int ii = i;
-            
-            if(i > 3) ii--;
-            if(i > 7) ii--;
-            
-            grid[ii / 3][0][ii % 3] = line.substring(0, 3).toCharArray();
-            grid[ii / 3][1][ii % 3] = line.substring(4, 7).toCharArray();
-            grid[ii / 3][2][ii % 3] = line.substring(8).toCharArray();
-        }
-        
-        int r = nextInt() - 1;
-        int c = nextInt() - 1;
-        
-        int rr = r % 3;
-        int cc = c % 3;
-        
-        boolean isFree = false;
-        for(int i = 0; i < 3; i++)
-            for(int j = 0; j < 3; j++)
-                isFree |= grid[rr][cc][i][j] == '.';
-        
-        
-        for(int i = 0; i < 3; i++) {
-            for(int k = 0; k < 3; k++) {
-                for(int j = 0; j < 3; j++) {
-                    if(isFree) {
-                        if(i == rr && j == cc)
-                            print(new String(grid[i][j][k]).replace('.', '!'));
-                        else
-                            print(new String(grid[i][j][k]));
-                    }
-                    else 
-                        print(new String(grid[i][j][k]).replace('.', '!'));
-                    
-                    print(' ');
+        while (Q-->0) {
+            char ch = nextChar();
+            String str = next();
+            switch(ch) {
+            case '!':
+                if(set.size() == 1)
+                    prevent++;
+                else if(set.size() == 0) 
+                    str.chars().forEach(set::add);
+                else {
+                    HashSet<Integer> ns = new HashSet<>();
+                    str.chars().filter(set::contains).forEach(ns::add);
+                    set = ns;
                 }
+                break;
+            case '.':
+                String str = next();
                 
-                print('\n');
-            
             }
-            print('\n');
+            
         }
-                    
+        
+        
+        
     }
     
     
