@@ -16,6 +16,8 @@ public class MashaandBears {
             for(int b = V[1]; b <= 2 * V[1]; b++)
                 for(int c = V[0]; c <= 2 * V[0]; c++) 
                     if(a < b && b < c && a >= V[3] && a <= 2 * V[3]) {
+                        if(b >= V[3] && b <= 2 * V[3]) continue;
+                        if(c >= V[3] && c <= 2 * V[3]) continue;
                         println(c);
                         println(b);
                         println(a);
