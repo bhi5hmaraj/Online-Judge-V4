@@ -6,15 +6,64 @@ public class SegmentsRemoval {
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    static class Node implements Comparable<Node> {
+        Node left , right;
+        int index , key , freq;
+        public Node(int id , int k , int f) {
+            index = id;
+            key = k;
+            freq = f;
+        }
+        
+        @Override
+        public int compareTo(Node o) {
+            if(freq != o.freq)
+                return freq - o.freq;
+            else
+                return o.index - index;
+        }
+        
+        static Node combine(Node a , Node b) {
+            Node newNode = new Node(a.index, a.index, a.freq + b.freq);
+            newNode.left = a.left;
+            newNode.right = b.right;
+            return newNode;
+        }
+    }
     
     private static void solve() {
-        
         
         int n = nextInt();
         int arr[] = nextIntArray(n);
         
+        Node last = null;
+        TreeSet<Node> set = new TreeSet<>();
         
+        for(int i = 0; i < n; ) {
+            int k = arr[i];
+            int f = 0;
+            while(i < n && arr[i] == k) {
+                i++;
+                f++;
+            }
+            Node newNode = new Node(i, k, f);
+            if(last == null) 
+                last = newNode;
+            else {
+                last.right = newNode;
+                newNode.left = last;
+            }
+            set.add(newNode);
+        }
         
+        int time = 0;
+        while(!set.isEmpty()) {
+            Node toRem = set.last();
+            set.remove(toRem);
+            if(toRem.left != null && toRem.right != null && toRem.left.key == toRem.right.key) 
+                set.add(e)
+            
+        }
     }
     
     
