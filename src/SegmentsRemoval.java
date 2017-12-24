@@ -24,10 +24,19 @@ public class SegmentsRemoval {
         }
         
         static Node combine(Node a , Node b) {
-            Node newNode = new Node(a.index, a.index, a.freq + b.freq);
+            Node newNode = new Node(Math.min(a.index , b.index), a.key, a.freq + b.freq);
             newNode.left = a.left;
             newNode.right = b.right;
+            if(a.left != null)
+                a.left.right = newNode;
+            if(b.right != null)
+                b.right.left = newNode;
             return newNode;
+        }
+        
+        @Override
+        public String toString() {
+            return String.format("[id = %d key = %d freq = %d]", index , key , freq);
         }
     }
     
@@ -47,12 +56,11 @@ public class SegmentsRemoval {
                 f++;
             }
             Node newNode = new Node(i, k, f);
-            if(last == null) 
-                last = newNode;
-            else {
+            if(last != null) {
                 last.right = newNode;
                 newNode.left = last;
             }
+            last = newNode;
             set.add(newNode);
         }
         
@@ -60,10 +68,22 @@ public class SegmentsRemoval {
         while(!set.isEmpty()) {
             Node toRem = set.last();
             set.remove(toRem);
-            if(toRem.left != null && toRem.right != null && toRem.left.key == toRem.right.key) 
-                set.add(e)
+            if(toRem.left != null && toRem.right != null && toRem.left.key == toRem.right.key) {
+                set.remove(toRem.left);
+                set.remove(toRem.right);
+                set.add(Node.combine(toRem.left, toRem.right));
+            }
+            else {
+                if(toRem.left != null)
+                    toRem.left.right = toRem.right;
+                if(toRem.right != null) 
+                    toRem.right.left = toRem.left;
+            }
             
+            time++;
         }
+        
+        println(time);
     }
     
     
