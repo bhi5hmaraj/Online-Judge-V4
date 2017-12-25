@@ -57,14 +57,17 @@ public class TurnOffTheTV  {
             set.add(inter[i][1]);
         }
         
-        int unique[] = new int[set.size()];
-        int ptr = 0;
-        for(int a : set) unique[ptr++] = a;
+        ArrayList<Integer> unique = new ArrayList<>(set);
+        for(int i = 1; i < set.size(); i++) {
+            if(unique.get(i) - unique.get(i - 1) > 1)
+                unique.add(unique.get(i - 1) + 1);
+        }
+        Collections.sort(unique);
         
-        int overlap[] = new int[set.size() + 1];
+        int overlap[] = new int[unique.size() + 1];
         for(int i = 0; i < n; i++) {
-            inter[i][0] = Arrays.binarySearch(unique, inter[i][0]);
-            inter[i][1] = Arrays.binarySearch(unique, inter[i][1]);
+            inter[i][0] = Collections.binarySearch(unique, inter[i][0]);
+            inter[i][1] = Collections.binarySearch(unique, inter[i][1]);
             overlap[inter[i][0]]++;
             overlap[inter[i][1] + 1]--;
         }
@@ -72,7 +75,16 @@ public class TurnOffTheTV  {
         for(int i = 1; i < overlap.length; i++)
             overlap[i] += overlap[i - 1];
         
+        SegmentTree segmentTree = new SegmentTree(overlap);
         
+        for(int i = 0; i < n; i++) 
+            if(segmentTree.query(inter[i][0], inter[i][1]) > 1) {
+                println(i + 1);
+                return;
+            }
+        
+        
+        println(-1);
     }
     
     
