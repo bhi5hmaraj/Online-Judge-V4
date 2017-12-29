@@ -1,8 +1,8 @@
 from itertools import *
 n , m = map(int, raw_input().split())
 grid = [raw_input() for i in range(n)]
-move = map(int , raw_input().split())
 
+move = map(int , list(raw_input()))
 dx = [-1 , 0 , 1 , 0]
 dy = [0 , 1 , 0 , -1]
 
@@ -28,7 +28,7 @@ for perm in permutations(range(4)):
         if curr == end:
             reached = True
             break
-        elif curr[0] < 0 or curr[0] >= n or curr[1] < 0 or curr[1] >= m:
+        elif curr[0] < 0 or curr[0] >= n or curr[1] < 0 or curr[1] >= m or grid[curr[0]][curr[1]] == '#':
             break
 
     cnt += 1 if reached else 0
