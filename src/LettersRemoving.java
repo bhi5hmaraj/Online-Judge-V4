@@ -43,11 +43,26 @@ public class LettersRemoving {
     }
     
     static FenwickTree BIT;
-    
+    static int n;
+    static int get(int idx) {
+        int L = 1 , R = n;
+        int ret = -1;
+        while(L <= R) {
+            int M = (L + R) >> 1;
+            if(idx <= M - BIT.query(M)) {
+                R = M - 1;
+                ret = M;
+            }
+            else 
+                L = M + 1;
+        }
+        
+        return ret;
+    }
     
     private static void solve() {
         
-        int n = nextInt();
+        n = nextInt();
         int q = nextInt();
         
         char str[] = nextLine().toCharArray();
@@ -56,9 +71,29 @@ public class LettersRemoving {
             positions[i] = new TreeSet<>();
         
         for(int i = 0; i < n; i++)
-            positions[str[i]].add(i);
+            positions[str[i]].add(i + 1);
         
+        BIT = new FenwickTree(n + 1);
         
+        while(q-->0) {
+            int l = get(nextInt());
+            int r = get(nextInt());
+            char ch = nextChar();
+            Integer curr = positions[ch].ceiling(l);
+            while(curr != null && curr <= r) {
+                BIT.upd(curr, n);
+                positions[ch].remove(curr);
+                curr = positions[ch].ceiling(curr);
+            }
+        }
+        
+        ArrayList<int[]> remaining = new ArrayList<>();
+        for(int i = 0; i < 128; i++) 
+            for(int pos : positions[i])
+                remaining.add(new int[]{pos , i});
+        
+        Collections.sort(remaining, (p1 , p2) -> p1[0] - p2[0]);
+        remaining.forEach(p -> print((char)p[1]));
         
     }
     
