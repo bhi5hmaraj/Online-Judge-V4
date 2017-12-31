@@ -1,59 +1,64 @@
 import java.util.*;
 import java.io.*;
-public class NewYearandArrangement {
+public class LettersRemoving {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static class MM {       // MM (Modular Math) class 
-        static final long mod = (long) (1e9) + 7; // Default
-        static long sub(long a, long b) {return (a - b  + mod) % mod;}
-        static long mul(long a, long b) {return ((a % mod) * (b % mod)) % mod;}
-        static long add(long a, long b) {return (a + b) % mod;}
-        static long div(long a, long b) {return mul(a, modInverse(b));}
-        static long modInverse(long n)  {return modPow(n, mod - 2);} // Fermat's little theorem
-        static long modPow(long a , long b) {
-            long pow = 1;
-            while(b > 0) {
-                if((b & 1L) == 1)
-                    pow = ((pow * a) % mod);
+    static class FenwickTree {
 
-                a = ((a * a) % (mod));
-                b >>= 1;
-            }
-            return pow;
+        /****************
+         * DONT USE BIT IF YOU UPDATE INDEX 0 (causes infinite loop)
+         ******************/
+
+        int tree[];
+        int len;
+
+        FenwickTree(int len) {
+            this.len = len;
+            tree = new int[len + 10];
         }
+
+        void update(int idx, int val) {
+            if (idx == 0)
+                throw new IndexOutOfBoundsException("BIT IS NOT ZERO INDEXED");
+            for (; idx <= len; idx += (idx & -idx))
+                tree[idx] += val;
+        }
+
+        int query(int idx) {
+            int sum = 0;
+            for (; idx > 0; idx -= (idx & -idx))
+                sum += tree[idx];
+
+            return sum;
+        }
+        
+        void upd(int L , int R) {
+            update(L, 1);
+            update(R + 1, -1);
+        }
+        
     }
     
-    static int k;
-    static long pa , pb;
-    static long probA , probB;
-    static long memo[][];
-    static long rec(int aCnt , int abCnt) {
-        if(aCnt + abCnt >= k)   // This is basically sum i from 0 to oo (probA^i probB (a + ab + i)) , i is number of a's added
-            return MM.add(aCnt + abCnt, MM.div(pa, pb));
-        else if(memo[aCnt][abCnt] >= 0)
-            return memo[aCnt][abCnt];
-        else
-            return memo[aCnt][abCnt] = MM.add(MM.mul(probA, rec(aCnt + 1, abCnt)), 
-                                              MM.mul(probB, rec(aCnt, abCnt + aCnt)));
+    static FenwickTree BIT;
     
-    }
     
     private static void solve() {
         
+        int n = nextInt();
+        int q = nextInt();
         
-        k = nextInt();
-        pa = nextLong();
-        pb = nextLong();
-        probA = MM.div(pa, pa + pb);
-        probB = MM.div(pb, pa + pb);
+        char str[] = nextLine().toCharArray();
+        TreeSet<Integer>[] positions = new TreeSet[128];
+        for(int i = 0; i < 128; i++)
+            positions[i] = new TreeSet<>();
         
-        memo = new long[k + 1][k + 1];
-        for(long t[] : memo) Arrays.fill(t, -1);
+        for(int i = 0; i < n; i++)
+            positions[str[i]].add(i);
         
-        println(rec(1, 0)); // dp[1][0] = dp[0][0] this is because adding inf b's in start reduces to not adding
+        
         
     }
     
