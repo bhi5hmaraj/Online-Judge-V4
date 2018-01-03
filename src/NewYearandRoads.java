@@ -1,5 +1,4 @@
 import java.util.*;
-import java.util.stream.Collectors;
 import java.io.*;
 public class NewYearandRoads {
     
@@ -54,26 +53,13 @@ public class NewYearandRoads {
         blues.add(tempB);
         reds.add(tempR);
         
-        // println("greens " + greens + " blues " + blues + " reds " + reds);
         
-        if(maxG == Integer.MIN_VALUE) { // G is empty
-            List<int[]> combined = blues.get(0).stream().map(p -> new int[]{p , 1}).collect(Collectors.toList());
-            combined.addAll(reds.get(0).stream().map(p -> new int[]{p , 0}).collect(Collectors.toList()));
-            Collections.sort(combined , (p1 , p2) -> p1[0] - p2[0]);
-            
-            cost += blues.get(0).isEmpty() ? 0 : blues.get(0).get(blues.get(0).size() - 1) - blues.get(0).get(0);
-            cost += reds.get(0).isEmpty() ? 0 : reds.get(0).get(reds.get(0).size() - 1) - reds.get(0).get(0);
-            int minDist = Integer.MAX_VALUE;
-            
-            for(int i = 0; i < combined.size() - 1; i++)
-                if((combined.get(i)[1] ^ combined.get(i + 1)[1]) == 1)
-                    minDist = Math.min(minDist , combined.get(i + 1)[0] - combined.get(i)[0]);
-            
-            cost += minDist == Integer.MAX_VALUE ? 0 : minDist;
-        
+        if(greens.isEmpty()) { 
+            ArrayList<Integer> b = blues.get(0);
+            ArrayList<Integer> r = reds.get(0);
+            cost += b.isEmpty() ? 0 : b.get(b.size() - 1) - b.get(0);
+            cost += r.isEmpty() ? 0 : r.get(r.size() - 1) - r.get(0);
         } else {
-            
-            cost += maxG - minG;
             
             // segment --1--- G -- ... --- G ---n---
             // first segment 
@@ -94,8 +80,10 @@ public class NewYearandRoads {
                 reds.get(i).add(next);
                 blues.get(i).add(0, prev);
                 blues.get(i).add(next);
-                
-                cost += 2L * (next - prev) - maxGap(reds.get(i)) - maxGap(blues.get(i));
+                long segLen = next - prev;
+                long option1 = 2 * segLen;  // 2 parallel paths 1 using reds and other using blues
+                long option2 = segLen + (segLen - maxGap(reds.get(i))) + (segLen - maxGap(blues.get(i)));
+                cost += Math.min(option1 , option2);
             }
         }
         
