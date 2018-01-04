@@ -66,6 +66,8 @@ public class testing {
         map.merge(1, 15, Integer::sum);
         System.out.println(map);
         BigInteger b = new BigInteger("sasd");
+        int n = nextInt();
+        int arr[] = nextIntArray(n);
     }
     
     

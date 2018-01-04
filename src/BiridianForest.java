@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.function.BiPredicate;
 import java.io.*;
 public class BiridianForest  {
     
@@ -6,6 +7,8 @@ public class BiridianForest  {
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    static int x[] = {-1 , 0 , 1 , 0};
+    static int y[] = {0 , 1 , 0 , -1};
     
     private static void solve() {
         
@@ -18,7 +21,7 @@ public class BiridianForest  {
             grid[i] = nextLine().toCharArray();
         
         int dist[][] = new int[r][c];
-        for(int d[] : dist) Arrays.fill(d, -1);
+        for(int d[] : dist) Arrays.fill(d, Integer.MAX_VALUE);
         
         ArrayDeque<int[]> queue = new ArrayDeque<>();
         for(int i = 0; i < r; i++)
@@ -28,6 +31,34 @@ public class BiridianForest  {
                     dist[i][j] = 0;
                 }
         
+        BiPredicate<Integer , Integer> isValid = (xx , yy) -> xx >= 0 && xx < r && yy >= 0 && yy < c;
+        
+        while(!queue.isEmpty()) {
+            int curr[] = queue.remove();
+            for(int k = 0; k < 4; k++) {
+                int nx = curr[0] + x[k];
+                int ny = curr[1] + y[k];
+                if(isValid.test(nx, ny) && grid[nx][ny] != 'T' && dist[nx][ny] == Integer.MAX_VALUE) {
+                    dist[nx][ny] = dist[curr[0]][curr[1]] + 1;
+                    queue.add(new int[]{nx , ny});
+                }
+            }
+        }
+        
+        int thresh = 0;
+        
+        for(int i = 0; i < r; i++)
+            for(int j = 0; j < c; j++)
+                if(grid[i][j] == 'S')
+                    thresh = dist[i][j];
+        
+        int cnt = 0;
+        for(int i = 0; i < r; i++)
+            for(int j = 0; j < c; j++)
+                if(Character.isDigit(grid[i][j]) && dist[i][j] <= thresh)
+                    cnt += grid[i][j] - '0';
+        
+        println(cnt);
     }
     
     
