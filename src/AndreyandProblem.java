@@ -6,22 +6,23 @@ public class AndreyandProblem  {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static double[] rec(int idx , double chosen) {
+    static double rec(int idx , double f1 , double f2) {
         if(idx >= n)
-            return new double[]{0 , 1};
+            return f1;
+        
+        return Math.max(rec(idx + 1, f1, f2) , rec(idx + 1, f1 * (1 - prob[idx]) + f2 * prob[idx], f2 * (1 - prob[idx])));
         
     }
     static double prob[];
     static int n;
     private static void solve() {
         
-        
         n = nextInt();
         prob = new double[n];
         for(int i = 0; i < n; i++)
             prob[i] = nextDouble();
         
-        
+        println(rec(0, 0, 1));
         
     }
     

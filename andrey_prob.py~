@@ -1,0 +1,12 @@
+n = int(raw_input())
+prob = map(float, raw_input().split())
+
+
+def rec(idx, f1, f2):
+    global n
+    if(idx >= n):
+    return f1;
+
+    return Math.max(rec(idx + 1, f1, f2), rec(idx + 1, f1 * (1 - prob[idx]) + f2 * prob[idx], f2 * (1 - prob[idx])));
+
+    }
