@@ -15,6 +15,7 @@ public class AndreyandProblem  {
     }
     static double prob[];
     static int n;
+    
     private static void solve() {
         
         n = nextInt();
@@ -22,8 +23,25 @@ public class AndreyandProblem  {
         for(int i = 0; i < n; i++)
             prob[i] = nextDouble();
         
-        println(rec(0, 0, 1));
+        Arrays.sort(prob);
+        double max = 0 , f1 = 0 , f2 = 1;
+        boolean flag = false;
+        double last = -1;
+        for(int i = n - 1; i >= 0; i--) {
+            double ff1 = f1 * (1 - prob[i]) + f2 * prob[i];
+            double ff2 = f2 * (1 - prob[i]);
+            f1 = ff1;
+            f2 = ff2;
+            max = Math.max(max , f1);
+            if(flag && f1 > last)
+                throw new RuntimeException();
+            if(!flag && f1 < last)
+                flag = true;
+            
+            last = f1;
+        }
         
+        println(max);
     }
     
     
