@@ -6,12 +6,18 @@ public class AndreyandProblem  {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    
+    static double[] rec(int idx , double chosen) {
+        if(idx >= n)
+            return new double[]{0 , 1};
+        
+    }
+    static double prob[];
+    static int n;
     private static void solve() {
         
         
-        int n = nextInt();
-        double prob[] = new double[n];
+        n = nextInt();
+        prob = new double[n];
         for(int i = 0; i < n; i++)
             prob[i] = nextDouble();
         
