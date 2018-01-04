@@ -28,20 +28,59 @@ public class LittleElephantandArray  {
         }
     }
     
+    static void visit(int idx) {
+        if(arr[idx] <= n) { 
+            if(freq[arr[idx]] == arr[idx])  // If its equal before change then we lose them
+                currentAns--;
+            freq[arr[idx]] += marked[idx] ? -1 : 1;
+            if(freq[arr[idx]] == arr[idx])  // If its equal after change we gain them
+                currentAns++;
+        }
+        marked[idx] = !marked[idx];
+    }
+    
     private static void solve() {
         
         n = nextInt();
-        int q = nextInt();
+        int Q = nextInt();
         arr = nextIntArray(n);
         
         BLOCK_SIZE = (int) Math.sqrt(n);
-        int ans[] = new int[q];
+        int ans[] = new int[Q];
 
-        Query queries[] = new Query[q];
-        for(int i = 0; i < q; i++)
-            queries[i] = new Query(nextInt(), nextInt(), i);
+        Query queries[] = new Query[Q];
+        for(int i = 0; i < Q; i++)
+            queries[i] = new Query(nextInt() - 1, nextInt() - 1, i);
             
         Arrays.sort(queries);
+        int moLeft = -1 , moRight = -1;
+        
+        freq = new int[n + 1];
+        marked = new boolean[n];
+        currentAns = 0;
+        
+        for(Query q : queries) {
+            while(moLeft < q.L - 1) {
+                moLeft++;
+                visit(moLeft);
+            }
+            while(moLeft >= q.L) {
+                visit(moLeft);
+                moLeft--;
+            }
+            while(moRight < q.R) {
+                moRight++;
+                visit(moRight);
+            }
+            while(moRight > q.R) {
+                visit(moRight);
+                moRight--;
+            }
+            
+            ans[q.index] = currentAns;
+        }
+        
+        Arrays.stream(ans).forEach(writer::println);
     }
     
     
