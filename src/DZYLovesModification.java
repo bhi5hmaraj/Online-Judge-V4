@@ -9,7 +9,6 @@ public class DZYLovesModification {
     
     private static void solve() {
         
-        
         int n = nextInt();
         int m = nextInt();
         
@@ -44,7 +43,6 @@ public class DZYLovesModification {
         
         long maxPleasure = currPleasure;
         int fix = 0;
-
         while(k-->0) {
             currPleasure -= rowMoves[k];    // Revert the effect of last row 
             long top = colMax.remove();
