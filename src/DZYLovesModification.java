@@ -13,8 +13,8 @@ public class DZYLovesModification {
         int n = nextInt();
         int m = nextInt();
         
-        int row[] = new int[n];
-        int col[] = new int[m];
+        long row[] = new long[n];
+        long col[] = new long[m];
         
         int k = nextInt();
         int p = nextInt();
@@ -26,7 +26,37 @@ public class DZYLovesModification {
                 col[j] += a;
             }
         
+        long rowMoves[] = new long[k];
+        PriorityQueue<Long> rowMax = new PriorityQueue<>(Collections.reverseOrder());
+        PriorityQueue<Long> colMax = new PriorityQueue<>(Collections.reverseOrder());
         
+        for(long a : row) rowMax.add(a);
+        for(long a : col) colMax.add(a);
+        
+        long currPleasure = 0;
+        println(rowMax);
+        for(int t = 0; t < k; t++) {
+            long top = rowMax.remove();
+            rowMoves[t] = top;
+            currPleasure += top;
+            top -= m * p;
+            rowMax.add(top);
+            println(rowMax);
+        }
+        
+        long maxPleasure = currPleasure;
+        println(colMax);
+        while(k-->0) {
+            currPleasure -= rowMoves[k];
+            long top = colMax.remove();
+            currPleasure += top - k * p;
+            maxPleasure = Math.max(maxPleasure , currPleasure);
+            top -= n * p;
+            colMax.add(top);
+            println(colMax);
+        }
+        
+        println(maxPleasure);
     }
     
     
