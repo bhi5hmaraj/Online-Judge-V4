@@ -34,26 +34,25 @@ public class DZYLovesModification {
         for(long a : col) colMax.add(a);
         
         long currPleasure = 0;
-        println(rowMax);
         for(int t = 0; t < k; t++) {
             long top = rowMax.remove();
             rowMoves[t] = top;
             currPleasure += top;
             top -= m * p;
             rowMax.add(top);
-            println(rowMax);
         }
         
         long maxPleasure = currPleasure;
-        println(colMax);
+        int fix = 0;
+
         while(k-->0) {
-            currPleasure -= rowMoves[k];
+            currPleasure -= rowMoves[k];    // Revert the effect of last row 
             long top = colMax.remove();
-            currPleasure += top - k * p;
+            currPleasure += top - k * p;    // The max col sum will be affected by the remaining k rows
+            currPleasure += fix++ * p;  // Removing a row gives #fix ps
             maxPleasure = Math.max(maxPleasure , currPleasure);
             top -= n * p;
             colMax.add(top);
-            println(colMax);
         }
         
         println(maxPleasure);
