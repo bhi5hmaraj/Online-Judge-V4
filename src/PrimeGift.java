@@ -6,19 +6,18 @@ public class PrimeGift {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static ArrayList<Long> collect = new ArrayList<>();
     static long primes[];
     static final long MAX = (long) 1e18;
-    
-    static void brute(int idx , long curr) {
-        if(idx == primes.length) { 
-            collect.add(curr);
+    static int ptr;
+    static void brute(int idx ,int len,  long curr, long collect[]) {
+        if(idx == len) { 
+            collect[ptr++] = curr;
             return;
         }
-        brute(idx + 1, curr);
+        brute(idx + 1, len , curr , collect);
         while(curr <= MAX / primes[idx]) {
             curr *= primes[idx];
-            brute(idx + 1, curr);
+            brute(idx + 1, len, curr, collect);
         }
     }
     
@@ -27,13 +26,60 @@ public class PrimeGift {
     private static void solve() {
         
         int n = nextInt();
-        primes = nextLongArray(n);
-        collect = new ArrayList<>();
+        int p[] = nextIntArray(n);
+        primes = new long[n];
+        for(int i = 0; i < n / 2; i++) {
+            primes[i] = p[2 * i];
+            primes[n / 2 + i] = p[2 * i + 1];
+        }
+        if((n & 1) == 1)
+            primes[n - 1] = p[n - 1];
+        
+        // System.out.println(Arrays.toString(primes));
+        
         int k = nextInt();
-        brute(0, 1);
-        println(collect.size());
-        Collections.sort(collect);
-        println(collect.get(k - 1));
+        // long start = System.nanoTime();
+       
+        long large[] = new long[(int) 1.2e6];
+        Arrays.fill(large, Long.MAX_VALUE);
+        ptr = 0;
+        brute(0, n / 2, 1, large);
+        int szL = ptr;
+        long small[] = new long[(int) 1e6];
+        Arrays.fill(small, Long.MAX_VALUE);
+        ptr = 0;
+        brute(n / 2, n, 1, small);
+        int szS = ptr;
+        
+        Arrays.sort(large);
+        Arrays.sort(small);
+        
+        // println("large " + large.size());
+        // println("small " + small.size());
+        
+        long lo = 1 , hi = MAX;
+        long find = -1;
+        while(lo <= hi) {
+            long mid = (lo + hi) >> 1;
+            long lessCnt = 0;
+            for(int i = 0; i < szS; i++) {
+                long other = mid / small[i];
+                int bs = Arrays.binarySearch(large, 0, szL, other);
+                lessCnt += Math.abs(bs + 1);
+                if(Math.abs(bs + 1) == 0)
+                    break;
+            }
+            
+            if(lessCnt >= k) {
+                hi = mid - 1;
+                find = mid;
+            }
+            else
+                lo = mid + 1;
+        }
+        
+        println(find);
+        // System.out.println("Time " + (System.nanoTime() - start) / 1e9);
     }
     
     
