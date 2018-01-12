@@ -21,7 +21,44 @@ public class PrimeGift {
         }
     }
     
-    // Lets see how far you can go
+    /*
+     * UWI's radix sort from http://codeforces.com/contest/912/submission/33951400
+     */
+    public static long[] radixSort(long[] f){ return radixSort(f, f.length); }
+    public static long[] radixSort(long[] f, int n)
+    {
+        long[] to = new long[n];
+        {
+            int[] b = new int[65537];
+            for(int i = 0;i < n;i++)b[1+(int)(f[i]&0xffff)]++;
+            for(int i = 1;i <= 65536;i++)b[i]+=b[i-1];
+            for(int i = 0;i < n;i++)to[b[(int)(f[i]&0xffff)]++] = f[i];
+            long[] d = f; f = to;to = d;
+        }
+        {
+            int[] b = new int[65537];
+            for(int i = 0;i < n;i++)b[1+(int)(f[i]>>>16&0xffff)]++;
+            for(int i = 1;i <= 65536;i++)b[i]+=b[i-1];
+            for(int i = 0;i < n;i++)to[b[(int)(f[i]>>>16&0xffff)]++] = f[i];
+            long[] d = f; f = to;to = d;
+        }
+        {
+            int[] b = new int[65537];
+            for(int i = 0;i < n;i++)b[1+(int)(f[i]>>>32&0xffff)]++;
+            for(int i = 1;i <= 65536;i++)b[i]+=b[i-1];
+            for(int i = 0;i < n;i++)to[b[(int)(f[i]>>>32&0xffff)]++] = f[i];
+            long[] d = f; f = to;to = d;
+        }
+        {
+            int[] b = new int[65537];
+            for(int i = 0;i < n;i++)b[1+(int)(f[i]>>>48&0xffff)]++;
+            for(int i = 1;i <= 65536;i++)b[i]+=b[i-1];
+            for(int i = 0;i < n;i++)to[b[(int)(f[i]>>>48&0xffff)]++] = f[i];
+            long[] d = f; f = to;to = d;
+        }
+        return f;
+    }
+
     
     private static void solve() {
         
@@ -38,9 +75,9 @@ public class PrimeGift {
         // System.out.println(Arrays.toString(primes));
         
         int k = nextInt();
-        // long start = System.nanoTime();
+         long start = System.nanoTime();
        
-        long large[] = new long[(int) 1.2e6];
+        long large[] = new long[(int) 1.1e6];
         Arrays.fill(large, Long.MAX_VALUE);
         ptr = 0;
         brute(0, n / 2, 1, large);
@@ -51,17 +88,19 @@ public class PrimeGift {
         brute(n / 2, n, 1, small);
         int szS = ptr;
         
-        Arrays.sort(large);
-        Arrays.sort(small);
+        small = radixSort(small);
+        large = radixSort(large);
         
         // println("large " + large.size());
         // println("small " + small.size());
         
         long lo = 1 , hi = MAX;
         long find = -1;
+        System.out.println("Time " + (System.nanoTime() - start) / 1e9);
         while(lo <= hi) {
             long mid = (lo + hi) >> 1;
             long lessCnt = 0;
+            
             for(int i = 0; i < szS; i++) {
                 long other = mid / small[i];
                 int bs = Arrays.binarySearch(large, 0, szL, other);
@@ -69,6 +108,8 @@ public class PrimeGift {
                 if(Math.abs(bs + 1) == 0)
                     break;
             }
+            
+            int left = 0 , right = szL;
             
             if(lessCnt >= k) {
                 hi = mid - 1;
@@ -79,7 +120,6 @@ public class PrimeGift {
         }
         
         println(find);
-        // System.out.println("Time " + (System.nanoTime() - start) / 1e9);
     }
     
     
