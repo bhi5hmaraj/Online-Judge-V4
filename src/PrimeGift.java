@@ -21,7 +21,7 @@ public class PrimeGift {
         }
     }
     
-    /*
+     /*
      * UWI's radix sort from http://codeforces.com/contest/912/submission/33951400
      */
     public static long[] radixSort(long[] f){ return radixSort(f, f.length); }
@@ -72,17 +72,14 @@ public class PrimeGift {
         if((n & 1) == 1)
             primes[n - 1] = p[n - 1];
         
-        // System.out.println(Arrays.toString(primes));
-        
         int k = nextInt();
-         long start = System.nanoTime();
        
-        long large[] = new long[(int) 1.1e6];
+        long large[] = new long[(int) 2e6];
         Arrays.fill(large, Long.MAX_VALUE);
         ptr = 0;
         brute(0, n / 2, 1, large);
         int szL = ptr;
-        long small[] = new long[(int) 1e6];
+        long small[] = new long[(int) 2e6];
         Arrays.fill(small, Long.MAX_VALUE);
         ptr = 0;
         brute(n / 2, n, 1, small);
@@ -90,26 +87,26 @@ public class PrimeGift {
         
         small = radixSort(small);
         large = radixSort(large);
-        
-        // println("large " + large.size());
-        // println("small " + small.size());
-        
         long lo = 1 , hi = MAX;
         long find = -1;
-        System.out.println("Time " + (System.nanoTime() - start) / 1e9);
         while(lo <= hi) {
             long mid = (lo + hi) >> 1;
             long lessCnt = 0;
-            
             for(int i = 0; i < szS; i++) {
                 long other = mid / small[i];
-                int bs = Arrays.binarySearch(large, 0, szL, other);
-                lessCnt += Math.abs(bs + 1);
-                if(Math.abs(bs + 1) == 0)
-                    break;
+                int l = 0 , h = szL;
+                int bs = -1;
+                while(l <= h) {
+                    int m = (l + h) >> 1;
+                    if(other >= large[m]) {
+                        bs = m;
+                        l = m + 1;
+                    }
+                    else
+                        h = m - 1;
+                }
+                lessCnt += bs + 1;
             }
-            
-            int left = 0 , right = szL;
             
             if(lessCnt >= k) {
                 hi = mid - 1;
@@ -128,7 +125,7 @@ public class PrimeGift {
     
     
     
-    
+    // 16 2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 750000000
     
     /************************ TEMPLATE STARTS HERE **********************/
     
