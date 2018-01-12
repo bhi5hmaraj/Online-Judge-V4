@@ -31,6 +31,7 @@ public class PrimeGift {
         collect = new ArrayList<>();
         int k = nextInt();
         brute(0, 1);
+        println(collect.size());
         Collections.sort(collect);
         println(collect.get(k - 1));
     }
