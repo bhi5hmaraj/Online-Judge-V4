@@ -20,27 +20,28 @@ public class Cycles {
             map.put(choose3.apply(n), n);
         
         ArrayList<Integer> req = new ArrayList<>();
-        int n = 0;
         while(k > 0) {
             Map.Entry<Integer, Integer> floor = map.floorEntry(k);
             k -= floor.getKey();
             req.add(floor.getValue());
-            n += floor.getValue();
         }
         
+        int n = req.get(0) + req.size() - 1;
         char graph[][] = new char[n][n];
         for(char ch[] : graph) Arrays.fill(ch, '0');
         
-        int offset = 0;
-        for(int comp : req) {
-            for(int i = offset; i < offset + comp; i++)
-                for(int j = offset; j < offset + comp; j++)
-                    graph[i][j] = i == j ? '0' : '1';
-            
-            offset += comp;
-        }
+        for(int i = 0; i < req.get(0); i++)
+            for(int j = 0; j < req.get(0); j++)
+                graph[i][j] = i == j ? '0' : '1';
         
-//        println(req);
+        println(req);
+        
+        for(int i = 1; i < req.size(); i++) {
+            int u = req.get(0) + i - 1;
+            for(int v = 0; v < req.get(i) - 1; v++)
+                graph[u][v] = graph[v][u] = '1';
+        }
+            
         println(n);
         Arrays.stream(graph).forEach(v -> println(new String(v)));
     }
