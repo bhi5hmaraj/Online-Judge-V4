@@ -58,25 +58,37 @@ public class NumberWithTheGivenAmountOfDivisors {
         }
         return divCnt;
     }
-
+    
+    static final long MAX = (long) 1e18;
+    static long min = Long.MAX_VALUE;
+    static void findAll(int idx, int prev, int prd, long accum) {
+        if(prd == 1) {
+            min = Math.min(min , accum);
+            return;
+        }
+        long primePow = 1;
+        int pow = 2;
+        while(pow <= prev && primePow <= MAX / primes[idx]) {
+            primePow *= primes[idx];
+            if(prd % pow == 0 && accum <= MAX / primePow)
+                findAll(idx + 1, pow, prd / pow, accum * primePow);
+            pow++;
+        }
+    }
     
     private static void solve() {
         
         int n = nextInt();
-        preCalBigPrimeSieve();
-        long min = Long.MAX_VALUE;
-        for(int prev = 1; prev <= MAX_POW; prev++) {
-            memo = new Boolean[primes.length][n + 1][MAX_POW + 1];
-            ans = 1;
-            if(find(0, n, prev)) 
-                min = Math.min(min , ans);
-        }
-        println(min);
+        /*        
+        preCalBigPrimeSieve();       
         for(int i = 2; i <= N; i++)
             if(countDiv(i) == n) {
                 println("correct " + i);
-                return;
+                break;
             }
+        */
+        findAll(0, MAX_POW, n, 1);
+        println(min);
         
     }
     
