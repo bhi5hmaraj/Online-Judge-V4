@@ -63,9 +63,7 @@ public class RoadsnotonlyinBerland {
         
         DSU unionFind = new DSU(V);
         ArrayList<int[]> toRemove = new ArrayList<>();
-        
-        HashSet<Integer> cycleComps = new HashSet<>();
-        TreeSet<Integer> treeComps = new TreeSet<>();
+        TreeSet<Integer> components = new TreeSet<>();
         
         while(E-->0) {
             int u = nextInt();
@@ -75,39 +73,15 @@ public class RoadsnotonlyinBerland {
             unionFind.union(u, v);
         }
         
-        int unwantedCnt[] = new int[V + 1];
-        for(int p[] : toRemove) {
-            int root = unionFind.root(p[0]);
-            unwantedCnt[root]++;
-            cycleComps.add(root);
-        }
-        
-        for(int i = 1; i <= V; i++) {
-            int root = unionFind.root(i);
-            if(!cycleComps.contains(root))
-                treeComps.add(root);
-        }
+        for(int i = 1; i <= V; i++) 
+            components.add(unionFind.root(i));
         
         
-//        println(treeComps);
-//        println(cycleComps);
-        
-        int base = 1;
         println(toRemove.size());
-        for(int p[] : toRemove)
-            if(unionFind.root(p[0]) == base) {
-                println(p[0] + " " + p[1] + " " + p[0] + " " + treeComps.pollFirst());
-                unwantedCnt[base]--;
-            }
+        int base = components.pollFirst();
+        for(int p[] : toRemove) 
+            println(p[0] + " " + p[1] + " " + components.pollFirst() + " " + base);
         
-        for(int p[] : toRemove) {
-            int root = unionFind.root(p[0]);
-            if(root == base) continue;
-            int other = unwantedCnt[root] > 1 ? treeComps.pollFirst() : base;
-            unwantedCnt[root]--;
-            println(p[0] + " " + p[1] + " " + p[0] + " " + other);
-//            println(p[0] + "--" + p[1] + "[color=blue]");
-        }
         
     }
     
