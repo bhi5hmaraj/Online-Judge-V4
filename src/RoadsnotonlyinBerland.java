@@ -64,13 +64,35 @@ public class RoadsnotonlyinBerland {
         DSU unionFind = new DSU(V);
         ArrayList<int[]> toRemove = new ArrayList<>();
         
+        HashSet<Integer> cycleComps = new HashSet<>();
+        TreeSet<Integer> treeComps = new TreeSet<>();
+        
         while(E-->0) {
             int u = nextInt();
             int v = nextInt();
-            if(unionFind.connected(u, v))
+            if(unionFind.connected(u, v)) 
                 toRemove.add(new int[]{u, v});
             unionFind.union(u, v);
         }
+        
+        for(int p[] : toRemove)
+            cycleComps.add(unionFind.root(p[0]));
+        
+        for(int i = 1; i <= V; i++) {
+            int root = unionFind.root(i);
+            if(!cycleComps.contains(root))
+                treeComps.add(root);
+        }
+        
+//        println(treeComps);
+//        println(cycleComps);
+        
+        println(toRemove.size());
+        for(int p[] : toRemove) {
+            int other = treeComps.isEmpty() ? toRemove.get(0)[0] : treeComps.pollFirst();
+            println(p[0] + " " + p[1] + " " + p[0] + " " + other);
+        }
+        
     }
     
     
