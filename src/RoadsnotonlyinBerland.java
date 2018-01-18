@@ -61,8 +61,16 @@ public class RoadsnotonlyinBerland {
         int V = nextInt();
         int E = V - 1;
         
+        DSU unionFind = new DSU(V);
+        ArrayList<int[]> toRemove = new ArrayList<>();
         
-        
+        while(E-->0) {
+            int u = nextInt();
+            int v = nextInt();
+            if(unionFind.connected(u, v))
+                toRemove.add(new int[]{u, v});
+            unionFind.union(u, v);
+        }
     }
     
     
