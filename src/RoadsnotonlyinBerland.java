@@ -75,8 +75,12 @@ public class RoadsnotonlyinBerland {
             unionFind.union(u, v);
         }
         
-        for(int p[] : toRemove)
-            cycleComps.add(unionFind.root(p[0]));
+        int unwantedCnt[] = new int[V + 1];
+        for(int p[] : toRemove) {
+            int root = unionFind.root(p[0]);
+            unwantedCnt[root]++;
+            cycleComps.add(root);
+        }
         
         for(int i = 1; i <= V; i++) {
             int root = unionFind.root(i);
@@ -84,13 +88,25 @@ public class RoadsnotonlyinBerland {
                 treeComps.add(root);
         }
         
+        
 //        println(treeComps);
 //        println(cycleComps);
         
+        int base = 1;
         println(toRemove.size());
+        for(int p[] : toRemove)
+            if(unionFind.root(p[0]) == base) {
+                println(p[0] + " " + p[1] + " " + p[0] + " " + treeComps.pollFirst());
+                unwantedCnt[base]--;
+            }
+        
         for(int p[] : toRemove) {
-            int other = treeComps.isEmpty() ? toRemove.get(0)[0] : treeComps.pollFirst();
+            int root = unionFind.root(p[0]);
+            if(root == base) continue;
+            int other = unwantedCnt[root] > 1 ? treeComps.pollFirst() : base;
+            unwantedCnt[root]--;
             println(p[0] + " " + p[1] + " " + p[0] + " " + other);
+//            println(p[0] + "--" + p[1] + "[color=blue]");
         }
         
     }
