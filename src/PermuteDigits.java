@@ -1,69 +1,64 @@
 import java.util.*;
 import java.io.*;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-public class testing {
+public class PermuteDigits {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    // Sieve of Erathanoses
-    public static boolean[] isPrimeArray(int N) {
-        boolean num[] = new boolean[N + 1];
-        Arrays.fill(num, true);
-        num[1] = num[0]=  false;
-        for (int i = 2; i * i <= N; i++)
-            if (num[i])  // i is prime
-                for (int j = i * i; j <= N; j += i)
-                    num[j] = false;
-        
-            
-        return num;
-    }
-    
-    // Sieve of Erathanoses dependency : isPrimeArray()
-    public static int[] sieve(int N) {
-        
-        boolean isPrime[] = isPrimeArray(N);
-        int sz = 0;
-        for(boolean b : isPrime)
-            sz += b ? 1 : 0;
-        int arr[] = new int[sz];
-        int ptr = 0;
-        for (int i = 2; i <= N; i++)
-            if (isPrime[i])
-                arr[ptr++] = i;
-                
-        return arr;
-    }
-    
-    static boolean isComposite[];
-    static int primes[];
-    static int SIZE = (int) 5e6;
-    static void modifiedSieve(int N) {
-        isComposite = new boolean [N + 1];
-        primes = new int[SIZE];
-        int ptr = 0;
-        for(int i = 2; i <= N; i++) {
-            if(!isComposite[i])
-                primes[ptr++] = i;
-            for(int j = 0 ; j < ptr && primes[j] * i <= N; j++) {
-                // primes[j] is the lowest prime for primes[j] * i
-                isComposite[primes[j] * i] = true;
-                for(int k = 1; k < i; k++) {
-                    System.out.println("this is freaking awesome");
-                }
-                if(i % primes[j] == 0)
-                    break;
-            }
-        }
-    }
     
     private static void solve() {
-        TreeSet<Integer> s = new TreeSet<>();
-        int a = s.floor(1);
+        
+        
+        long a = nextLong();
+        long b = nextLong();
+        
+        TreeMap<Integer, Integer> multiSet = new TreeMap<>();
+        int digitA[] = String.valueOf(a).chars().map(Character::getNumericValue).toArray();
+        int digitB[] = String.valueOf(b).chars().map(Character::getNumericValue).toArray();
+        
+        for(int d : digitA)
+            multiSet.put(d, multiSet.getOrDefault(d, 0) + 1);
+        
+        for(int i = 0; i < digitB.length - digitA.length; i++)
+            multiSet.put(0, multiSet.getOrDefault(0, 0) + 1);
+        
+        String ans = "";
+        String prefix = "";
+        
+        for(int i = 0; i < digitB.length; i++) {
+            Integer floor = multiSet.lowerKey(digitB[i]);
+            if(floor != null) { 
+                multiSet.put(floor, multiSet.get(floor) - 1);
+                String suffix = 
+                multiSet.descendingMap().entrySet().stream().map(e -> {
+                    String s = "";
+                    for(int j = 0; j < e.getValue(); j++)
+                        s += e.getKey();
+                    return s;
+                }).reduce((s1, s2) -> s1.concat(s2)).get();
+                
+                ans = prefix + floor + suffix;
+                multiSet.put(floor, multiSet.get(floor) + 1);
+            }
+            
+            if(!multiSet.containsKey(digitB[i]))
+                break;
+            else {
+                prefix += digitB[i];
+                int freq = multiSet.get(digitB[i]);
+                if(freq == 1)
+                    multiSet.remove(digitB[i]);
+                else 
+                    multiSet.put(digitB[i], freq - 1);
+            }
+        }
+        
+        
+        println(Long.parseLong(ans.isEmpty() ? prefix : ans));
+        
     }
+    
     
     
     /************************ SOLUTION ENDS HERE ************************/
