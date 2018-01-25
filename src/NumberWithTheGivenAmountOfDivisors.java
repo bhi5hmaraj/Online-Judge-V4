@@ -90,6 +90,7 @@ public class NumberWithTheGivenAmountOfDivisors {
         findAll(0, MAX_POW, n, 1);
         println(min);
         
+        
     }
     
     
