@@ -20,8 +20,19 @@ public class PermuteDigits {
         for(int d : digitA)
             multiSet.put(d, multiSet.getOrDefault(d, 0) + 1);
         
-        for(int i = 0; i < digitB.length - digitA.length; i++)
-            multiSet.put(0, multiSet.getOrDefault(0, 0) + 1);
+        if(digitB.length > digitA.length) {
+            println(multiSet.descendingMap().entrySet().stream().map(e -> {
+                    String s = "";
+                    for(int j = 0; j < e.getValue(); j++)
+                        s += e.getKey();
+                    return s;
+                }).reduce((s1, s2) -> s1.concat(s2)).get());
+            
+            return;
+        }
+        
+        if(digitA.length > digitB.length) 
+            multiSet.put(0, multiSet.get(0) - (digitA.length - digitB.length));
         
         String ans = "";
         String prefix = "";
@@ -54,8 +65,10 @@ public class PermuteDigits {
             }
         }
         
-        
-        println(Long.parseLong(ans.isEmpty() ? prefix : ans));
+        if(prefix.length() == digitB.length)
+            println(prefix);
+        else 
+            println(Long.parseLong(ans));
         
     }
     
