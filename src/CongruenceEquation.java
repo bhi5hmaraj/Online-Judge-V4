@@ -47,8 +47,9 @@ public class CongruenceEquation  {
         long cnt = 0;
         MM.mod = p;
         for(int i = 0; i < sz; i++) {
-            long t1 = MM.sub(b, MM.mul(i, i));
-            long t2 = MM.modInverse(MM.mul(i, p - 1));
+            long t1 = MM.sub(b, MM.mul(cyclicGP[i], i));
+            long t2 = MM.modInverse(MM.mul(cyclicGP[i], p - 1));
+            long q = MM.mul(t1, t2);
             
         }
         
