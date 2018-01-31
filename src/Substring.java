@@ -1,8 +1,6 @@
 import java.util.*;
-
-import FindCycles.FastScanner;
-
 import java.io.*;
+
 public class Substring {
     
     
@@ -47,7 +45,21 @@ public class Substring {
         return false;
 
     }
-
+    
+    static int memo[];
+    static char str[];
+    
+    static int topDown(int u, char alph) {
+        if(memo[u] == -1) {
+            memo[u] = 0;
+            for(int v : adj[u])
+                memo[u] = Math.max(memo[u] , topDown(v, alph));
+            
+            memo[u] += str[u - 1] == alph ? 1 : 0;
+        }
+        return memo[u];
+    }
+    
     @SuppressWarnings("unchecked")
     private static void solve(){
 
@@ -56,20 +68,33 @@ public class Substring {
         adj = (ArrayList<Integer>[]) new ArrayList[V+1];
         for(int i=1;i<=V;i++)adj[i] = new ArrayList<>();
         
-        char str[] = nextLine().toCharArray();
+        str = nextLine().toCharArray();
         
         visitedGlobal = new boolean[V + 1];
         visitedTemp = new boolean[V + 1];
-        while(E-->0)
-            adj[nextInt()].add(nextInt());
-        
+        while(E-->0) {
+            int u = nextInt();
+            int v = nextInt();
+            adj[v].add(u);  // inv graph should work
+        }
         if(isCyclic(V)) {
             println(-1);
             return;
         }
         
         // Now a DAG
+        memo = new int[V + 1];
+        int max = 0;
+        for(char ch = 'a'; ch <= 'z'; ch++) {
+            Arrays.fill(memo, -1);
+            for(int i = 1; i <= V; i++) {
+                if(memo[i] == -1)
+                    topDown(i, ch);
+                max = Math.max(max , memo[i]);
+            }
+        }
         
+        println(max);
         
     }
         
@@ -82,12 +107,28 @@ public class Substring {
     
     /************************ TEMPLATE STARTS HERE **********************/
     
+    /* Increase stack size in java
+
+     */
     public static void main(String[] args) throws IOException {
+        new Thread(null, new Runnable() {
+            public void run() {
+                new Substring().run();
+            }
+        }, "Increase Stack", 1 << 25).start();
+
+    }
+
+    void run(){ 
         reader = new BufferedReader(new InputStreamReader(System.in));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
         solve();
-        reader.close();
+        try {
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         writer.close();
     }
     
