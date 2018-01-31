@@ -1,68 +1,35 @@
 import java.util.*;
 import java.io.*;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-public class testing {
+public class Supermarket {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    // Sieve of Erathanoses
-    public static boolean[] isPrimeArray(int N) {
-        boolean num[] = new boolean[N + 1];
-        Arrays.fill(num, true);
-        num[1] = num[0]=  false;
-        for (int i = 2; i * i <= N; i++)
-            if (num[i])  // i is prime
-                for (int j = i * i; j <= N; j += i)
-                    num[j] = false;
-        
-            
-        return num;
-    }
-    
-    // Sieve of Erathanoses dependency : isPrimeArray()
-    public static int[] sieve(int N) {
-        
-        boolean isPrime[] = isPrimeArray(N);
-        int sz = 0;
-        for(boolean b : isPrime)
-            sz += b ? 1 : 0;
-        int arr[] = new int[sz];
-        int ptr = 0;
-        for (int i = 2; i <= N; i++)
-            if (isPrime[i])
-                arr[ptr++] = i;
-                
-        return arr;
-    }
-    
-    static boolean isComposite[];
-    static int primes[];
-    static int SIZE = (int) 5e6;
-    static void modifiedSieve(int N) {
-        isComposite = new boolean [N + 1];
-        primes = new int[SIZE];
-        int ptr = 0;
-        for(int i = 2; i <= N; i++) {
-            if(!isComposite[i])
-                primes[ptr++] = i;
-            for(int j = 0 ; j < ptr && primes[j] * i <= N; j++) {
-                // primes[j] is the lowest prime for primes[j] * i
-                isComposite[primes[j] * i] = true;
-                for(int k = 1; k < i; k++) {
-                    System.out.println("this is freaking awesome");
-                }
-                if(i % primes[j] == 0)
-                    break;
-            }
-        }
-    }
     
     private static void solve() {
-        String t = "***..**.*....";
+        
+        
+        int n = nextInt();
+        int m = nextInt();
+        
+        int minA = 1000;
+        int minB = 1;
+        
+        while(n-->0) {
+            int a = nextInt();
+            int b = nextInt();
+            if(a * minB < b * minA) {
+                minA = a;
+                minB = b;
+            }
+        }
+        
+        println((minA * m) / (1.0 * minB));
+        
+        
     }
+    
     
     
     /************************ SOLUTION ENDS HERE ************************/

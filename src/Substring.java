@@ -1,69 +1,78 @@
 import java.util.*;
+
+import FindCycles.FastScanner;
+
 import java.io.*;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-public class testing {
+public class Substring {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    // Sieve of Erathanoses
-    public static boolean[] isPrimeArray(int N) {
-        boolean num[] = new boolean[N + 1];
-        Arrays.fill(num, true);
-        num[1] = num[0]=  false;
-        for (int i = 2; i * i <= N; i++)
-            if (num[i])  // i is prime
-                for (int j = i * i; j <= N; j += i)
-                    num[j] = false;
-        
-            
-        return num;
-    }
-    
-    // Sieve of Erathanoses dependency : isPrimeArray()
-    public static int[] sieve(int N) {
-        
-        boolean isPrime[] = isPrimeArray(N);
-        int sz = 0;
-        for(boolean b : isPrime)
-            sz += b ? 1 : 0;
-        int arr[] = new int[sz];
-        int ptr = 0;
-        for (int i = 2; i <= N; i++)
-            if (isPrime[i])
-                arr[ptr++] = i;
-                
-        return arr;
-    }
-    
-    static boolean isComposite[];
-    static int primes[];
-    static int SIZE = (int) 5e6;
-    static void modifiedSieve(int N) {
-        isComposite = new boolean [N + 1];
-        primes = new int[SIZE];
-        int ptr = 0;
-        for(int i = 2; i <= N; i++) {
-            if(!isComposite[i])
-                primes[ptr++] = i;
-            for(int j = 0 ; j < ptr && primes[j] * i <= N; j++) {
-                // primes[j] is the lowest prime for primes[j] * i
-                isComposite[primes[j] * i] = true;
-                for(int k = 1; k < i; k++) {
-                    System.out.println("this is freaking awesome");
-                }
-                if(i % primes[j] == 0)
-                    break;
+    private static ArrayList<Integer>[] adj;
+    private static boolean visitedGlobal[];
+    private static boolean visitedTemp[];
+
+    private static boolean dfs(int u){
+
+        visitedGlobal[u] = true;
+        visitedTemp[u] = true;
+        for(int v:adj[u]){
+
+            if(visitedTemp[v])
+                return true;
+
+            if(!visitedGlobal[v]){
+                if(dfs(v))
+                    return true;
             }
+
         }
+        visitedTemp[u] = false;
+        return false;
+
     }
-    
-    private static void solve() {
-        String t = "***..**.*....";
+
+    private static boolean isCyclic(int V){
+
+        for(int i=1;i<=V;i++){
+
+            if(!visitedGlobal[i]){      
+                if(dfs(i))
+                    return true;
+            }
+
+        }
+
+        return false;
+
     }
-    
+
+    @SuppressWarnings("unchecked")
+    private static void solve(){
+
+        int V = nextInt();
+        int E = nextInt();
+        adj = (ArrayList<Integer>[]) new ArrayList[V+1];
+        for(int i=1;i<=V;i++)adj[i] = new ArrayList<>();
+        
+        char str[] = nextLine().toCharArray();
+        
+        visitedGlobal = new boolean[V + 1];
+        visitedTemp = new boolean[V + 1];
+        while(E-->0)
+            adj[nextInt()].add(nextInt());
+        
+        if(isCyclic(V)) {
+            println(-1);
+            return;
+        }
+        
+        // Now a DAG
+        
+        
+    }
+        
     
     /************************ SOLUTION ENDS HERE ************************/
     

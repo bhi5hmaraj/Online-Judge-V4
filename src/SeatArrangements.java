@@ -1,68 +1,48 @@
 import java.util.*;
 import java.io.*;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-public class testing {
+public class SeatArrangements {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    // Sieve of Erathanoses
-    public static boolean[] isPrimeArray(int N) {
-        boolean num[] = new boolean[N + 1];
-        Arrays.fill(num, true);
-        num[1] = num[0]=  false;
-        for (int i = 2; i * i <= N; i++)
-            if (num[i])  // i is prime
-                for (int j = i * i; j <= N; j += i)
-                    num[j] = false;
+    static int find(String arr[], int k) {
+        int cnt = 0;
+        for(String seats : arr) 
+            cnt += Arrays.stream(seats.split("\\*"))
+                        .mapToInt(s -> Math.max(0, s.length() - k + 1))
+                        .reduce(Integer::sum).orElse(0);
         
-            
-        return num;
-    }
-    
-    // Sieve of Erathanoses dependency : isPrimeArray()
-    public static int[] sieve(int N) {
-        
-        boolean isPrime[] = isPrimeArray(N);
-        int sz = 0;
-        for(boolean b : isPrime)
-            sz += b ? 1 : 0;
-        int arr[] = new int[sz];
-        int ptr = 0;
-        for (int i = 2; i <= N; i++)
-            if (isPrime[i])
-                arr[ptr++] = i;
-                
-        return arr;
-    }
-    
-    static boolean isComposite[];
-    static int primes[];
-    static int SIZE = (int) 5e6;
-    static void modifiedSieve(int N) {
-        isComposite = new boolean [N + 1];
-        primes = new int[SIZE];
-        int ptr = 0;
-        for(int i = 2; i <= N; i++) {
-            if(!isComposite[i])
-                primes[ptr++] = i;
-            for(int j = 0 ; j < ptr && primes[j] * i <= N; j++) {
-                // primes[j] is the lowest prime for primes[j] * i
-                isComposite[primes[j] * i] = true;
-                for(int k = 1; k < i; k++) {
-                    System.out.println("this is freaking awesome");
-                }
-                if(i % primes[j] == 0)
-                    break;
-            }
-        }
+        return cnt;
     }
     
     private static void solve() {
-        String t = "***..**.*....";
+        
+        
+        int n = nextInt();
+        int m = nextInt();
+        
+        int k = nextInt();
+        
+        String row[] = new String[n];
+        for(int i = 0; i < n; i++)
+            row[i] = nextLine();
+        
+        StringBuilder fast[] = new StringBuilder[m];
+        for(int i = 0; i < m; i++)
+            fast[i] = new StringBuilder();
+        
+        
+        
+        for(int i = 0; i < n; i++)
+            for(int j = 0; j < m; j++)
+                fast[j].append(row[i].charAt(j));
+        
+        
+        println(find(row, k) + (k == 1 ? 0 : 
+                find(Arrays.stream(fast).map(StringBuilder::toString).toArray(String[]::new), k)));
     }
+    
     
     
     /************************ SOLUTION ENDS HERE ************************/
