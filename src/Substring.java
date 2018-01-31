@@ -7,7 +7,7 @@ public class Substring {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    private static ArrayList<Integer>[] adj;
+    static int adj[][];
     private static boolean visitedGlobal[];
     private static boolean visitedTemp[];
 
@@ -50,33 +50,50 @@ public class Substring {
     static char str[];
     
     static int topDown(int u, char alph) {
-        if(memo[u] == -1) {
-            memo[u] = 0;
-            for(int v : adj[u])
-                memo[u] = Math.max(memo[u] , topDown(v, alph));
-            
-            memo[u] += str[u - 1] == alph ? 1 : 0;
-        }
+        memo[u] = 0;
+        for(int v : adj[u])
+            memo[u] = Math.max(memo[u] , memo[v] == -1 ? topDown(v, alph) : memo[v]);
+        
+        memo[u] += str[u - 1] == alph ? 1 : 0;
         return memo[u];
     }
     
-    @SuppressWarnings("unchecked")
+    // Courtesy : UWI ( adjacency list using Jagged Arrays )
+    static int[][] packD(int n, int[] from, int[] to , int isOneBased) {   
+        int[][] g = new int[n + isOneBased][];
+        int[] p = new int[n + isOneBased];
+        for (int f : from)
+            p[f]++;
+        for (int i = 0 + isOneBased; i < n + isOneBased; i++)
+            g[i] = new int[p[i]];
+        for (int i = 0; i < from.length; i++) 
+            g[from[i]][--p[from[i]]] = to[i];
+
+        return g;
+    }
+    
     private static void solve(){
 
         int V = nextInt();
         int E = nextInt();
-        adj = (ArrayList<Integer>[]) new ArrayList[V+1];
-        for(int i=1;i<=V;i++)adj[i] = new ArrayList<>();
         
         str = nextLine().toCharArray();
         
         visitedGlobal = new boolean[V + 1];
         visitedTemp = new boolean[V + 1];
+        
+        int from[] = new int[E];
+        int to[] = new int[E];
+        
         while(E-->0) {
             int u = nextInt();
             int v = nextInt();
-            adj[v].add(u);  // inv graph should work
+            from[E] = v;
+            to[E] = u;
         }
+        
+        adj = packD(V, from, to, 1);
+        
         if(isCyclic(V)) {
             println(-1);
             return;

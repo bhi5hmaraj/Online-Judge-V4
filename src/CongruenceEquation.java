@@ -50,7 +50,7 @@ public class CongruenceEquation  {
             long t1 = MM.sub(b, MM.mul(cyclicGP[i], i));
             long t2 = MM.modInverse(MM.mul(cyclicGP[i], p - 1));
             long q = MM.mul(t1, t2);
-            
+            cnt += (qMax / p)
         }
         
     }

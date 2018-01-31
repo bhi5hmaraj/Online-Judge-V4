@@ -2367,6 +2367,21 @@ class helper {
         return g;
     }
     
+    // Courtesy : UWI ( adjacency list using Jagged Arrays )
+    static int[][] packD(int n, int[] from, int[] to , int isOneBased) {   
+        int[][] g = new int[n + isOneBased][];
+        int[] p = new int[n + isOneBased];
+        for (int f : from)
+            p[f]++;
+        for (int i = 0 + isOneBased; i < n + isOneBased; i++)
+            g[i] = new int[p[i]];
+        for (int i = 0; i < from.length; i++) 
+            g[from[i]][--p[from[i]]] = to[i];
+
+        return g;
+    }
+    
+    
     static final double EPS = 1e-8;
     static int compare(double a , double b) {
         return a <= b - EPS ? -1 : a >= b + EPS ? 1 : 0;
