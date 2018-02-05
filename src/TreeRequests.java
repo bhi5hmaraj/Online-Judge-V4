@@ -138,6 +138,7 @@ public class TreeRequests  {
             writer.println(ans[i] ? "Yes" : "No");
        
         writer.close();
+        
     
     }
     
