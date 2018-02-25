@@ -23,12 +23,12 @@ public class SUMandREPLACE {
          * DONT USE BIT IF YOU UPDATE INDEX 0 (causes infinite loop)
          ******************/
 
-        int tree[];
+        long tree[];
         int len;
 
         FenwickTree(int len) {
             this.len = len;
-            tree = new int[len + 10];
+            tree = new long[len + 10];
         }
 
         void update(int idx, int val) {
@@ -38,15 +38,15 @@ public class SUMandREPLACE {
                 tree[idx] += val;
         }
 
-        int query(int idx) {
-            int sum = 0;
+        long query(int idx) {
+            long sum = 0;
             for (; idx > 0; idx -= (idx & -idx))
                 sum += tree[idx];
 
             return sum;
         }
 
-        int query(int L, int R) {
+        long query(int L, int R) {
             return query(R) - query(L - 1);
         }
     }
@@ -79,6 +79,11 @@ public class SUMandREPLACE {
                 othersMap.put(i, a[i]);
         
         
+        FenwickTree othersBIT = new FenwickTree(n);
+        for(int i = 1; i <= n; i++)
+            if(a[i] > 2)
+                othersBIT.update(i, a[i]);
+        
         while(m-->0) {
             int type = scan.nextInt();
             int L = scan.nextInt();
@@ -89,20 +94,18 @@ public class SUMandREPLACE {
                     if(tau[curr.getValue()] == 2) {
                         othersMap.remove(curr.getKey());
                         twosBIT.update(curr.getKey(), 1);
-                    } else 
+                        othersBIT.update(curr.getKey(), -curr.getValue());
+                    } else {
                         othersMap.replace(curr.getKey(), tau[curr.getValue()]);
+                        othersBIT.update(curr.getKey(), -curr.getValue() + tau[curr.getValue()]);
+                    }
                     
                     curr = othersMap.higherEntry(curr.getKey());
                 }
                 
             } else {
-                long sum = (ones[R] - ones[L - 1]) + 2L * twosBIT.query(L, R);
-                Map.Entry<Integer, Integer> curr = othersMap.ceilingEntry(L);
-                while(curr != null && curr.getKey() <= R) {
-                    sum += curr.getValue();
-                    curr = othersMap.higherEntry(curr.getKey());
-                }
-                
+                long sum = (ones[R] - ones[L - 1]) + 2L * twosBIT.query(L, R) +
+                           othersBIT.query(L, R);
                 println(sum);
             }
             
