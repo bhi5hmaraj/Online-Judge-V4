@@ -55,22 +55,39 @@ public class VileGrasshoppers {
             return;
         }
         
-        int limit = (int) Math.sqrt(1e9) + 10;
+        int limit = (int) Math.sqrt(y) + 10;
         int primes[] = sieve(limit);
+        
+        int maxPrimeCovered = -1;
+        for(int pri : primes)
+            if(pri <= p)
+                maxPrimeCovered = pri;
         
         int lastPrime = y;
         for(; !isPrime(lastPrime); lastPrime--)
             ;
         
-        int maxPoss = lastPrime;
-        System.out.println(maxPoss);
+        int maxPoss = lastPrime > p ? lastPrime : -1;
+//        System.out.println(maxPoss);
         
-        for(int pri : primes)
-            if(pri > p) 
-                maxPoss = Math.max(maxPoss , y - (y % pri));
+        int filtered[] = Arrays.stream(primes).filter(val -> val > p).toArray();
+//        System.out.println(Arrays.toString(filtered));
+        for(int candidate = y; candidate > lastPrime && candidate > p; candidate--) {
             
+            int temp = candidate;
+            for(int pri : filtered)
+                while(temp % pri == 0)
+                    temp /= pri;
+            
+            if(temp == 1 || (isPrime(temp) && temp > maxPrimeCovered)) {
+                maxPoss = candidate;
+                break;
+            }
+            
+        }
         
-//        println(maxPoss);
+        
+        println(maxPoss);
         
     }
     
