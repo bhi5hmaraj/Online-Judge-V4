@@ -54,17 +54,59 @@ public class SUMandREPLACE {
     
     private static void solve() {
         
+        FasterScanner scan = new FasterScanner();
         
-        int n = nextInt();
-        int m = nextInt();
+        int n = scan.nextInt();
+        int m = scan.nextInt();
         
-        int a[] = nextIntArrayOneBased(n);
+        int a[] = new int[n + 1];
+        for(int i = 1; i <= n; i++)
+            a[i] = scan.nextInt();
         
         int ones[] = Arrays.stream(a).map(val -> val == 1 ? 1 : 0).toArray();
+        
         for(int i = 1; i <= n; i++)
             ones[i] += ones[i - 1];
         
+        FenwickTree twosBIT = new FenwickTree(n);
+        for(int i = 1; i <= n; i++) 
+            if(a[i] == 2) 
+                twosBIT.update(i, 1);   
         
+        TreeMap<Integer, Integer> othersMap = new TreeMap<>();
+        for(int i = 1; i <= n; i++)
+            if(a[i] > 2)
+                othersMap.put(i, a[i]);
+        
+        
+        while(m-->0) {
+            int type = scan.nextInt();
+            int L = scan.nextInt();
+            int R = scan.nextInt();
+            if(type == 1) { // replace
+                Map.Entry<Integer, Integer> curr = othersMap.ceilingEntry(L);
+                while(curr != null && curr.getKey() <= R) {
+                    if(tau[curr.getValue()] == 2) {
+                        othersMap.remove(curr.getKey());
+                        twosBIT.update(curr.getKey(), 1);
+                    } else 
+                        othersMap.replace(curr.getKey(), tau[curr.getValue()]);
+                    
+                    curr = othersMap.higherEntry(curr.getKey());
+                }
+                
+            } else {
+                long sum = (ones[R] - ones[L - 1]) + 2L * twosBIT.query(L, R);
+                Map.Entry<Integer, Integer> curr = othersMap.ceilingEntry(L);
+                while(curr != null && curr.getKey() <= R) {
+                    sum += curr.getValue();
+                    curr = othersMap.higherEntry(curr.getKey());
+                }
+                
+                println(sum);
+            }
+            
+        }
         
     }
     
@@ -79,14 +121,59 @@ public class SUMandREPLACE {
     /************************ TEMPLATE STARTS HERE **********************/
     
     public static void main(String[] args) throws IOException {
-        reader = new BufferedReader(new InputStreamReader(System.in));
+//        reader = new BufferedReader(new InputStreamReader(System.in));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
         solve();
-        reader.close();
+//        reader.close();
         writer.close();
     }
-    
+    static class FasterScanner {
+        private byte[] buf = new byte[1024];
+        private int tmp_curChar;
+        private int tmp_numChars;
+
+        public int read() {
+            if (tmp_numChars == -1)
+                throw new InputMismatchException();
+            if (tmp_curChar >= tmp_numChars) {
+                tmp_curChar = 0;
+                try {
+                    tmp_numChars = System.in.read(buf);
+                } catch (IOException e) {
+                    throw new InputMismatchException();
+                }
+                if (tmp_numChars <= 0)
+                    return -1;
+            }
+            return buf[tmp_curChar++];
+        }
+
+        public int nextInt() {
+            int c = read();
+            while (isSpaceChar(c))
+                c = read();
+            int sgn = 1;
+            if (c == '-') {
+                sgn = -1;
+                c = read();
+            }
+            int res = 0;
+            do {
+                if (c < '0' || c > '9')
+                    throw new InputMismatchException();
+                res *= 10;
+                res += c - '0';
+                c = read();
+            } while (!isSpaceChar(c));
+            return res * sgn;
+        }
+
+        private boolean isSpaceChar(int c) {
+            return c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == -1;
+        }
+
+    }
     static BufferedReader reader;
     static PrintWriter    writer;
     static StringTokenizer st;
