@@ -83,6 +83,7 @@ public class SUMandREPLACE {
         for(int i = 1; i <= n; i++)
             if(a[i] > 2)
                 othersBIT.update(i, a[i]);
+
         
         while(m-->0) {
             int type = scan.nextInt();
