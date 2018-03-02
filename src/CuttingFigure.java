@@ -14,26 +14,57 @@ public class CuttingFigure {
     static int x[] = {-1 , 0 , 1 , 0};
     static int y[] = {0 , 1 , 0 , -1};
     
+    static boolean marked[][];
+    static char grid[][];
+    
+    static boolean isConnected() {
+        boolean started = false;
+        marked = new boolean[R][C];
+        for(int i = 0; i < R; i++)
+            for(int j = 0; j < C; j++)
+                if(grid[i][j] == '#') {
+                    if(!started) {
+                        dfs(i, j);
+                        started = true;
+                    }
+                    else if(!marked[i][j])
+                        return false;
+                }
+        
+        return true;
+    }
+    
+    static void dfs(int r, int c) {
+        marked[r][c] = true;
+        for(int k = 0; k < 4; k++)
+            if(isValid(r + x[k], c + y[k]) && grid[r + x[k]][c + y[k]] == '#' && !marked[r + x[k]][c + y[k]])
+                dfs(r + x[k], c + y[k]);
+    }
+    
     
     private static void solve() {
         
         R = nextInt();
         C = nextInt();
-        char grid[][] = new char[R][];
+        grid = new char[R][];
         for(int i = 0; i < R; i++)
             grid[i] = nextLine().toCharArray();
         
-        int min = 5;
+        int total = 0;
+        
         for(int i = 0; i < R; i++)
             for(int j = 0; j < C; j++)
                 if(grid[i][j] == '#') {
-                    int cnt = 0;
-                    for(int k = 0; k < 4; k++)
-                        cnt += isValid(i + x[k], j + y[k]) && grid[i + x[k]][j + y[k]] == '#' ? 1 : 0;
-                    min = Math.min(min , cnt);
+                    total++;
+                    grid[i][j] = '.';
+                    if(!isConnected()) {
+                        println(1);
+                        return;
+                    }
+                    grid[i][j] = '#';
                 }
         
-        println(min >= 1 && min <= 4 ? min : -1);
+        println(total <= 2 ? -1 : 2);
     }
     
     
