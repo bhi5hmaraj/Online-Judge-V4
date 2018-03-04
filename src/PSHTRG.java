@@ -6,17 +6,21 @@ class PSHTRG  {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static final int THRESHOLD = 45;
-
+    static final int THRESHOLD = 43;
+    
+    /*
+     * I didnt expect the unoptimized to pass !!
+     */
+    
     static class SegmentTree  { // Implemented to store min in a range , point update and range query
         PriorityQueue<Integer> tree[];
         int len;
         int size;
         SegmentTree(int arr[]) { // arr should be a 1 based array
-            len = arr.length - 1;
+            len = arr.length;
             size = 1 << (32 - Integer.numberOfLeadingZeros(len - 1) + 1);  // ceil(log(len)) + 1
             tree = new PriorityQueue[size];
-            build(arr, 1, 1, len);
+            build(arr, 1, 0, len - 1);
         }
         
         PriorityQueue<Integer> merge(PriorityQueue<Integer> pq1, PriorityQueue<Integer> pq2) {
@@ -31,8 +35,10 @@ class PSHTRG  {
         }
         
         void update(int node,int idx,int val,int nl,int nr) {
-            if(nl == nr && nl == idx)
-                tree[node] = val;
+            if(nl == nr && nl == idx) {
+                tree[node].remove();
+                tree[node].add(val);
+            }
             else {
                 int mid = (nl + nr) >> 1;
                 if(idx <= mid)
@@ -40,37 +46,36 @@ class PSHTRG  {
                 else
                     update((2*node) + 1, idx ,val , mid + 1, nr);
 
-                tree[node] = Math.min(tree[2*node],tree[(2 * node) + 1]);
+                tree[node] = merge(tree[2*node],tree[(2 * node) + 1]);
             }
         }
         void update(int idx , int val){
-            update(1, idx, val, 1, len);
+            update(1, idx, val, 0, len - 1);
         }
-        int query(int L , int R){
-            return query(1, L, R, 1, len);
+        PriorityQueue<Integer> query(int L , int R){
+            return query(1, L, R, 0, len - 1);
         }
-        int query(int node , int L , int R, int nl, int nr) {
+        PriorityQueue<Integer> query(int node , int L , int R, int nl, int nr) {
             int mid = (nl + nr) >> 1;
             if(nl == L && nr == R)
-                return tree[node];
+                return new PriorityQueue<>(tree[node]);
             else if(R <= mid)
                 return query(2 * node, L, R, nl, mid);
             else if(L > mid)
                 return query((2*node)+1, L, R, mid + 1 , nr);
             else
-                return Math.min(query(2*node, L, mid , nl , mid) ,  query((2*node)+1, mid+1, R , mid+1,nr));
+                return merge(query(2*node, L, mid , nl , mid) ,  query((2*node)+1, mid+1, R , mid+1,nr));
         }
         void build(int arr[],int node,int L,int R) {
             if(L == R) {
                 tree[node] = new PriorityQueue<>(1);
-                
+                tree[node].add(arr[L]);
             }
-            else
-            {
+            else {
                 int mid = (L + R) >> 1;
                 build(arr, 2 * node, L, mid);
                 build(arr, (2 * node) + 1, mid + 1, R);
-                tree[node] = Math.min(tree[2*node] , tree[(2 * node) + 1]);
+                tree[node] = merge(tree[2*node] , tree[(2 * node) + 1]);
             }
         }
     }
@@ -79,36 +84,24 @@ class PSHTRG  {
         int N = nextInt();
         int Q = nextInt();
         
-        /*if(!(N <= 2000 && Q <= 2000)) {
-            throw new RuntimeException("work in progress...");
-        }
-        */
         int arr[] = nextIntArray(N);
-        /*
-         * Lets see how far brute can go
-         */
+        SegmentTree segTree = new SegmentTree(arr);
+        
         while(Q-->0) {
             
-            if(nextInt() == 1)
-                arr[nextInt() - 1] = nextInt();
+            if(nextInt() == 1) 
+                segTree.update(nextInt() - 1, nextInt());
             else {
                 int L = nextInt() - 1;
                 int R = nextInt() - 1;
-                
-                PriorityQueue<Integer> pq = new PriorityQueue<>(THRESHOLD);
-                for(int i = L; i <= R; i++) {
-                    pq.add(arr[i]);
-                    if(pq.size() > THRESHOLD)
-                        pq.remove();
-                }
+                PriorityQueue<Integer> pq = segTree.query(L, R);
                 int newArr[] = new int[pq.size()];
                 for(int i = 0; i < newArr.length; i++)
                     newArr[i] = pq.remove();
                 
                 long perimeter = 0;
                 int ptr = newArr.length - 1;
-                int cnt = 0;
-                for(; ptr >= 2 && newArr[ptr - 1] + newArr[ptr - 2] <= newArr[ptr]; ptr--, cnt++)
+                for(; ptr >= 2 && newArr[ptr - 1] + newArr[ptr - 2] <= newArr[ptr]; ptr--)
                     ;
                 perimeter = ptr >= 2 ? 0L + newArr[ptr] + newArr[ptr - 1] + newArr[ptr - 2] : 0;
                 println(perimeter);
