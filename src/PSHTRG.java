@@ -6,31 +6,44 @@ class PSHTRG  {
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    static final int THRESHOLD = 45;
     
     private static void solve() {
         
         int N = nextInt();
         int Q = nextInt();
         
-        if(!(N <= 100 && Q <= 100)) {
+        /*if(!(N <= 2000 && Q <= 2000)) {
             throw new RuntimeException("work in progress...");
         }
-        
+        */
         int arr[] = nextIntArray(N);
+        /*
+         * Lets see how far brute can go
+         */
         while(Q-->0) {
             
             if(nextInt() == 1)
-                arr[nextInt()] = nextInt();
+                arr[nextInt() - 1] = nextInt();
             else {
                 int L = nextInt() - 1;
                 int R = nextInt() - 1;
-                int newArr[] = Arrays.copyOfRange(arr, L, R + 1);
-                Arrays.sort(newArr);
+                
+                PriorityQueue<Integer> pq = new PriorityQueue<>(THRESHOLD);
+                for(int i = L; i <= R; i++) {
+                    pq.add(arr[i]);
+                    if(pq.size() > THRESHOLD)
+                        pq.remove();
+                }
+                int newArr[] = new int[pq.size()];
+                for(int i = 0; i < newArr.length; i++)
+                    newArr[i] = pq.remove();
+                
                 long perimeter = 0;
                 int ptr = newArr.length - 1;
-                for(; ptr >= 2 && newArr[ptr - 1] + newArr[ptr - 2] < newArr[ptr]; ptr--)
+                int cnt = 0;
+                for(; ptr >= 2 && newArr[ptr - 1] + newArr[ptr - 2] <= newArr[ptr]; ptr--, cnt++)
                     ;
-                
                 perimeter = ptr >= 2 ? 0L + newArr[ptr] + newArr[ptr - 1] + newArr[ptr - 2] : 0;
                 println(perimeter);
             }
