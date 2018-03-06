@@ -67,8 +67,9 @@ public class Timetable {
         */
         memo = new int[n][k + 1];
         for(int a[] : memo) Arrays.fill(a, -1);
-        
+        long start = System.nanoTime();
         println(rec(n - 1, k));
+        System.out.println("Time " + (System.nanoTime() - start) / 1e9);
         
     }
     
