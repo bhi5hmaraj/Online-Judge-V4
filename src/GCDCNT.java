@@ -6,10 +6,26 @@ class GCDCNT {
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    static int gcd(int a , int b) { return (b == 0) ? a : gcd(b, a % b); }
+    
     
     private static void solve() {
         
         
+        
+        int N = nextInt();
+        int arr[] = nextIntArray(N);
+        int Q = nextInt();
+        while(Q-->0) {
+            if(1 == nextInt())
+                arr[nextInt() - 1] = nextInt();
+            else {
+                int cnt = 0;
+                for(int i = nextInt() - 1, end = nextInt() - 1, x = nextInt(); i <= end; i++)
+                    cnt += gcd(arr[i], x) == 1 ? 1 : 0;
+                println(cnt);
+            }
+        }
         
     }
     
