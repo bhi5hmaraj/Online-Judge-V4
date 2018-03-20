@@ -18,16 +18,125 @@ public class uva_12604  {
         
         return prefix;
     }
-    
+
+    static class FasterScanner {
+        private byte[] buf = new byte[1024];
+        private int tmp_curChar;
+        private int tmp_numChars;
+
+        public int read() {
+            if (tmp_numChars == -1)
+                throw new InputMismatchException();
+            if (tmp_curChar >= tmp_numChars) {
+                tmp_curChar = 0;
+                try {
+                    tmp_numChars = System.in.read(buf);
+                } catch (IOException e) {
+                    throw new InputMismatchException();
+                }
+                if (tmp_numChars <= 0)
+                    return -1;
+            }
+            return buf[tmp_curChar++];
+        }
+
+        public String nextLine() {
+            int c = read();
+            while (isSpaceChar(c))
+                c = read();
+            StringBuilder res = new StringBuilder();
+            do {
+                res.appendCodePoint(c);
+                c = read();
+            } while (!isEndOfLine(c));
+            return res.toString();
+        }
+
+        public String next() {
+            int c = read();
+            while (isSpaceChar(c))
+                c = read();
+            StringBuilder res = new StringBuilder();
+            do {
+                res.appendCodePoint(c);
+                c = read();
+            } while (!isSpaceChar(c));
+            return res.toString();
+        }
+
+        public long nextLong() {
+            int c = read();
+            while (isSpaceChar(c))
+                c = read();
+            int sgn = 1;
+            if (c == '-') {
+                sgn = -1;
+                c = read();
+            }
+            long res = 0;
+            do {
+                if (c < '0' || c > '9')
+                    throw new InputMismatchException();
+                res *= 10;
+                res += c - '0';
+                c = read();
+            } while (!isSpaceChar(c));
+            return res * sgn;
+        }
+
+        public int nextInt() {
+            int c = read();
+            while (isSpaceChar(c))
+                c = read();
+            int sgn = 1;
+            if (c == '-') {
+                sgn = -1;
+                c = read();
+            }
+            int res = 0;
+            do {
+                if (c < '0' || c > '9')
+                    throw new InputMismatchException();
+                res *= 10;
+                res += c - '0';
+                c = read();
+            } while (!isSpaceChar(c));
+            return res * sgn;
+        }
+
+        public int[] nextIntArray(int n) {
+            int[] arr = new int[n];
+            for (int i = 0; i < n; i++) {
+                arr[i] = nextInt();
+            }
+            return arr;
+        }
+
+        public long[] nextLongArray(int n) {
+            long[] arr = new long[n];
+            for (int i = 0; i < n; i++) {
+                arr[i] = nextLong();
+            }
+            return arr;
+        }
+
+        private boolean isSpaceChar(int c) {
+            return c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == -1;
+        }
+
+        private boolean isEndOfLine(int c) {
+            return c == '\n' || c == '\r' || c == -1;
+        }
+    }
     
     private static void solve() {
         
-        
-        int T = nextInt();
+        FasterScanner scan = new FasterScanner();
+        int T = scan.nextInt();
         while(T-->0) {
-            char alph[] = nextLine().toCharArray();
-            String word = nextLine();
-            String encrypt = nextLine();
+            char alph[] = scan.nextLine().toCharArray();
+            String word = scan.nextLine();
+            String encrypt = scan.nextLine();
             
             int inv[] = new int[128];
             for(int i = 0; i < alph.length; i++)
@@ -72,11 +181,11 @@ public class uva_12604  {
     /************************ TEMPLATE STARTS HERE **********************/
     
     public static void main(String[] args) throws IOException {
-        reader = new BufferedReader(new InputStreamReader(System.in));
+//        reader = new BufferedReader(new InputStreamReader(System.in));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
         st     = null;
         solve();
-        reader.close();
+//        reader.close();
         writer.close();
     }
     
