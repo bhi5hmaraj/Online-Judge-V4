@@ -6,6 +6,18 @@ public class SavingTheUniverseAgain {
     
     /************************ SOLUTION STARTS HERE ************************/
     
+    static long getCost(char str[]) {
+        long cost = 0;
+        long mult = 1;
+        for(char ch : str)
+            if(ch == 'C')
+                mult <<= 1;
+            else
+                cost += mult;
+        
+        return cost;
+            
+    }
     
     private static void solve() {
         
@@ -15,8 +27,25 @@ public class SavingTheUniverseAgain {
             long D = nextLong();
             char str[] = next().toCharArray();
             
+            int iter = 0;
+            while(getCost(str) > D) {
+//                System.out.println(new String(str) + " cost = " + getCost(str));
+                int ptr = str.length - 1;
+                for(; ptr > 0 && !(str[ptr - 1] == 'C' && str[ptr] == 'S'); ptr--)
+                    ;
+                
+                if(ptr == 0) // SSS...CCCC cant change anything
+                    break;
+                else {  // swap
+                    char temp = str[ptr];
+                    str[ptr] = str[ptr - 1];
+                    str[ptr - 1] = temp;
+                    iter++;
+                }
+                
+            }
             
-            
+            println("Case #" + tc + ": " + (getCost(str) <= D ? iter : "IMPOSSIBLE"));
             
         }
         
