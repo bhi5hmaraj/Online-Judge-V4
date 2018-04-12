@@ -8,16 +8,17 @@ public class MergeEquals {
     
     static class Pair implements Comparable<Pair> {
         
-        int val , index;
+        int index;
+        long val;
         
-        public Pair(int val, int index) {
+        public Pair(long val, int index) {
             this.val = val;
             this.index = index;
         }
 
         @Override
         public int compareTo(Pair o) {
-            return val != o.val ? val - o.val : index - o.index;
+            return val != o.val ? Long.compare(val, o.val) : index - o.index;
         }
     }
     
@@ -26,16 +27,16 @@ public class MergeEquals {
         int n = nextInt();
         int arr[] = nextIntArray(n);
         
-        HashMap<Integer, PriorityQueue<Pair>> map = new HashMap<>();
+        HashMap<Long, PriorityQueue<Pair>> map = new HashMap<>();
         
         for(int i = 0; i < n; i++) {
             int temp = arr[i];
             while(temp % 2 == 0)
                 temp >>= 1;
             
-            PriorityQueue<Pair> pq = map.getOrDefault(temp, new PriorityQueue<>());
+            PriorityQueue<Pair> pq = map.getOrDefault(1L * temp, new PriorityQueue<>());
             pq.add(new Pair(arr[i], i));
-            map.put(temp, pq);
+            map.put(1L * temp, pq);
         }
         
         ArrayList<Pair> collect = new ArrayList<>();

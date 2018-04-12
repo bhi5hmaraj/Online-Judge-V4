@@ -61,7 +61,11 @@ public class testing {
     }
     
     private static void solve() {
-        String t = "***..**.*....";
+        
+        HashSet<Long> set = new HashSet<>(Arrays.asList(1L , 2L , 500L , 1313213L));
+        System.out.println(set.contains(500));
+        System.out.println(set.contains(1313213));
+        
     }
     
     
