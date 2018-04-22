@@ -15,4 +15,3 @@
 14. Java divison for negative numbers act weird , -5/2 yields -2 but if the convention of rounding down is followed it should have been -3
 15. Similarity between problem solving and a sword duel . The final death blow would be coding the soution (You can also fuck up this one eg. GOT red viper and Mountain) . But the rest would depend on your Math , problem solving skills . As we see time doesnt really matter . Also each and every time you win a battle you learn something new also you need to fix your mistakes or else they will haunt you .  
 16. Litteraly an AI http://codeforces.com/contest/897/problem/D
-17. Contradiction works by exploiting the fact that A => B if false only when A is T and B is F . So if we need to show some Hypothesis (H) => Conclusion (C) , we show H & !C => F , this can happen only when H is T and !C is F , C is T
