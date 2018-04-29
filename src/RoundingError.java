@@ -14,7 +14,26 @@ public class RoundingError {
             
             int N = nextInt();
             int L = nextInt();
+            int rem = N;
             
+            ArrayList<Double> arl = new ArrayList<>();
+            double arr[] = new double[L];
+            
+            for(int i = 0; i < L; i++) {
+                int c = nextInt();
+                arr[i] = c * 100.0 / N;
+                if(arr[i] - Math.floor(arr[i]) < 0.5)
+                    arl.add(0.5 - (arr[i] - Math.floor(arr[i])));
+                
+                rem -= c;
+            }
+            
+            
+            Collections.sort(arl);
+            for(double need : arl) {
+                if(rem <= 0) break;
+                
+            }
             
         }
         
