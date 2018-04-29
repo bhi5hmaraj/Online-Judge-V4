@@ -17,24 +17,34 @@ public class RoundingError {
             int rem = N;
             
             ArrayList<Double> arl = new ArrayList<>();
-            double arr[] = new double[L];
-            
+            int sum = 0;
             for(int i = 0; i < L; i++) {
                 int c = nextInt();
-                arr[i] = c * 100.0 / N;
-                if(arr[i] - Math.floor(arr[i]) < 0.5)
-                    arl.add(0.5 - (arr[i] - Math.floor(arr[i])));
-                
+                double per = c * 100.0 / N;
+                sum += Math.round(Math.floor(per));
+                if(per - Math.floor(per) < 0.5)
+                    arl.add(0.5 - (per - Math.floor(per)));
+                else
+                    sum++;
                 rem -= c;
             }
             
             
             Collections.sort(arl);
             for(double need : arl) {
-                if(rem <= 0) break;
-                
+                int req = (int) Math.round(Math.ceil(N * need / 100.0));
+                if(rem < req) break;
+                sum++;
+                rem -= req;
             }
             
+            double single = 100.0 / N;
+            if(single - Math.floor(single) >= 0.5)
+                sum += (Math.round(Math.floor(single)) + 1) * rem;
+            else {
+                
+            }
+                
         }
         
         
