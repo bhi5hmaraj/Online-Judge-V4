@@ -42,7 +42,8 @@ public class RoundingError {
             if(single - Math.floor(single) >= 0.5)
                 sum += (Math.round(Math.floor(single)) + 1) * rem;
             else {
-                
+                double frac = single - Math.floor(single);
+                int howmany = (int) Math.round(Math.ceil(a))
             }
                 
         }
