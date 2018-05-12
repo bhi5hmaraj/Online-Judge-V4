@@ -1,79 +1,36 @@
 import java.util.*;
 import java.io.*;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-public class testing {
+public class ShubhamandSubarrays {
     
     
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    // Sieve of Erathanoses
-    public static boolean[] isPrimeArray(int N) {
-        boolean num[] = new boolean[N + 1];
-        Arrays.fill(num, true);
-        num[1] = num[0]=  false;
-        for (int i = 2; i * i <= N; i++)
-            if (num[i])  // i is prime
-                for (int j = i * i; j <= N; j += i)
-                    num[j] = false;
-        
-            
-        return num;
-    }
-    
-    // Sieve of Erathanoses dependency : isPrimeArray()
-    public static int[] sieve(int N) {
-        
-        boolean isPrime[] = isPrimeArray(N);
-        int sz = 0;
-        for(boolean b : isPrime)
-            sz += b ? 1 : 0;
-        int arr[] = new int[sz];
-        int ptr = 0;
-        for (int i = 2; i <= N; i++)
-            if (isPrime[i])
-                arr[ptr++] = i;
-                
-        return arr;
-    }
-    
-    static boolean isComposite[];
-    static int primes[];
-    static int SIZE = (int) 5e6;
-    static void modifiedSieve(int N) {
-        isComposite = new boolean [N + 1];
-        primes = new int[SIZE];
-        int ptr = 0;
-        for(int i = 2; i <= N; i++) {
-            if(!isComposite[i])
-                primes[ptr++] = i;
-            for(int j = 0 ; j < ptr && primes[j] * i <= N; j++) {
-                // primes[j] is the lowest prime for primes[j] * i
-                isComposite[primes[j] * i] = true;
-                for(int k = 1; k < i; k++) {
-                    System.out.println("this is freaking awesome");
-                }
-                if(i % primes[j] == 0)
-                    break;
-            }
-        }
-    }
     
     private static void solve() {
         
-//        HashSet<Long> set = new HashSet<>(Arrays.asList(1L , 2L , 500L , 1313213L));
-//        System.out.println(set.contains(500));
-//        System.out.println(set.contains(1313213));
-        BitSet a = new BitSet(10);
-        BitSet b = new BitSet(10);
         
-        a.set(5);
-        b.set(5);
+        int n = nextInt();
+        int arr[] = nextIntArray(n);
         
-        System.out.println(a.equals(b));
+        HashSet<BitSet> set = new HashSet<>();
+        
+        for(int i = 0; i < n; i++) {
+            BitSet curr = new BitSet(1000);
+            curr.set(arr[i] - 1);
+            set.add(curr);
+            for(int j = i + 1; j < n; j++) {
+                BitSet newSet = (BitSet) curr.clone();
+                newSet.set(arr[j] - 1);
+                set.add(newSet);
+                curr = newSet;
+            }
+        }
+        
+        println(set.size());
         
     }
+    
     
     
     /************************ SOLUTION ENDS HERE ************************/
