@@ -26,7 +26,6 @@ public class ShubhamandSubarrays {
                 curr = newSet;
             }
         }
-        
         println(set.size());
         
     }
