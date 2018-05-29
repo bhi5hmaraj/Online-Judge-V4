@@ -45,9 +45,7 @@ public class Fair {
         
         int adj[][] = packU(V, f, t, 1);
         
-        PriorityQueue<Integer>[] pq = new PriorityQueue[V + 1];
-        for(int i = 1; i <= V; i++)
-            pq[i] = new PriorityQueue<>(Collections.reverseOrder());
+        int costs[][] = new int[V + 1][k];
         
         ArrayDeque<Integer>[] collectByColor = new ArrayDeque[k + 1];
         for(int i = 1; i <= k; i++)
@@ -72,16 +70,17 @@ public class Fair {
                     if(dist[v] > dist[u] + 1) {
                         collectByColor[color].add(v);
                         dist[v] = dist[u] + 1;
-                        pq[v].add(dist[v]);
-                        if(pq[v].size() > s)
-                            pq[v].remove();
+                        costs[v][color - 1] = dist[v];
                     }
             }
         }
         
-        for(int i = 1; i <= V; i++)
-            print(pq[i].stream().mapToInt(Integer::new).sum() + " ");
-        
+        for(int i = 1; i <= V; i++) {
+            Arrays.sort(costs[i]);
+            print(Arrays.stream(costs[i], 0, s).sum() + " ");
+        }
+            
+            
     }
     
     
