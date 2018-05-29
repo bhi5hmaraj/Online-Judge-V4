@@ -20,7 +20,7 @@ public class KuroandWalkingRoute {
             long ret = dfs(v, u, enemy);
             if(ret > 0)
                 sz += ret;
-            else if(par != -1)
+            else if(par != 0)   // not a root node , but in the subtree which contains enemy 
                 return -1;
         }
         
@@ -48,7 +48,7 @@ public class KuroandWalkingRoute {
         }
         
         
-        println(1L * n * (n - 1) - dfs(x, -1, y) * dfs(y, -1, x));
+        println(1L * n * (n - 1) - dfs(x, 0, y) * dfs(y, 0, x));
         
     }
     
