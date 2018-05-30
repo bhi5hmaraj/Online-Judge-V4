@@ -6,7 +6,8 @@ public class HighSchoolHuman {
     
     /************************ SOLUTION STARTS HERE ************************/
     
-    static final double EPS = 1e-8;
+    static final double EPS = 1e-12;
+    
     static int compare(double a , double b) {
         return a <= b - EPS ? -1 : a >= b + EPS ? 1 : 0;
     }
@@ -17,7 +18,6 @@ public class HighSchoolHuman {
         
         double x = nextDouble();
         double y = nextDouble();
-        
         int cmp = compare(y / x, Math.log(y) / Math.log(x));
         println(cmp == 0 ? "=" : cmp == 1 ? ">" : "<");
         

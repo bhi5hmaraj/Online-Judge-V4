@@ -23,6 +23,23 @@ public class Fair {
         return g;
     }
     
+    // Courtesy : Sharon
+    static class Queue{
+        int ar[];
+        int st, en;
+        public Queue(int n) {
+            ar = new int[n];
+            st = 0;
+            en = 0;
+        }
+        public void add(int a) { ar[en++] = a; }
+        public int poll() { return ar[st++]; }
+        public boolean isEmpty() { return st==en;}
+        public void reset() {
+            st=0;
+            en=0;
+        }
+    }
     
     private static void solve() {
         
@@ -47,12 +64,6 @@ public class Fair {
         
         int costs[][] = new int[V + 1][k];
         
-        ArrayDeque<Integer>[] collectByColor = new ArrayDeque[k + 1];
-        for(int i = 1; i <= k; i++)
-            collectByColor[i] = new ArrayDeque<>();
-        
-        for(int i = 1; i <= V; i++)
-            collectByColor[arr[i]].add(i);
         
         for(int color = 1; color <= k; color++) {
             
@@ -60,15 +71,20 @@ public class Fair {
             
             int dist[] = new int[V + 1];
             Arrays.fill(dist, V + 100);
+            Queue queue = new Queue(V);
             
-            for(int u : collectByColor[color])
-                dist[u] = 0;
+            for(int i = 1; i <= V; i++) 
+                if(color == arr[i]) {
+                    dist[i] = 0;
+                    queue.add(i);
+                }
             
-            while(!collectByColor[color].isEmpty()) {
-                int u = collectByColor[color].remove();
+            
+            while(!queue.isEmpty()) {
+                int u = queue.poll();
                 for(int v : adj[u])
                     if(dist[v] > dist[u] + 1) {
-                        collectByColor[color].add(v);
+                        queue.add(v);
                         dist[v] = dist[u] + 1;
                         costs[v][color - 1] = dist[v];
                     }
@@ -77,7 +93,10 @@ public class Fair {
         
         for(int i = 1; i <= V; i++) {
             Arrays.sort(costs[i]);
-            print(Arrays.stream(costs[i], 0, s).sum() + " ");
+            int sum = 0;
+            for(int j = 0; j <= s; j++) 
+                sum += costs[i][j];
+            print(sum + " ");
         }
             
             
