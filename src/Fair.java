@@ -66,7 +66,6 @@ public class Fair {
         
         
         for(int color = 1; color <= k; color++) {
-            
             // bfs for every color
             
             int dist[] = new int[V + 1];
