@@ -37,7 +37,7 @@ public class PrefixesandSuffixes {
     	char str[] = nextLine().toCharArray();
     	int prefix[] = KMPPrefixFunction(str);
     	
-    	System.out.println(Arrays.toString(prefix));
+    	// System.out.println(Arrays.toString(prefix));
     	
     	adj = new ArrayList[str.length + 1];
     	reachable = new int[str.length + 1];
@@ -55,8 +55,8 @@ public class PrefixesandSuffixes {
     	ArrayDeque<int[]> stack = new ArrayDeque<>();
     	stack.push(new int[] {str.length, 1});
     	
-    	for(int border = prefix[str.length - 1]; border > 0; border = prefix[border])
-    		stack.push(new int[] {border, reachable[border]});
+    	for(int border = prefix[str.length - 1]; border > 0; border = prefix[border - 1])
+    		stack.push(new int[] {border, reachable[border] + 1});    // one for the prefix
     	
     	println(stack.size());
     	stack.stream().forEach(pair -> println(pair[0] + " " + pair[1]));
